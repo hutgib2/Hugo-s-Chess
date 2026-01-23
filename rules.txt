@@ -1,0 +1,39 @@
+chess reboot pieces/replacements: 
+1. peasant replaces pawn
+2. dragon replaces knight
+3. archer replaces queen
+4. wizard replaces bishop
+5. catapult replaces rook
+6. emperor replace king
+
+legionary:
+can only move one even on its first move and there's 8 of them.
+can only move and kill forwards. 
+can promote if it reaches other sides of map.
+
+dragon:
+can move and kill up to 2 spaces in all directions per turn and there's 2 of them.
+can move through enemy piece if there's an empty tile.
+
+archer:
+only 2 archers on board and can move 1 tile in all directions per turn but cannot kill by moving.
+can kill an enemy up to to 3 tiles in 8 different directions away every turn but no one can move on the same turn.
+has to move to move to reload.
+
+wizard:
+only 2 wizards on board can move 1 tile in all directions per turn but cannot move an opponent on same turn.
+can move any enemy and ally piece to any empty tile and has to move to reload.
+cannot move stunned enemies and allies and there are 2 of them.
+when it dies it can mind control a opponent player for one turn.
+
+catapult:
+can move 1 tile in all directions per turn but cannot stun on same turn.
+can stun any enemy to any tile for 2 turns but has to move to shoot again.
+cannot stun enemies that were just moved and there are 2 of them.
+
+emperor:
+only one emperor and can move like the queen piece but 
+player will lose if the emperor is put in checkmate.
+the empereror has 3 lives, if a player lands on it, they will take one life away and go back to the spot they were before.
+
+chess board is still the same.
