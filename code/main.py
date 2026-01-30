@@ -7,7 +7,7 @@ from chessBoard import ChessBoard
 class Chess2026():
     def __init__(self):
         self.running = True
-        self.board = ChessBoard(board_surf, (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), WINDOW_WIDTH / 3)
+        self.board = ChessBoard(BOARD_SURFS['chess_board'])
         
 
     def run(self):
