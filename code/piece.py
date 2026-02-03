@@ -4,10 +4,7 @@ class Piece(pygame.sprite.Sprite):
     def __init__(self, surf, color):
         super().__init__()
         self.image = pygame.transform.smoothscale(surf, (TILE_WIDTH, TILE_WIDTH))
-        self.is_selected = False
         self.color = color
-    
-
 
 class Legionary(Piece):
     def __init(self, surf, color):
@@ -15,9 +12,14 @@ class Legionary(Piece):
 
     def possible_moves(self, coordinate):
         row, col = coordinate # extracts row and col from the coordinate
+        possible_moves = []
         if self.color == 'white':
-            return [(row-1, col)] # returns the position in front of the legionary
+            # validate moves and append if valid
+            if row > 0:
+                possible_moves.append((row-1, col)) # returns the position in front of the legionary
         else:
-            return [(row+1, col)]
+            # validate moves and append if valid
+            if row < 7:
+                possible_moves.append((row+1, col))
+        return possible_moves
     
-

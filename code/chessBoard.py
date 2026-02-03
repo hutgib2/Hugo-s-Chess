@@ -8,6 +8,8 @@ class Square():
         self.rect = rect # represents the area of the square
         self.coord = coordinate
         self.piece = None # whether and which piece is on that square
+        self.is_possible_move = False
+        self.is_selected = False
 
 class ChessBoard(pygame.sprite.Sprite):
     def __init__(self, surf):
@@ -17,7 +19,9 @@ class ChessBoard(pygame.sprite.Sprite):
         self.squares = [[], [], [], [], [], [], [], []] # creates a 2d list of Square objects
         self.gen_squares()
         self.setup_pieces()
-        self.selected_square = pygame.transform.smoothscale(BOARD_SURFS['select'], (TILE_WIDTH, TILE_WIDTH))
+        self.selected_square = None
+
+        self.yellow_square = pygame.transform.smoothscale(BOARD_SURFS['select'], (TILE_WIDTH, TILE_WIDTH))
         self.move_indicator = pygame.transform.smoothscale(BOARD_SURFS['move_indicator'], (TILE_WIDTH, TILE_WIDTH))
 
     # creates a 2d list of rects representing the individual squares on the board
@@ -72,14 +76,25 @@ class ChessBoard(pygame.sprite.Sprite):
         for row in range(8):
             for col in range(8):
                 square = self.squares[row][col]
+                if square.is_possible_move == True:
+                    pygame.display.get_surface().blit(self.move_indicator, square.rect)
+                if square.is_selected == True:
+                    pygame.display.get_surface().blit(self.yellow_square, square.rect)
                 if square.piece != None:
-                    if square.piece.is_selected == True:
-                        pygame.display.get_surface().blit(self.selected_square, square.rect)
-                        # calculate possible moves
-                        possible_moves = square.piece.possible_moves(square.coord)
-                        # draw the indicator
-                        for move in possible_moves:
-                            move_square = self.squares[move[0]][move[1]]
-                            pygame.display.get_surface().blit(self.move_indicator, move_square.rect)
                     pygame.display.get_surface().blit(square.piece.image, square.rect)
-                
+
+    def update(self):
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                square.is_possible_move = False
+
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                if square.is_selected:
+                    possible_moves = square.piece.possible_moves(square.coord)
+                    for move in possible_moves:
+                        move_square = self.squares[move[0]][move[1]]
+                        move_square.is_possible_move = True
+        
