@@ -2,6 +2,11 @@ from settings import *
 from enum import Enum
 from textSprite import TextSprite
 from piece import *
+from pieces.legionary import Legionary
+from pieces.dragon import Dragon
+from pieces.archer import Archer
+from pieces.wizard import Wizard
+from pieces.catapult import Catapult
 
 class Square():
     def __init__(self, rect, coordinate):
@@ -20,7 +25,7 @@ class ChessBoard(pygame.sprite.Sprite):
         self.gen_squares()
         self.setup_pieces()
         self.selected_square = None
-
+        self.possible_moves = []
         self.yellow_square = pygame.transform.smoothscale(BOARD_SURFS['select'], (TILE_WIDTH, TILE_WIDTH))
         self.move_indicator = pygame.transform.smoothscale(BOARD_SURFS['move_indicator'], (TILE_WIDTH, TILE_WIDTH))
 
@@ -36,30 +41,30 @@ class ChessBoard(pygame.sprite.Sprite):
 
     def setup_pieces(self):
         for col in range(8):
-            self.place_piece((6, col), Legionary(WHITE_SURFS['legionary'], 'white'))
+            self.place_piece((6, col), Legionary(WHITE_SURFS['legionary'], 'white', self.squares))
         for col in range(8):
-            self.place_piece((1, col), Legionary(BLACK_SURFS['legionary'], 'black'))
+            self.place_piece((1, col), Legionary(BLACK_SURFS['legionary'], 'black', self.squares))
 
-        self.place_piece((7, 5), Piece(WHITE_SURFS['wizard'], 'white'))
-        self.place_piece((7, 2), Piece(WHITE_SURFS['wizard'], 'white'))
-        self.place_piece((0, 5), Piece(BLACK_SURFS['wizard'], 'black'))
-        self.place_piece((0, 2), Piece(BLACK_SURFS['wizard'], 'black'))
+        self.place_piece((7, 5), Wizard(WHITE_SURFS['wizard'], 'white', self.squares))
+        self.place_piece((7, 2), Wizard(WHITE_SURFS['wizard'], 'white', self.squares))
+        self.place_piece((0, 5), Wizard(BLACK_SURFS['wizard'], 'black', self.squares))
+        self.place_piece((0, 2), Wizard(BLACK_SURFS['wizard'], 'black', self.squares))
 
-        self.place_piece((7, 0), Piece(WHITE_SURFS['catapult'], 'white'))
-        self.place_piece((7, 7), Piece(WHITE_SURFS['catapult'], 'white'))
-        self.place_piece((0, 0), Piece(BLACK_SURFS['catapult'], 'black'))
-        self.place_piece((0, 7), Piece(BLACK_SURFS['catapult'], 'black'))
+        self.place_piece((7, 0), Catapult(WHITE_SURFS['catapult'], 'white', self.squares))
+        self.place_piece((7, 7), Catapult(WHITE_SURFS['catapult'], 'white', self.squares))
+        self.place_piece((0, 0), Catapult(BLACK_SURFS['catapult'], 'black', self.squares))
+        self.place_piece((0, 7), Catapult(BLACK_SURFS['catapult'], 'black', self.squares))
 
-        self.place_piece((7, 4), Piece(WHITE_SURFS['emperor'], 'white'))
-        self.place_piece((0, 4), Piece(BLACK_SURFS['emperor'], 'black'))
+        self.place_piece((7, 4), Piece(WHITE_SURFS['emperor'], 'white', self.squares))
+        self.place_piece((0, 4), Piece(BLACK_SURFS['emperor'], 'black', self.squares))
 
-        self.place_piece((7, 3), Piece(WHITE_SURFS['archer'], 'white'))
-        self.place_piece((0, 3), Piece(BLACK_SURFS['archer'], 'black'))
+        self.place_piece((7, 3), Archer(WHITE_SURFS['archer'], 'white', self.squares))
+        self.place_piece((0, 3), Archer(BLACK_SURFS['archer'], 'black', self.squares))
 
-        self.place_piece((7, 6), Piece(WHITE_SURFS['dragon'], 'white'))
-        self.place_piece((7, 1), Piece(WHITE_SURFS['dragon'], 'white'))
-        self.place_piece((0, 6), Piece(BLACK_SURFS['dragon'], 'black'))
-        self.place_piece((0, 1), Piece(BLACK_SURFS['dragon'], 'black'))
+        self.place_piece((7, 6), Dragon(WHITE_SURFS['dragon'], 'white', self.squares))
+        self.place_piece((7, 1), Dragon(WHITE_SURFS['dragon'], 'white', self.squares))
+        self.place_piece((0, 6), Dragon(BLACK_SURFS['dragon'], 'black', self.squares))
+        self.place_piece((0, 1), Dragon(BLACK_SURFS['dragon'], 'black', self.squares))
 
     def place_piece(self, pos, piece):
         self.squares[pos[0]][pos[1]].piece = piece
@@ -84,17 +89,13 @@ class ChessBoard(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(square.piece.image, square.rect)
 
     def update(self):
-        for row in range(8):
-            for col in range(8):
-                square = self.squares[row][col]
-                square.is_possible_move = False
+        for move in self.possible_moves:
+            square = self.squares[move[0]][move[1]]
+            square.is_possible_move = False     
 
-        for row in range(8):
-            for col in range(8):
-                square = self.squares[row][col]
-                if square.is_selected:
-                    possible_moves = square.piece.possible_moves(square.coord)
-                    for move in possible_moves:
-                        move_square = self.squares[move[0]][move[1]]
-                        move_square.is_possible_move = True
+        if self.selected_square != None:
+            self.possible_moves = self.selected_square.piece.possible_moves(self.selected_square.coord)
+            for move in self.possible_moves:
+                move_square = self.squares[move[0]][move[1]]
+                move_square.is_possible_move = True
         
