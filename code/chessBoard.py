@@ -7,6 +7,7 @@ from pieces.dragon import Dragon
 from pieces.archer import Archer
 from pieces.wizard import Wizard
 from pieces.catapult import Catapult
+from pieces.emperor import Emperor
 
 class Square():
     def __init__(self, rect, coordinate):
@@ -15,6 +16,7 @@ class Square():
         self.piece = None # whether and which piece is on that square
         self.is_possible_move = False
         self.is_selected = False
+        self.is_kill_move = False
 
 class ChessBoard(pygame.sprite.Sprite):
     def __init__(self, surf):
@@ -26,8 +28,10 @@ class ChessBoard(pygame.sprite.Sprite):
         self.setup_pieces()
         self.selected_square = None
         self.possible_moves = []
+        self.kill_moves = []
         self.yellow_square = pygame.transform.smoothscale(BOARD_SURFS['select'], (TILE_WIDTH, TILE_WIDTH))
         self.move_indicator = pygame.transform.smoothscale(BOARD_SURFS['move_indicator'], (TILE_WIDTH, TILE_WIDTH))
+        self.kill_indicator = pygame.transform.smoothscale(BOARD_SURFS['kill'], (TILE_WIDTH, TILE_WIDTH))
 
     # creates a 2d list of rects representing the individual squares on the board
     def gen_squares(self):
@@ -55,8 +59,8 @@ class ChessBoard(pygame.sprite.Sprite):
         self.place_piece((0, 0), Catapult(BLACK_SURFS['catapult'], 'black', self.squares))
         self.place_piece((0, 7), Catapult(BLACK_SURFS['catapult'], 'black', self.squares))
 
-        self.place_piece((7, 4), Piece(WHITE_SURFS['emperor'], 'white', self.squares))
-        self.place_piece((0, 4), Piece(BLACK_SURFS['emperor'], 'black', self.squares))
+        self.place_piece((7, 4), Emperor(WHITE_SURFS['emperor'], 'white', self.squares))
+        self.place_piece((0, 4), Emperor(BLACK_SURFS['emperor'], 'black', self.squares))
 
         self.place_piece((7, 3), Archer(WHITE_SURFS['archer'], 'white', self.squares))
         self.place_piece((0, 3), Archer(BLACK_SURFS['archer'], 'black', self.squares))
@@ -87,15 +91,29 @@ class ChessBoard(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(self.yellow_square, square.rect)
                 if square.piece != None:
                     pygame.display.get_surface().blit(square.piece.image, square.rect)
+                if square.is_kill_move == True:
+                    pygame.display.get_surface().blit(self.kill_indicator, square.rect)
 
     def update(self):
+        # this resets the possible move squares
         for move in self.possible_moves:
             square = self.squares[move[0]][move[1]]
-            square.is_possible_move = False     
+            square.is_possible_move = False
+
+        for move in self.kill_moves:
+            square = self.squares[move[0]][move[1]]
+            square.is_kill_move = False   
+
 
         if self.selected_square != None:
             self.possible_moves = self.selected_square.piece.possible_moves(self.selected_square.coord)
             for move in self.possible_moves:
                 move_square = self.squares[move[0]][move[1]]
                 move_square.is_possible_move = True
+
+            self.kill_moves = self.selected_square.piece.kill_moves(self.selected_square.coord)
+            for move in self.kill_moves:
+                move_square = self.squares[move[0]][move[1]]
+                move_square.is_kill_move = True
+            
         

@@ -1,5 +1,4 @@
 from settings import *
-from support import split_string
 
 class TextSprite(pygame.sprite.Sprite):
     def __init__(self, text, pos, color, size, groups):

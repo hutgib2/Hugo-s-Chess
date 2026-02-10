@@ -7,3 +7,8 @@ class Piece(pygame.sprite.Sprite):
         self.color = color
         self.squares = squares
 
+    def kill_moves(self, coordinate):
+        return []
+    
+    def kill(self, old_coord, kill_coord):
+        pass

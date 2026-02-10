@@ -1,4 +1,4 @@
-from os.path import join 
+from os.path import join
 from os import walk
 from settings import pygame
 
@@ -17,15 +17,22 @@ def audio_importer(*path):
             audio_dict[file_name.split('.')[0]] = pygame.mixer.Sound(join(folder_path, file_name))
     return audio_dict
 
-def split_string(string):
-    i = int(len(string)/2)
-    while i < (len(string) - 1) and string[i] != ' ':
-        i += 1
+def get_all_moves(start, range, squares):
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    possible_moves = []
+    for direction in directions:
+        i = 1
+        while i <= range:
+            row = start[0] + direction[0] * i
+            col = start[1] + direction[1] * i
+            i += 1
+
+            if row < 0 or row > 7 or col < 0 or col > 7:
+                break
+            
+            if squares[row][col].piece != None:
+                break
+            
+            possible_moves.append((row, col))
     
-    if i == (len(string) - 1):
-        while i > 0 and string[i] != ' ':
-            i -= 1
-    if i == 0:
-        return string
-    else:
-        return string[:i] + '\n' + string[i+1:]
+    return possible_moves
