@@ -12,7 +12,7 @@ class Legionary(Piece):
             front_square = self.squares[row-1][col]
             if front_square.piece == None:
                 possible_moves.append((row-1, col))
-        elif row < 7:
+        elif self.color == 'black' and row < 7:
             front_square = self.squares[row+1][col]
             if front_square.piece == None:
                 possible_moves.append((row+1, col))
@@ -26,7 +26,7 @@ class Legionary(Piece):
             front_square = self.squares[row-1][col]
             if front_square.piece and front_square.piece.color != 'white' and type(front_square.piece) != Legionary:
                 kill_moves.append(front_square.coord)
-        elif row < 7:
+        elif self.color == 'black' and row < 7:
             front_square = self.squares[row+1][col]
             if front_square.piece and front_square.piece.color != 'black' and type(front_square.piece) != Legionary:
                 kill_moves.append(front_square.coord)

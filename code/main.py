@@ -25,7 +25,7 @@ class Chess2026():
                                 old_coord = self.board.selected_square.coord
                                 kill_coord = square.coord
                                 self.board.selected_square.piece.kill(old_coord, kill_coord)
-                            if square.rect.collidepoint(event.pos) and square.piece != None:
+                            if square.rect.collidepoint(event.pos) and square.piece and not square.piece.is_stunned:
                                 self.board.selected_square = square
                                 square.is_selected = True
                             else:

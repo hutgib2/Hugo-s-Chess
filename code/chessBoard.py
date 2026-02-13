@@ -102,7 +102,7 @@ class ChessBoard(pygame.sprite.Sprite):
 
         for move in self.kill_moves:
             square = self.squares[move[0]][move[1]]
-            square.is_kill_move = False   
+            square.is_kill_move = False
 
 
         if self.selected_square != None:
@@ -116,4 +116,3 @@ class ChessBoard(pygame.sprite.Sprite):
                 move_square = self.squares[move[0]][move[1]]
                 move_square.is_kill_move = True
             
-        

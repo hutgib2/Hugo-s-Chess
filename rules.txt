@@ -23,14 +23,13 @@ can kill an enemy up to to 3 tiles away in 8 different directions away every tur
 has to move to move to reload. when it dies it heals the emperor back to full health.
 
 wizard:
-only 2 wizards on board can move 1 tile in all directions per turn but cannot move an opponent on same turn.
-can move any enemy and ally piece to any empty tile and has to move to reload.
-cannot move stunned enemies and allies and there are 2 of them.
-when it dies it can mind control a opponent piece for one turn.
+only 2 wizards on board can move and kill to 1 tile in all directions per turn.
+can swap places with any ally piece unless it's stunned.
+when it dies, undecided.
 
 catapult:
 can move 2 tiles in all directions per turn but cannot stun on same turn.
-can stun any enemy to any tile for 2 turns but has to move to shoot again.
+can stun any enemy in front of it for 1 turn but has to move to shoot again.
 cannot stun enemies that were just moved and there are 2 of them.
 
 emperor:
