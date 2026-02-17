@@ -2,13 +2,14 @@ from settings import *
 from piece import Piece
 from support import get_all_moves
 from pieces.legionary import Legionary
+from pieces.emperor import Emperor
 
 class Wizard(Piece):
     def __init(self, surf, color, squares):
         super().__init__(surf, color, squares)
 
     def possible_moves(self, coordinate):
-        return get_all_moves(coordinate, 1, self.squares)
+        get_all_moves(coordinate, 1, self.squares)
 
     def attack_moves(self, start):
         directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
@@ -29,6 +30,13 @@ class Wizard(Piece):
                             continue
                         
                     square.is_attack_move = True
+
+    def swap_moves(self):
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                if square.piece and type(square.piece) != Emperor and type(square.piece) != Wizard:
+                    square.is_swappable = True
 
     def attack(self, old_coord, attack_coord):
         old_square = self.squares[old_coord[0]][old_coord[1]]

@@ -122,8 +122,4 @@ class ChessBoard(pygame.sprite.Sprite):
             self.selected_square.piece.attack_moves(self.selected_square.coord)
             
             if type(self.selected_square.piece) == Wizard:
-                for row in range(8):
-                    for col in range(8):
-                        square = self.squares[row][col]
-                        if square.piece:
-                            square.is_swappable = True
+                self.selected_square.piece.swap_moves()
