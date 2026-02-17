@@ -7,22 +7,19 @@ class Dragon(Piece):
     def __init(self, surf, color, squares):
         super().__init__(surf, color, squares)
 
-    def possible_moves(self, coordinate):
-        row, col = coordinate # extracts row and col from the coordinate
-        possible_moves = []
+    def possible_moves(self, start):
+        row, col = start # extracts row and col from the start
         for new_row in (row-2, row, row+2):
             for new_col in (col-2, col, col+2):
-                if (new_row,new_col) == (row,col):
+                if (new_row, new_col) == start:
                     continue
                 if new_row < 0 or new_row > 7 or new_col < 0 or new_col > 7:
                     continue
-                if self.squares[new_row][new_col].piece != None:
+                if self.squares[new_row][new_col].piece:
                     continue
-                possible_moves.append((new_row, new_col))
-        return possible_moves
+                self.squares[new_row][new_col].is_possible_move = True
 
-    def kill_moves(self, start):
-        kill_moves = []
+    def attack_moves(self, start):
         if self.color == 'white':
             directions = [(-1, -1), (-1, 0), (-1, 1)]
         elif self.color == 'black':
@@ -34,19 +31,18 @@ class Dragon(Piece):
 
             if row < 0 or row > 7 or col < 0 or col > 7:
                 continue
-
-            if self.squares[row][col].piece != None:
-                if self.squares[row][col].piece.color != self.color:
-                    if type(self.squares[row][col].piece) == Legionary:
+            square = self.squares[row][col]
+            if square.piece != None:
+                if square.piece.color != self.color:
+                    if type(square.piece) == Legionary:
                         if self.color == 'white' and direction == (-1, 0):
                             continue
                         elif self.color == 'black' and direction == (1, 0):
                             continue
                             
-                    kill_moves.append((row, col))
-        return kill_moves
+                    square.is_attack_move = True
 
-    def kill(self, old_coord, kill_coord):
+    def attack(self, old_coord, attack_coord):
         if self.color == 'white':
             directions = [(-1, -1), (-1, 0), (-1, 1)]
         elif self.color == 'black':

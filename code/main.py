@@ -21,11 +21,11 @@ class Chess2026():
                             if square.rect.collidepoint(event.pos) and square.is_possible_move == True:
                                 square.piece = self.board.selected_square.piece
                                 self.board.selected_square.piece = None
-                            if square.rect.collidepoint(event.pos) and square.is_kill_move == True:
+                            if square.rect.collidepoint(event.pos) and square.is_attack_move == True:
                                 old_coord = self.board.selected_square.coord
-                                kill_coord = square.coord
-                                self.board.selected_square.piece.kill(old_coord, kill_coord)
-                            if square.rect.collidepoint(event.pos) and square.piece and not square.piece.is_stunned:
+                                attack_coord = square.coord
+                                self.board.selected_square.piece.attack(old_coord, attack_coord)
+                            if square.rect.collidepoint(event.pos) and square.piece and not square.is_stunned:
                                 self.board.selected_square = square
                                 square.is_selected = True
                             else:

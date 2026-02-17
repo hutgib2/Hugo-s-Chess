@@ -8,23 +8,23 @@ chess reboot pieces/replacements:
 
 legionary:
 can only move one even on its first move and there's 8 of them.
-can only move and kill forwards. 
+can only move and attack forwards. 
 can promote to archer if it reaches other sides of map.
-cannot be killed from the front thanks to its shield.
+cannot be attacked from the front thanks to its shield.
 
 dragon:
-can move and kill up to 2 spaces in all directions per turn and there's 2 of them.
+can move and attack up to 2 spaces in all directions per turn and there's 2 of them.
 can move through enemy piece if there's an empty tile.
-can kill by attacking everything in front of and diagonally forwards 1 space but cannot move on same turn
+can attack by attacking everything in front of and diagonally forwards 1 space but cannot move on same turn
 
 archer:
-only 1 archer on board and can move 1 tile in all directions per turn but cannot kill and move on same turn.
-can kill an enemy up to to 3 tiles away in 8 different directions away every turn but no one can move on the same turn.
+only 1 archer on board and can move 1 tile in all directions per turn but cannot attack and move on same turn.
+can attack an enemy up to to 3 tiles away in 8 different directions away every turn but no one can move on the same turn.
 has to move to move to reload. when it dies it heals the emperor back to full health.
 
 wizard:
-only 2 wizards on board can move and kill to 1 tile in all directions per turn.
-can swap places with any ally piece unless it's stunned.
+only 2 wizards on board can move and attack to 1 tile in all directions per turn.
+can swap places with any ally and enemy piece unless it's either stunned, an emperor or another wizard.
 when it dies, undecided.
 
 catapult:

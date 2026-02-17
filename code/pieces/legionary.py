@@ -7,35 +7,29 @@ class Legionary(Piece):
 
     def possible_moves(self, coordinate):
         row, col = coordinate # extracts row and col from the coordinate
-        possible_moves = []
         if self.color == 'white' and row > 0:
             front_square = self.squares[row-1][col]
             if front_square.piece == None:
-                possible_moves.append((row-1, col))
+                front_square.is_possible_move = True
         elif self.color == 'black' and row < 7:
             front_square = self.squares[row+1][col]
             if front_square.piece == None:
-                possible_moves.append((row+1, col))
-        
-        return possible_moves
+                front_square.is_possible_move = True
 
-    def kill_moves(self, coordinate):
+    def attack_moves(self, coordinate):
         row, col = coordinate # extracts row and col from the coordinate
-        kill_moves = []
         if self.color == 'white' and row > 0:
             front_square = self.squares[row-1][col]
             if front_square.piece and front_square.piece.color != 'white' and type(front_square.piece) != Legionary:
-                kill_moves.append(front_square.coord)
+                front_square.is_attack_move = True
         elif self.color == 'black' and row < 7:
             front_square = self.squares[row+1][col]
             if front_square.piece and front_square.piece.color != 'black' and type(front_square.piece) != Legionary:
-                kill_moves.append(front_square.coord)
-        
-        return kill_moves
+                front_square.is_attack_move = True
 
-    def kill(self, old_coord, kill_coord):
+    def attack(self, old_coord, attack_coord):
         old_square = self.squares[old_coord[0]][old_coord[1]]
-        kill_square = self.squares[kill_coord[0]][kill_coord[1]]
-        kill_square.piece = old_square.piece
+        attack_square = self.squares[attack_coord[0]][attack_coord[1]]
+        attack_square.piece = old_square.piece
         old_square.piece = None
 

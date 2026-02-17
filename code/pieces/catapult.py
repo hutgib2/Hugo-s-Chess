@@ -10,8 +10,7 @@ class Catapult(Piece):
     def possible_moves(self, coordinate):
         return get_all_moves(coordinate, 2, self.squares)
 
-    def kill_moves(self, start):
-        kill_moves = []
+    def attack_moves(self, start):
         if self.color == 'white':
             direction = (-1, 0)
         elif self.color == 'black':
@@ -25,20 +24,18 @@ class Catapult(Piece):
             if row < 0 or row > 7 or col < 0 or col > 7:
                 break
             
-            if self.squares[row][col].piece != None:
-                if self.squares[row][col].piece.color != self.color:
-                    if type(self.squares[row][col].piece) == Legionary:
+            square = self.squares[row][col]
+            if square.piece != None:
+                if square.piece.color != self.color:
+                    if type(square.piece) == Legionary:
                         if self.color == 'white' and direction == (-1, 0):
                             break
                         elif self.color == 'black' and direction == (1, 0):
                             break
                             
-                    kill_moves.append((row, col))
-        return kill_moves
-            
+                    square.is_attack_move = True
 
-
-    def kill(self, old_coord, kill_coord):
+    def attack(self, old_coord, attack_coord):
         if self.color == 'white':
             direction = (-1, 0)
         elif self.color == 'black':
@@ -59,4 +56,4 @@ class Catapult(Piece):
                             break
                         elif self.color == 'black' and direction == (1, 0):
                             break
-                    self.squares[row][col].piece.is_stunned = True
+                    self.squares[row][col].is_stunned = True

@@ -10,9 +10,8 @@ class Emperor(Piece):
     def possible_moves(self, coordinate):
         return get_all_moves(coordinate, 7,self.squares)
 
-    def kill_moves(self, start):
+    def attack_moves(self, start):
         directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-        kill_moves = []
         for direction in directions:
             i = 1
             while i <= 7:
@@ -22,22 +21,20 @@ class Emperor(Piece):
 
                 if row < 0 or row > 7 or col < 0 or col > 7:
                     break
-                
-                if self.squares[row][col].piece != None:
-                    if self.squares[row][col].piece.color != self.color:
-                        if type(self.squares[row][col].piece) == Legionary:
+                square = self.squares[row][col]
+                if square.piece != None:
+                    if square.piece.color != self.color:
+                        if type(square.piece) == Legionary:
                             if self.color == 'white' and direction == (-1, 0):
                                 break
                             elif self.color == 'black' and direction == (1, 0):
                                 break
                             
-                        kill_moves.append((row, col))
+                        square.is_attack_move = True
                     break
-        
-        return kill_moves
 
-    def kill(self, old_coord, kill_coord):
+    def attack(self, old_coord, attack_coord):
         old_square = self.squares[old_coord[0]][old_coord[1]]
-        kill_square = self.squares[kill_coord[0]][kill_coord[1]]
-        kill_square.piece = old_square.piece
+        attack_square = self.squares[attack_coord[0]][attack_coord[1]]
+        attack_square.piece = old_square.piece
         old_square.piece = None

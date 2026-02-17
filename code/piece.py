@@ -6,10 +6,9 @@ class Piece(pygame.sprite.Sprite):
         self.image = pygame.transform.smoothscale(surf, (TILE_WIDTH, TILE_WIDTH))
         self.color = color
         self.squares = squares
-        self.is_stunned = False
 
-    def kill_moves(self, coordinate):
+    def attack_moves(self, coordinate):
         return []
     
-    def kill(self, old_coord, kill_coord):
+    def attack(self, old_coord, attack_coord):
         pass

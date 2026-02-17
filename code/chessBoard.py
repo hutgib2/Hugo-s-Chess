@@ -16,7 +16,9 @@ class Square():
         self.piece = None # whether and which piece is on that square
         self.is_possible_move = False
         self.is_selected = False
-        self.is_kill_move = False
+        self.is_attack_move = False
+        self.is_stunned = False
+        self.is_swappable = False
 
 class ChessBoard(pygame.sprite.Sprite):
     def __init__(self, surf):
@@ -28,10 +30,17 @@ class ChessBoard(pygame.sprite.Sprite):
         self.setup_pieces()
         self.selected_square = None
         self.possible_moves = []
-        self.kill_moves = []
-        self.yellow_square = pygame.transform.smoothscale(BOARD_SURFS['select'], (TILE_WIDTH, TILE_WIDTH))
+        self.attack_moves = []
+        # images
+        self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select'], (TILE_WIDTH, TILE_WIDTH))
         self.move_indicator = pygame.transform.smoothscale(BOARD_SURFS['move_indicator'], (TILE_WIDTH, TILE_WIDTH))
-        self.kill_indicator = pygame.transform.smoothscale(BOARD_SURFS['kill'], (TILE_WIDTH, TILE_WIDTH))
+        self.attack_indicator = pygame.transform.smoothscale(BOARD_SURFS['attack'], (TILE_WIDTH, TILE_WIDTH))
+        self.stun_indicator = pygame.transform.smoothscale(BOARD_SURFS['stun'], (TILE_WIDTH, TILE_WIDTH))
+        self.switch_indicator = pygame.transform.smoothscale(BOARD_SURFS['switch'], (TILE_WIDTH, TILE_WIDTH))
+        self.move_indicator.set_alpha(200)
+        self.attack_indicator.set_alpha(200)
+        self.stun_indicator.set_alpha(240)
+        self.switch_indicator.set_alpha(200)
 
     # creates a 2d list of rects representing the individual squares on the board
     def gen_squares(self):
@@ -88,31 +97,33 @@ class ChessBoard(pygame.sprite.Sprite):
                 if square.is_possible_move == True:
                     pygame.display.get_surface().blit(self.move_indicator, square.rect)
                 if square.is_selected == True:
-                    pygame.display.get_surface().blit(self.yellow_square, square.rect)
+                    pygame.display.get_surface().blit(self.select_indicator, square.rect)
                 if square.piece != None:
                     pygame.display.get_surface().blit(square.piece.image, square.rect)
-                if square.is_kill_move == True:
-                    pygame.display.get_surface().blit(self.kill_indicator, square.rect)
+                if square.is_attack_move == True:
+                    pygame.display.get_surface().blit(self.attack_indicator, square.rect)
+                if square.is_stunned == True:
+                    pygame.display.get_surface().blit(self.stun_indicator, square.rect)
+                if square.is_swappable == True:
+                    pygame.display.get_surface().blit(self.switch_indicator, square.rect)
 
     def update(self):
         # this resets the possible move squares
-        for move in self.possible_moves:
-            square = self.squares[move[0]][move[1]]
-            square.is_possible_move = False
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                square.is_possible_move = False
+                square.is_attack_move = False
+                square.is_swappable = False
 
-        for move in self.kill_moves:
-            square = self.squares[move[0]][move[1]]
-            square.is_kill_move = False
 
-
-        if self.selected_square != None:
-            self.possible_moves = self.selected_square.piece.possible_moves(self.selected_square.coord)
-            for move in self.possible_moves:
-                move_square = self.squares[move[0]][move[1]]
-                move_square.is_possible_move = True
-
-            self.kill_moves = self.selected_square.piece.kill_moves(self.selected_square.coord)
-            for move in self.kill_moves:
-                move_square = self.squares[move[0]][move[1]]
-                move_square.is_kill_move = True
+        if self.selected_square:
+            self.selected_square.piece.possible_moves(self.selected_square.coord)
+            self.selected_square.piece.attack_moves(self.selected_square.coord)
             
+            if type(self.selected_square.piece) == Wizard:
+                for row in range(8):
+                    for col in range(8):
+                        square = self.squares[row][col]
+                        if square.piece:
+                            square.is_swappable = True
