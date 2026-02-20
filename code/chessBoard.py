@@ -31,6 +31,7 @@ class ChessBoard(pygame.sprite.Sprite):
         self.selected_square = None
         self.possible_moves = []
         self.attack_moves = []
+        
         # images
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select'], (TILE_WIDTH, TILE_WIDTH))
         self.move_indicator = pygame.transform.smoothscale(BOARD_SURFS['move_indicator'], (TILE_WIDTH, TILE_WIDTH))
@@ -122,4 +123,4 @@ class ChessBoard(pygame.sprite.Sprite):
             self.selected_square.piece.attack_moves(self.selected_square.coord)
             
             if type(self.selected_square.piece) == Wizard:
-                self.selected_square.piece.swap_moves()
+                self.selected_square.piece.swap_moves(self.selected_square.coord)
