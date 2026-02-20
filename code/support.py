@@ -18,8 +18,8 @@ def audio_importer(*path):
     return audio_dict
 
 def get_all_moves(start, range, squares):
-    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-    for direction in directions:
+    DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    for direction in DIRECTIONS:
         i = 1
         while i <= range:
             row = start[0] + direction[0] * i

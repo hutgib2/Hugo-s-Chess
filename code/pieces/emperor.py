@@ -11,8 +11,8 @@ class Emperor(Piece):
         return get_all_moves(coordinate, 7,self.squares)
 
     def attack_moves(self, start):
-        directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-        for direction in directions:
+        DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        for direction in DIRECTIONS:
             i = 1
             while i <= 7:
                 row = start[0] + direction[0] * i

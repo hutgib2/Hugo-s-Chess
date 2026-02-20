@@ -4,6 +4,18 @@ from textSprite import TextSprite
 from timer import Timer
 from chessBoard import ChessBoard
 
+def move_piece(old_square, new_square):
+    new_square.piece = old_square.piece
+    old_square.piece = None
+
+def swap_piece(old_square, new_square):
+    temp = old_square.piece
+    old_square.piece = new_square.piece
+    new_square.piece = temp
+
+def attack_piece(old_square, attack_square):
+    old_square.piece.attack(old_square.coord, attack_square.coord)
+
 class Chess2026():
     def __init__(self):
         self.running = True
@@ -18,20 +30,21 @@ class Chess2026():
                     for row in range(8):
                         for col in range(8):
                             square = self.board.squares[row][col]
-                            if square.rect.collidepoint(event.pos) and square.is_possible_move == True:
-                                square.piece = self.board.selected_square.piece
-                                self.board.selected_square.piece = None
-                            if square.rect.collidepoint(event.pos) and square.is_attack_move == True:
-                                old_coord = self.board.selected_square.coord
-                                attack_coord = square.coord
-                                self.board.selected_square.piece.attack(old_coord, attack_coord)
-                            if square.rect.collidepoint(event.pos) and square.piece and not square.is_stunned:
+                            if not square.rect.collidepoint(event.pos):
+                                continue
+                            if square.is_possible_move:
+                                move_piece(self.board.selected_square, square)
+                            if square.is_attack_move:
+                                attack_piece(self.board.selected_square, square)
+                            if square.is_swappable:
+                                swap_piece(self.board.selected_square, square)
+                            if square.piece and not square.is_stunned:
+                                if self.board.selected_square:
+                                    self.board.selected_square.is_selected = False
                                 self.board.selected_square = square
                                 square.is_selected = True
-                            else:
-                                square.is_selected = False
 
-            self.board.update()             
+            self.board.update()
             screen.fill('bisque')
             self.board.render()
             pygame.display.update()

@@ -12,8 +12,8 @@ class Wizard(Piece):
         get_all_moves(coordinate, 1, self.squares)
 
     def attack_moves(self, start):
-        directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-        for direction in directions:
+        DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        for direction in DIRECTIONS:
             row = start[0] + direction[0]
             col = start[1] + direction[1]
 
@@ -31,11 +31,20 @@ class Wizard(Piece):
                         
                     square.is_attack_move = True
 
-    def swap_moves(self):
+    def swap_moves(self, coordinate):
+        DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        surroundings = []
+        for direction in DIRECTIONS:
+            row = coordinate[0] + direction[0]
+            col = coordinate[1] + direction[1]
+            if row < 0 or row > 7 or col < 0 or col > 7:
+                continue
+            surroundings.append((row, col))
+
         for row in range(8):
             for col in range(8):
                 square = self.squares[row][col]
-                if square.piece and type(square.piece) != Emperor and type(square.piece) != Wizard:
+                if square.piece and type(square.piece) != Emperor and type(square.piece) != Wizard and (row, col) not in surroundings:
                     square.is_swappable = True
 
     def attack(self, old_coord, attack_coord):
