@@ -47,7 +47,7 @@ class Wizard(Piece):
                 if square.piece and type(square.piece) != Emperor and type(square.piece) != Wizard and (row, col) not in surroundings:
                     square.is_swappable = True
 
-    def attack(self, old_coord, attack_coord):
+    def attack(self, old_coord, attack_coord, round_num=0):
         old_square = self.squares[old_coord[0]][old_coord[1]]
         attack_square = self.squares[attack_coord[0]][attack_coord[1]]
         attack_square.piece = old_square.piece

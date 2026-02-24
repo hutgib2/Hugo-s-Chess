@@ -35,7 +35,7 @@ class Catapult(Piece):
                             
                     square.is_attack_move = True
 
-    def attack(self, old_coord, attack_coord):
+    def attack(self, old_coord, attack_coord, round_num):
         if self.color == 'white':
             direction = (-1, 0)
         elif self.color == 'black':
@@ -56,4 +56,7 @@ class Catapult(Piece):
                             break
                         elif self.color == 'black' and direction == (1, 0):
                             break
-                    self.squares[row][col].is_stunned = True
+                    self.squares[row][col].piece.is_stunned = True
+                    self.squares[row][col].piece.stunned_at = round_num
+        self.can_attack = False
+        self.attacked_at = round_num

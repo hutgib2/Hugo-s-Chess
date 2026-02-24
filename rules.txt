@@ -20,7 +20,7 @@ can attack by attacking everything in front of and diagonally forwards 1 space b
 archer:
 only 1 archer on board and can move 1 tile in all directions per turn but cannot attack and move on same turn.
 can attack an enemy up to to 3 tiles away in 8 different directions away every turn but no one can move on the same turn.
-has to move to move to reload. when it dies it heals the emperor back to full health.
+when it dies it heals the emperor back to full health.
 
 wizard:
 only 2 wizards on board can move and attack to 1 tile in all directions per turn.

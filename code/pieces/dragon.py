@@ -42,7 +42,7 @@ class Dragon(Piece):
                             
                     square.is_attack_move = True
 
-    def attack(self, old_coord, attack_coord):
+    def attack(self, old_coord, attack_coord, round_num=0):
         if self.color == 'white':
             directions = [(-1, -1), (-1, 0), (-1, 1)]
         elif self.color == 'black':

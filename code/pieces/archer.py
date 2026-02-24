@@ -35,5 +35,5 @@ class Archer(Piece):
                         square.is_attack_move = True
                     break
 
-    def attack(self, old_coord, attack_coord):
+    def attack(self, old_coord, attack_coord, round_num=0):
         self.squares[attack_coord[0]][attack_coord[1]].piece = None

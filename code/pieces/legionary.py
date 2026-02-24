@@ -30,7 +30,7 @@ class Legionary(Piece):
         if front_square and front_square.piece and front_square.piece.color != self.color and type(front_square.piece) != Legionary:
             front_square.is_attack_move = True
 
-    def attack(self, old_coord, attack_coord):
+    def attack(self, old_coord, attack_coord, round_num=0):
         old_square = self.squares[old_coord[0]][old_coord[1]]
         attack_square = self.squares[attack_coord[0]][attack_coord[1]]
         attack_square.piece = old_square.piece

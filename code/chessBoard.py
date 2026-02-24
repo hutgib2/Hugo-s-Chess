@@ -17,7 +17,6 @@ class Square():
         self.is_possible_move = False
         self.is_selected = False
         self.is_attack_move = False
-        self.is_stunned = False
         self.is_swappable = False
 
 class ChessBoard(pygame.sprite.Sprite):
@@ -101,14 +100,14 @@ class ChessBoard(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(self.select_indicator, square.rect)
                 if square.piece != None:
                     pygame.display.get_surface().blit(square.piece.image, square.rect)
+                if square.piece and square.piece.is_stunned == True:
+                    pygame.display.get_surface().blit(self.stun_indicator, square.rect)
                 if square.is_attack_move == True:
                     pygame.display.get_surface().blit(self.attack_indicator, square.rect)
-                if square.is_stunned == True:
-                    pygame.display.get_surface().blit(self.stun_indicator, square.rect)
                 if square.is_swappable == True:
                     pygame.display.get_surface().blit(self.switch_indicator, square.rect)
 
-    def update(self):
+    def update(self, round_num):
         # this resets the possible move squares
         for row in range(8):
             for col in range(8):
@@ -116,11 +115,15 @@ class ChessBoard(pygame.sprite.Sprite):
                 square.is_possible_move = False
                 square.is_attack_move = False
                 square.is_swappable = False
-
+                if square.piece and square.piece.is_stunned and round_num - square.piece.stunned_at > 4:
+                    square.piece.is_stunned = False
+                if square.piece and not square.piece.can_attack and round_num - square.piece.attacked_at > 5:
+                    square.piece.can_attack = True
 
         if self.selected_square and self.selected_square.piece:
             self.selected_square.piece.possible_moves(self.selected_square.coord)
-            self.selected_square.piece.attack_moves(self.selected_square.coord)
+            if self.selected_square.piece.can_attack:
+                self.selected_square.piece.attack_moves(self.selected_square.coord)
             
             if type(self.selected_square.piece) == Wizard:
                 self.selected_square.piece.swap_moves(self.selected_square.coord)
