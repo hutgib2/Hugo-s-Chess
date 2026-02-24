@@ -118,7 +118,7 @@ class ChessBoard(pygame.sprite.Sprite):
                 square.is_swappable = False
 
 
-        if self.selected_square:
+        if self.selected_square and self.selected_square.piece:
             self.selected_square.piece.possible_moves(self.selected_square.coord)
             self.selected_square.piece.attack_moves(self.selected_square.coord)
             

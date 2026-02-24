@@ -20,6 +20,15 @@ class Chess2026():
     def __init__(self):
         self.running = True
         self.board = ChessBoard(BOARD_SURFS['chess_board'])
+        self.turn = 'white'
+
+    def switch_turn(self):
+        if self.turn == 'white':
+            self.turn = 'black'
+        else:
+            self.turn = 'white'
+        self.board.selected_square.is_selected = False
+        self.board.selected_square = None
 
     def run(self):
         while self.running:
@@ -32,17 +41,20 @@ class Chess2026():
                             square = self.board.squares[row][col]
                             if not square.rect.collidepoint(event.pos):
                                 continue
-                            if square.is_possible_move:
-                                move_piece(self.board.selected_square, square)
-                            if square.is_attack_move:
-                                attack_piece(self.board.selected_square, square)
-                            if square.is_swappable:
-                                swap_piece(self.board.selected_square, square)
-                            if square.piece and not square.is_stunned:
+                            if square.piece and square.piece.color == self.turn and not square.is_stunned:
                                 if self.board.selected_square:
                                     self.board.selected_square.is_selected = False
                                 self.board.selected_square = square
                                 square.is_selected = True
+                            if square.is_possible_move:
+                                move_piece(self.board.selected_square, square)
+                                self.switch_turn()
+                            if square.is_attack_move:
+                                attack_piece(self.board.selected_square, square)
+                                self.switch_turn()
+                            if square.is_swappable:
+                                swap_piece(self.board.selected_square, square)
+                                self.switch_turn()
 
             self.board.update()
             screen.fill('bisque')
