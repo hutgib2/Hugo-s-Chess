@@ -81,6 +81,22 @@ class ChessBoard(pygame.sprite.Sprite):
 
     def place_piece(self, pos, piece):
         self.squares[pos[0]][pos[1]].piece = piece
+    
+    def move_piece(self, old_square, new_square):
+        new_square.piece = old_square.piece
+        old_square.piece = None
+        if new_square.piece.color == 'white' and new_square.coord[0] == 0 and type(new_square.piece) == Legionary:
+            new_square.piece = Archer(WHITE_SURFS['archer'], 'white', self.squares)
+        if new_square.piece.color == 'black' and new_square.coord[0] == 7 and type(new_square.piece) == Legionary:
+            new_square.piece = Archer(BLACK_SURFS['archer'], 'black', self.squares)
+
+    def swap_piece(self, old_square, new_square):
+        temp = old_square.piece
+        old_square.piece = new_square.piece
+        new_square.piece = temp
+
+    def attack_piece(self, old_square, attack_square, round_num):
+        old_square.piece.attack(old_square.coord, attack_square.coord, round_num)
         
     def test_coordinates(self):
         for row in range(8):

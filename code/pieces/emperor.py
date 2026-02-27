@@ -14,7 +14,7 @@ class Emperor(Piece):
         DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         for direction in DIRECTIONS:
             i = 1
-            while i <= 7:
+            while i <= 1:
                 row = start[0] + direction[0] * i
                 col = start[1] + direction[1] * i
                 i += 1

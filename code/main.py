@@ -4,18 +4,6 @@ from textSprite import TextSprite
 from timer import Timer
 from chessBoard import ChessBoard
 
-def move_piece(old_square, new_square):
-    new_square.piece = old_square.piece
-    old_square.piece = None
-
-def swap_piece(old_square, new_square):
-    temp = old_square.piece
-    old_square.piece = new_square.piece
-    new_square.piece = temp
-
-def attack_piece(old_square, attack_square, round_num):
-    old_square.piece.attack(old_square.coord, attack_square.coord, round_num)
-
 class Chess2026():
     def __init__(self):
         self.running = True
@@ -40,23 +28,27 @@ class Chess2026():
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     for row in range(8):
                         for col in range(8):
-                            square = self.board.squares[row][col]
-                            if not square.rect.collidepoint(event.pos):
+                            click_square = self.board.squares[row][col]
+                            if not click_square.rect.collidepoint(event.pos):
                                 continue
-                            if square.piece and square.piece.color == self.turn and not square.piece.is_stunned:
+                            if click_square.is_swappable:
+                                self.board.swap_piece(self.board.selected_square, click_square)
+                                self.switch_turn()
+                            elif click_square.piece and click_square.piece.color == self.turn and not click_square.piece.is_stunned:
                                 if self.board.selected_square:
                                     self.board.selected_square.is_selected = False
-                                self.board.selected_square = square
-                                square.is_selected = True
-                            if square.is_possible_move:
-                                move_piece(self.board.selected_square, square)
+                                self.board.selected_square = click_square
+                                click_square.is_selected = True
+                            elif click_square.is_possible_move:
+                                self.board.move_piece(self.board.selected_square, click_square)
                                 self.switch_turn()
-                            if square.is_attack_move:
-                                attack_piece(self.board.selected_square, square, self.round_num)
+                            elif click_square.is_attack_move:
+                                self.board.attack_piece(self.board.selected_square, click_square, self.round_num)
                                 self.switch_turn()
-                            if square.is_swappable:
-                                swap_piece(self.board.selected_square, square)
-                                self.switch_turn()
+                            elif click_square.piece == None and self.board.selected_square:
+                                self.board.selected_square.is_selected = False
+                                self.board.selected_square = None
+
 
             self.board.update(self.round_num)
             screen.fill('bisque')
