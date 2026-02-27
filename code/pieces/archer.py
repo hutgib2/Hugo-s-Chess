@@ -7,11 +7,11 @@ class Archer(Piece):
     def __init(self, surf, color, squares):
         super().__init__(surf, color, squares)
 
-    def possible_moves(self, coordinate):
-        return get_all_moves(coordinate, 1, self.squares)
+    def update_possible_moves(self, coordinate):
+        self.move_squares = get_all_moves(coordinate, 1, self.squares)
 
-    def attack_moves(self, start):
-        attack_moves = []
+    def update_attack_moves(self, start):
+        self.attack_squares = []
         DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         for direction in DIRECTIONS:
             i = 1
@@ -32,7 +32,7 @@ class Archer(Piece):
                             elif self.color == 'black' and direction == (1, 0):
                                 break
                             
-                        square.is_attack_move = True
+                        self.attack_squares.append(square)
                     break
 
     def attack(self, old_coord, attack_coord, round_num=0):

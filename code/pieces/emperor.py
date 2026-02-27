@@ -7,10 +7,22 @@ class Emperor(Piece):
     def __init(self, surf, color, squares):
         super().__init__(surf, color, squares)
 
-    def possible_moves(self, coordinate):
-        return get_all_moves(coordinate, 7,self.squares)
+    def update_possible_moves(self, coordinate):
+        enemy_attack_squares = []
+        self.move_squares = []
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                if not square.piece or square.piece.color == self.color:
+                    continue
+                enemy_attack_squares += square.piece.attack_squares
+        move_squares = get_all_moves(coordinate, 1, self.squares)
+        for move in move_squares:
+            if move not in enemy_attack_squares:
+                self.move_squares.append(move)
 
-    def attack_moves(self, start):
+    def update_attack_moves(self, start):
+        self.attack_squares = []
         DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         for direction in DIRECTIONS:
             i = 1
@@ -30,7 +42,7 @@ class Emperor(Piece):
                             elif self.color == 'black' and direction == (1, 0):
                                 break
                             
-                        square.is_attack_move = True
+                        self.attack_squares.append(square)
                     break
 
     def attack(self, old_coord, attack_coord, round_num=0):

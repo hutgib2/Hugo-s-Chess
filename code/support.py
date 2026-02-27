@@ -18,6 +18,7 @@ def audio_importer(*path):
     return audio_dict
 
 def get_all_moves(start, range, squares):
+    move_squares = []
     DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
     for direction in DIRECTIONS:
         i = 1
@@ -32,4 +33,5 @@ def get_all_moves(start, range, squares):
             if squares[row][col].piece != None:
                 break
             
-            squares[row][col].is_possible_move = True
+            move_squares.append(squares[row][col])
+    return move_squares

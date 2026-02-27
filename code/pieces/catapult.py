@@ -7,10 +7,11 @@ class Catapult(Piece):
     def __init(self, surf, color, squares):
         super().__init__(surf, color, squares)
 
-    def possible_moves(self, coordinate):
-        return get_all_moves(coordinate, 2, self.squares)
+    def update_possible_moves(self, coordinate):
+        self.move_squares = get_all_moves(coordinate, 2, self.squares)
 
-    def attack_moves(self, start):
+    def update_attack_moves(self, start):
+        self.attack_squares = []
         if self.color == 'white':
             direction = (-1, 0)
         elif self.color == 'black':
@@ -33,7 +34,7 @@ class Catapult(Piece):
                         elif self.color == 'black' and direction == (1, 0):
                             break
                             
-                    square.is_attack_move = True
+                    self.attack_squares.append(square)
 
     def attack(self, old_coord, attack_coord, round_num):
         if self.color == 'white':

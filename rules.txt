@@ -37,8 +37,8 @@ only one emperor and can move like the queen piece but
 player will lose if the emperor is put in checkmate.
 the empereror has 3 lives, if a player lands on it, they will take one life away and go back to the spot they were before.
 
-tile destroyer:
-can only one forward and can't kill but can destroy any empty row or column on board but can't move on same turn.
+fireworks guy:
+TBA
 
 chess board is still the same.
 

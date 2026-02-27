@@ -28,8 +28,8 @@ class ChessBoard(pygame.sprite.Sprite):
         self.gen_squares()
         self.setup_pieces()
         self.selected_square = None
-        self.possible_moves = []
-        self.attack_moves = []
+        self.update_possible_moves = []
+        self.update_attack_moves = []
         
         # images
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select'], (TILE_WIDTH, TILE_WIDTH))
@@ -135,11 +135,15 @@ class ChessBoard(pygame.sprite.Sprite):
                     square.piece.is_stunned = False
                 if square.piece and not square.piece.can_attack and round_num - square.piece.attacked_at > 5:
                     square.piece.can_attack = True
+                if square.piece:
+                    square.piece.update_attack_moves(square.coord)
 
         if self.selected_square and self.selected_square.piece:
-            self.selected_square.piece.possible_moves(self.selected_square.coord)
+            for square in self.selected_square.piece.move_squares:
+                square.is_possible_move = True
             if self.selected_square.piece.can_attack:
-                self.selected_square.piece.attack_moves(self.selected_square.coord)
+                for square in self.selected_square.piece.attack_squares:
+                    square.is_attack_move = True
             
             if type(self.selected_square.piece) == Wizard:
                 self.selected_square.piece.swap_moves(self.selected_square.coord)

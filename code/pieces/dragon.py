@@ -7,7 +7,8 @@ class Dragon(Piece):
     def __init(self, surf, color, squares):
         super().__init__(surf, color, squares)
 
-    def possible_moves(self, start):
+    def update_possible_moves(self, start):
+        self.move_squares = []
         row, col = start # extracts row and col from the start
         for new_row in (row-2, row, row+2):
             for new_col in (col-2, col, col+2):
@@ -17,13 +18,14 @@ class Dragon(Piece):
                     continue
                 if self.squares[new_row][new_col].piece:
                     continue
-                self.squares[new_row][new_col].is_possible_move = True
+                self.move_squares.append(self.squares[new_row][new_col])
 
-    def attack_moves(self, start):
+    def update_attack_moves(self, start):
+        self.attack_squares = []
         if self.color == 'white':
-            directions = [(-1, -1), (-1, 0), (-1, 1)]
+            directions = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (0, -1)]
         elif self.color == 'black':
-            directions = [(1, -1), (1, 0), (1, 1)]
+            directions = [(1, -1), (1, 0), (1, 1), (0, 1), (0, -1)]
 
         for direction in directions:
             row = start[0] + direction[0]
@@ -40,13 +42,13 @@ class Dragon(Piece):
                         elif self.color == 'black' and direction == (1, 0):
                             continue
                             
-                    square.is_attack_move = True
+                    self.attack_squares.append(square)
 
     def attack(self, old_coord, attack_coord, round_num=0):
         if self.color == 'white':
-            directions = [(-1, -1), (-1, 0), (-1, 1)]
+            directions = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (0, -1)]
         elif self.color == 'black':
-            directions = [(1, -1), (1, 0), (1, 1)]
+            directions = [(1, -1), (1, 0), (1, 1), (0, 1), (0, -1)]
         
         for direction in directions:
             row = old_coord[0] + direction[0]
