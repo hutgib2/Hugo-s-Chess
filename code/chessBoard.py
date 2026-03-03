@@ -143,6 +143,8 @@ class ChessBoard(pygame.sprite.Sprite):
                 for square in self.selected_square.piece.attack_squares:
                     if square.piece != None:
                         square.is_attack_move = True
+                        if type(square.piece) == Emperor:
+                            square.piece.in_check = True
             
             if type(self.selected_square.piece) == Wizard:
                 self.selected_square.piece.swap_moves(self.selected_square.coord)

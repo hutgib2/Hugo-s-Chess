@@ -28,10 +28,43 @@ class Archer(Piece):
                     self.attack_squares.append(square)
                 elif square.piece.color != self.color:
                     if type(square.piece) == Legionary:
-                        if self.color == 'white' and direction == (-1, 0):
-                            break
-                        elif self.color == 'black' and direction == (1, 0):
-                            break
+                        if self.color == 'white':
+                            if direction == (-1, 0):
+                                break
+                            elif direction == (-1, -1):
+                                row = square.coord[0]
+                                col = square.coord[1] + 1
+                                if col <= 7:
+                                    defending_square = self.squares[row][col]
+                                    if defending_square.piece and type(defending_square.piece) == Legionary and defending_square.piece.color != self.color:
+                                        break
+
+                            elif direction == (-1, 1):
+                                row = square.coord[0]
+                                col = square.coord[1] - 1
+                                if col >= 0:
+                                    defending_square = self.squares[row][col]
+                                    if defending_square.piece and type(defending_square.piece) == Legionary and defending_square.piece.color != self.color:
+                                        break
+
+                        elif self.color == 'black':
+                            if direction == (1, 0):
+                                break
+                                
+                            elif direction == (1, -1):
+                                row = square.coord[0]
+                                col = square.coord[1] + 1
+                                if col <= 7:
+                                    defending_square = self.squares[row][col]
+                                    if defending_square.piece and type(defending_square.piece) == Legionary and defending_square.piece.color != self.color:
+                                        break
+                            elif direction == (1, 1):
+                                row = square.coord[0]
+                                col = square.coord[1] - 1
+                                if col >= 0:
+                                    defending_square = self.squares[row][col]
+                                    if defending_square.piece and type(defending_square.piece) == Legionary and defending_square.piece.color != self.color:
+                                        break
                         
                     self.attack_squares.append(square)
                     break

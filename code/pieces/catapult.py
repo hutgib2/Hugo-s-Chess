@@ -18,7 +18,7 @@ class Catapult(Piece):
             direction = (1, 0)
 
         i = 1
-        while i < 7:
+        while i <= 7:
             row = start[0] + direction[0] * i
             col = start[1] + direction[1] * i
             i += 1
@@ -28,37 +28,24 @@ class Catapult(Piece):
             square = self.squares[row][col]
             if not square.piece:
                 self.attack_squares.append(square)
-            elif square.piece.color != self.color:
-                if type(square.piece) == Legionary:
-                    if self.color == 'white' and direction == (-1, 0):
-                        break
-                    elif self.color == 'black' and direction == (1, 0):
-                        break
-                            
-                    self.attack_squares.append(square)
-
-    def attack(self, old_coord, attack_coord, round_num):
-        if self.color == 'white':
-            direction = (-1, 0)
-        elif self.color == 'black':
-            direction = (1, 0)
-
-        i = 1
-        while i < 7:
-            row = old_coord[0] + direction[0] * i
-            col = old_coord[1] + direction[1] * i
-            i += 1
-            if row < 0 or row > 7 or col < 0 or col > 7:
+            elif square.piece.color == self.color:
                 break
-            
-            if self.squares[row][col].piece != None:
-                if self.squares[row][col].piece.color != self.color:
-                    if type(self.squares[row][col].piece) == Legionary:
-                        if self.color == 'white' and direction == (-1, 0):
-                            break
-                        elif self.color == 'black' and direction == (1, 0):
-                            break
-                    self.squares[row][col].piece.is_stunned = True
-                    self.squares[row][col].piece.stunned_at = round_num
+            elif type(square.piece) == Legionary:
+                break
+            else:
+                self.attack_squares.append(square)
+
+    def attack(self, _, __, round_num):
+        killed_first = False
+        print(self.attack_squares)
+        for square in self.attack_squares:
+            if not square.piece:
+                continue
+            if killed_first == False:
+                square.piece = None
+                killed_first = True
+            else:
+                square.piece.is_stunned = True
+                square.piece.stunned_at = round_num
         self.can_attack = False
         self.attacked_at = round_num

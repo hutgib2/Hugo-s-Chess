@@ -11,11 +11,12 @@ can only move one even on its first move and there's 8 of them.
 can only move and attack forwards. 
 can promote to archer if it reaches other sides of map.
 cannot be attacked from the front thanks to its shield.
+can also not be attacked diagonally if there are ally legionaries next to it
 
 dragon:
 can move and attack up to 2 spaces in all directions per turn and there's 2 of them.
 can move through enemy piece if there's an empty tile.
-can attack by attacking everything in front of and diagonally forwards 1 space but cannot move on same turn
+can attack by attacking everything in front of, diagonally and to the side of it forwards 1 space but cannot move on same turn
 
 archer:
 only 1 archer on board and can move 1 tile in all directions per turn but cannot attack and move on same turn.
@@ -31,6 +32,7 @@ catapult:
 can move 2 tiles in all directions per turn but cannot stun on same turn.
 can stun any enemy in front of it for 1 turn but has to move to shoot again.
 cannot stun enemies that were just moved and there are 2 of them.
+can kill everything up to 2 tiles away
 
 emperor:
 only one emperor and can move like the queen piece but 
