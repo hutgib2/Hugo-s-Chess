@@ -26,13 +26,14 @@ class Catapult(Piece):
                 break
             
             square = self.squares[row][col]
-            if square.piece != None:
-                if square.piece.color != self.color:
-                    if type(square.piece) == Legionary:
-                        if self.color == 'white' and direction == (-1, 0):
-                            break
-                        elif self.color == 'black' and direction == (1, 0):
-                            break
+            if not square.piece:
+                self.attack_squares.append(square)
+            elif square.piece.color != self.color:
+                if type(square.piece) == Legionary:
+                    if self.color == 'white' and direction == (-1, 0):
+                        break
+                    elif self.color == 'black' and direction == (1, 0):
+                        break
                             
                     self.attack_squares.append(square)
 

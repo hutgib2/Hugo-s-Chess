@@ -5,7 +5,7 @@ class Piece(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.transform.smoothscale(surf, (TILE_WIDTH, TILE_WIDTH))
         self.color = color
-        self.attack_squares = []
+        self.attack_squares = self.update_attack_moves
         self.move_squares = []
         self.squares = squares
         self.is_stunned = False

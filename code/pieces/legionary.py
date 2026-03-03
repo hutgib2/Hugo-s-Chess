@@ -30,8 +30,11 @@ class Legionary(Piece):
         else:
             front_square = None
         
-        if front_square and front_square.piece and front_square.piece.color != self.color and type(front_square.piece) != Legionary:
-            self.attack_squares.append(front_square)
+        if front_square:
+            if not front_square.piece:
+                self.attack_squares.append(front_square)
+            elif front_square.piece.color != self.color and type(front_square.piece) != Legionary:
+                self.attack_squares.append(front_square)
 
     def attack(self, old_coord, attack_coord, round_num=0):
         old_square = self.squares[old_coord[0]][old_coord[1]]

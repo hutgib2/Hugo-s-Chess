@@ -34,15 +34,16 @@ class Dragon(Piece):
             if row < 0 or row > 7 or col < 0 or col > 7:
                 continue
             square = self.squares[row][col]
-            if square.piece != None:
-                if square.piece.color != self.color:
-                    if type(square.piece) == Legionary:
-                        if self.color == 'white' and direction == (-1, 0):
-                            continue
-                        elif self.color == 'black' and direction == (1, 0):
-                            continue
-                            
-                    self.attack_squares.append(square)
+            if not square.piece:
+                self.attack_squares.append(square)
+            elif square.piece.color != self.color:
+                if type(square.piece) == Legionary:
+                    if self.color == 'white' and direction == (-1, 0):
+                        continue
+                    elif self.color == 'black' and direction == (1, 0):
+                        continue
+                        
+                self.attack_squares.append(square)
 
     def attack(self, old_coord, attack_coord, round_num=0):
         if self.color == 'white':

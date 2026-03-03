@@ -28,8 +28,6 @@ class ChessBoard(pygame.sprite.Sprite):
         self.gen_squares()
         self.setup_pieces()
         self.selected_square = None
-        self.update_possible_moves = []
-        self.update_attack_moves = []
         
         # images
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select'], (TILE_WIDTH, TILE_WIDTH))
@@ -124,7 +122,7 @@ class ChessBoard(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(self.switch_indicator, square.rect)
 
     def update(self, round_num):
-        # this resets the possible move squares
+        # this resets squares
         for row in range(8):
             for col in range(8):
                 square = self.squares[row][col]
@@ -143,7 +141,8 @@ class ChessBoard(pygame.sprite.Sprite):
                 square.is_possible_move = True
             if self.selected_square.piece.can_attack:
                 for square in self.selected_square.piece.attack_squares:
-                    square.is_attack_move = True
+                    if square.piece != None:
+                        square.is_attack_move = True
             
             if type(self.selected_square.piece) == Wizard:
                 self.selected_square.piece.swap_moves(self.selected_square.coord)

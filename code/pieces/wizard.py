@@ -3,12 +3,13 @@ from piece import Piece
 from support import get_all_moves
 from pieces.legionary import Legionary
 from pieces.emperor import Emperor
+from pieces.archer import Archer
 
 class Wizard(Piece):
     def __init(self, surf, color, squares):
         super().__init__(surf, color, squares)
 
-    def possible_moves(self, coordinate):
+    def update_possible_moves(self, coordinate):
         self.move_squares = get_all_moves(coordinate, 1, self.squares)
 
     def update_attack_moves(self, start):
@@ -22,15 +23,16 @@ class Wizard(Piece):
                 continue
             
             square = self.squares[row][col]
-            if square.piece != None:
-                if square.piece.color != self.color:
-                    if type(square.piece) == Legionary:
-                        if self.color == 'white' and direction == (-1, 0):
-                            continue
-                        elif self.color == 'black' and direction == (1, 0):
-                            continue
-                        
-                    self.attack_squares.append(square)
+            if square.piece == None:
+                self.attack_squares.append(square)
+            elif square.piece.color != self.color:
+                if type(square.piece) == Legionary:
+                    if self.color == 'white' and direction == (-1, 0):
+                        continue
+                    elif self.color == 'black' and direction == (1, 0):
+                        continue
+                    
+                self.attack_squares.append(square)
 
     def swap_moves(self, coordinate):
         DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
