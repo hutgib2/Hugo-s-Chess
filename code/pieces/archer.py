@@ -12,8 +12,6 @@ class Archer(Piece):
     def attack(self, old_coord, attack_coord, round_num=0):
         self.squares[attack_coord[0]][attack_coord[1]].piece = None
 
-
-
     def update_attack_moves(self, start):
         self.attack_squares = []
         DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
@@ -38,6 +36,7 @@ class Archer(Piece):
                             break
                         elif self.has_adjacent_legionary(square, direction):
                             break
-
                     self.attack_squares.append(square)
+                    break
+                else:
                     break
