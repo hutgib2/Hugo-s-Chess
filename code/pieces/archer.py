@@ -1,6 +1,5 @@
 from settings import *
-from piece import Piece
-from support import get_all_moves
+from pieces.legionary import Piece
 from pieces.legionary import Legionary
 
 class Archer(Piece):
@@ -8,7 +7,12 @@ class Archer(Piece):
         super().__init__(surf, color, squares)
 
     def update_possible_moves(self, coordinate):
-        self.move_squares = get_all_moves(coordinate, 1, self.squares)
+        self.move_squares = self.get_all_moves(coordinate, 1, self.squares)
+
+    def attack(self, old_coord, attack_coord, round_num=0):
+        self.squares[attack_coord[0]][attack_coord[1]].piece = None
+
+
 
     def update_attack_moves(self, start):
         self.attack_squares = []
@@ -28,46 +32,12 @@ class Archer(Piece):
                     self.attack_squares.append(square)
                 elif square.piece.color != self.color:
                     if type(square.piece) == Legionary:
-                        if self.color == 'white':
-                            if direction == (-1, 0):
-                                break
-                            elif direction == (-1, -1):
-                                row = square.coord[0]
-                                col = square.coord[1] + 1
-                                if col <= 7:
-                                    defending_square = self.squares[row][col]
-                                    if defending_square.piece and type(defending_square.piece) == Legionary and defending_square.piece.color != self.color:
-                                        break
+                        if direction == (-1, 0) and self.color == 'white':
+                            break
+                        elif direction == (1, 0) and self.color == 'black':
+                            break
+                        elif self.has_adjacent_legionary(square, direction):
+                            break
 
-                            elif direction == (-1, 1):
-                                row = square.coord[0]
-                                col = square.coord[1] - 1
-                                if col >= 0:
-                                    defending_square = self.squares[row][col]
-                                    if defending_square.piece and type(defending_square.piece) == Legionary and defending_square.piece.color != self.color:
-                                        break
-
-                        elif self.color == 'black':
-                            if direction == (1, 0):
-                                break
-                                
-                            elif direction == (1, -1):
-                                row = square.coord[0]
-                                col = square.coord[1] + 1
-                                if col <= 7:
-                                    defending_square = self.squares[row][col]
-                                    if defending_square.piece and type(defending_square.piece) == Legionary and defending_square.piece.color != self.color:
-                                        break
-                            elif direction == (1, 1):
-                                row = square.coord[0]
-                                col = square.coord[1] - 1
-                                if col >= 0:
-                                    defending_square = self.squares[row][col]
-                                    if defending_square.piece and type(defending_square.piece) == Legionary and defending_square.piece.color != self.color:
-                                        break
-                        
                     self.attack_squares.append(square)
                     break
-
-    def attack(self, old_coord, attack_coord, round_num=0):
-        self.squares[attack_coord[0]][attack_coord[1]].piece = None

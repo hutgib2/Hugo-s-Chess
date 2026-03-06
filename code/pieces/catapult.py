@@ -1,6 +1,5 @@
 from settings import *
-from piece import Piece
-from support import get_all_moves
+from pieces.legionary import Piece
 from pieces.legionary import Legionary
 
 class Catapult(Piece):
@@ -8,7 +7,7 @@ class Catapult(Piece):
         super().__init__(surf, color, squares)
 
     def update_possible_moves(self, coordinate):
-        self.move_squares = get_all_moves(coordinate, 2, self.squares)
+        self.move_squares = self.get_all_moves(coordinate, 2, self.squares)
 
     def update_attack_moves(self, start):
         self.attack_squares = []
@@ -37,7 +36,6 @@ class Catapult(Piece):
 
     def attack(self, _, __, round_num):
         killed_first = False
-        print(self.attack_squares)
         for square in self.attack_squares:
             if not square.piece:
                 continue

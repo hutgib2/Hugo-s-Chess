@@ -1,7 +1,6 @@
 from settings import *
-from piece import Piece
+from pieces.legionary import Piece
 from pieces.legionary import Legionary
-
 
 class Dragon(Piece):
     def __init(self, surf, color, squares):
@@ -41,6 +40,8 @@ class Dragon(Piece):
                     if self.color == 'white' and direction == (-1, 0):
                         continue
                     elif self.color == 'black' and direction == (1, 0):
+                        continue
+                    elif self.has_adjacent_legionary(square, direction):
                         continue
                         
                 self.attack_squares.append(square)

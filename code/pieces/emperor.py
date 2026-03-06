@@ -1,6 +1,5 @@
 from settings import *
-from piece import Piece
-from support import get_all_moves
+from pieces.legionary import Piece
 from pieces.legionary import Legionary
 
 class Emperor(Piece):
@@ -18,7 +17,7 @@ class Emperor(Piece):
                     continue
                 enemy_attack_squares += square.piece.attack_squares
         
-        move_squares = get_all_moves(coordinate, 1, self.squares)
+        move_squares = self.get_all_moves(coordinate, 1, self.squares)
         for move in move_squares:
             if move not in enemy_attack_squares:
                 self.move_squares.append(move)
@@ -31,16 +30,18 @@ class Emperor(Piece):
             col = start[1] + direction[1]
 
             if row < 0 or row > 7 or col < 0 or col > 7:
-                break
+                continue
             square = self.squares[row][col]
             if square.piece == None:
                 self.attack_squares.append(square)
             elif square.piece.color != self.color:
                 if type(square.piece) == Legionary:
                     if self.color == 'white' and direction == (-1, 0):
-                        break
+                        continue
                     elif self.color == 'black' and direction == (1, 0):
-                        break
+                        continue
+                    elif self.has_adjacent_legionary(square, direction):
+                        continue
                     
                 self.attack_squares.append(square)
 

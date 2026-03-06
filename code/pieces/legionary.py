@@ -1,5 +1,58 @@
 from settings import *
-from piece import Piece
+
+class Piece(pygame.sprite.Sprite):
+    def __init__(self, surf, color, squares):
+        super().__init__()
+        self.image = pygame.transform.smoothscale(surf, (TILE_WIDTH, TILE_WIDTH))
+        self.color = color
+        self.attack_squares = self.update_attack_moves
+        self.move_squares = []
+        self.squares = squares
+        self.is_stunned = False
+        self.stunned_at = None
+        self.can_attack = True
+        self.attacked_at = 0
+
+    def has_adjacent_legionary(self, square, direction):
+
+        if direction == (1, -1) or direction == (-1, -1):
+            row = square.coord[0]
+            col = square.coord[1] + 1
+            if col > 7:
+                return False
+        
+        elif direction == (1, 1) or direction == (-1, 1):
+            row = square.coord[0]
+            col = square.coord[1] - 1
+            if col < 0:
+                return False
+        else:
+            return False
+
+        defending_square = self.squares[row][col]
+        if defending_square.piece and type(defending_square.piece) == Legionary and defending_square.piece.color != self.color:
+            return True
+        return False
+
+    def get_all_moves(self, start, range, squares):
+        move_squares = []
+        DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        for direction in DIRECTIONS:
+            i = 1
+            while i <= range:
+                row = start[0] + direction[0] * i
+                col = start[1] + direction[1] * i
+                i += 1
+
+                if row < 0 or row > 7 or col < 0 or col > 7:
+                    break
+                
+                if squares[row][col].piece != None:
+                    break
+                
+                move_squares.append(squares[row][col])
+        return move_squares
+
 
 class Legionary(Piece):
     def __init(self, surf, color, squares):

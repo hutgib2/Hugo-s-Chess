@@ -1,6 +1,5 @@
 from settings import *
-from piece import Piece
-from support import get_all_moves
+from pieces.legionary import Piece
 from pieces.legionary import Legionary
 from pieces.emperor import Emperor
 from pieces.archer import Archer
@@ -10,7 +9,7 @@ class Wizard(Piece):
         super().__init__(surf, color, squares)
 
     def update_possible_moves(self, coordinate):
-        self.move_squares = get_all_moves(coordinate, 1, self.squares)
+        self.move_squares = self.get_all_moves(coordinate, 1, self.squares)
 
     def update_attack_moves(self, start):
         self.attack_squares = []
@@ -30,6 +29,8 @@ class Wizard(Piece):
                     if self.color == 'white' and direction == (-1, 0):
                         continue
                     elif self.color == 'black' and direction == (1, 0):
+                        continue
+                    elif self.has_adjacent_legionary(square, direction):
                         continue
                     
                 self.attack_squares.append(square)

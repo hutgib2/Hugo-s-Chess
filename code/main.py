@@ -44,7 +44,6 @@ class Chess2026():
                                 self.board.move_piece(self.board.selected_square, click_square)
                                 self.switch_turn()
                             elif click_square.is_attack_move:
-                                print('attacking')
                                 self.board.attack_piece(self.board.selected_square, click_square, self.round_num)
                                 self.switch_turn()
                             elif click_square.piece == None and self.board.selected_square:
