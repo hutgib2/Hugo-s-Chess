@@ -9,6 +9,25 @@ class Emperor(Piece):
         self.attack_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         self.attack_range = 1
 
+    def get_all_moves(self, start, range, squares):
+        move_squares = []
+        DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        for direction in DIRECTIONS:
+            i = 1
+            while i <= range:
+                row = start[0] + direction[0] * i
+                col = start[1] + direction[1] * i
+                i += 1
+
+                if row < 0 or row > 7 or col < 0 or col > 7:
+                    break
+                
+                if squares[row][col].piece != None:
+                    break
+                
+                move_squares.append(squares[row][col])
+        return move_squares
+
     def update_possible_moves(self, coordinate):
         enemy_attack_squares = []
         self.move_squares = []
@@ -23,9 +42,3 @@ class Emperor(Piece):
         for move in move_squares:
             if move not in enemy_attack_squares:
                 self.move_squares.append(move)
-
-    def attack(self, old_coord, attack_coord, round_num=0):
-        old_square = self.squares[old_coord[0]][old_coord[1]]
-        attack_square = self.squares[attack_coord[0]][attack_coord[1]]
-        attack_square.piece = old_square.piece
-        old_square.piece = None

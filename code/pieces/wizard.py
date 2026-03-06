@@ -9,9 +9,8 @@ class Wizard(Piece):
         super().__init__(surf, color, squares)
         self.attack_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         self.attack_range = 1
-
-    def update_possible_moves(self, coordinate):
-        self.move_squares = self.get_all_moves(coordinate, 1, self.squares)
+        self.move_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        self.move_range = 1
 
     def swap_moves(self, coordinate):
         DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
@@ -28,9 +27,3 @@ class Wizard(Piece):
                 square = self.squares[row][col]
                 if square.piece and type(square.piece) != Emperor and type(square.piece) != Wizard and type(square.piece) != Archer and (row, col) not in surroundings:
                     square.is_swappable = True
-
-    def attack(self, old_coord, attack_coord, round_num=0):
-        old_square = self.squares[old_coord[0]][old_coord[1]]
-        attack_square = self.squares[attack_coord[0]][attack_coord[1]]
-        attack_square.piece = old_square.piece
-        old_square.piece = None

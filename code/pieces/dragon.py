@@ -10,38 +10,10 @@ class Dragon(Piece):
             self.attack_directions = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (0, -1)]
         elif self.color == 'black':
             self.attack_directions = [(1, -1), (1, 0), (1, 1), (0, 1), (0, -1)]
-
-    def update_possible_moves(self, start):
-        self.move_squares = []
-        row, col = start # extracts row and col from the start
-        for new_row in (row-2, row, row+2):
-            for new_col in (col-2, col, col+2):
-                if (new_row, new_col) == start:
-                    continue
-                if new_row < 0 or new_row > 7 or new_col < 0 or new_col > 7:
-                    continue
-                if self.squares[new_row][new_col].piece:
-                    continue
-                self.move_squares.append(self.squares[new_row][new_col])
+        
+        self.move_directions = [(1, -2), (1, 2), (-1, 2), (-1, -2,), (2, 1), (2, -1), (-2, 1), (-2, -1)]
+        self.move_range = 1
 
     def attack(self, old_coord, attack_coord, round_num=0):
-        if self.color == 'white':
-            directions = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (0, -1)]
-        elif self.color == 'black':
-            directions = [(1, -1), (1, 0), (1, 1), (0, 1), (0, -1)]
-        
-        for direction in directions:
-            row = old_coord[0] + direction[0]
-            col = old_coord[1] + direction[1]
-
-            if row < 0 or row > 7 or col < 0 or col > 7:
-                continue
-            
-            if self.squares[row][col].piece != None:
-                if self.squares[row][col].piece.color != self.color:
-                    if type(self.squares[row][col].piece) == Legionary:
-                        if self.color == 'white' and direction == (-1, 0):
-                            continue
-                        elif self.color == 'black' and direction == (1, 0):
-                            continue
-                    self.squares[row][col].piece = None
+        for square in self.attack_squares:
+            square.piece = None

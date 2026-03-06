@@ -10,10 +10,9 @@ class Catapult(Piece):
         elif self.color == 'black':
             self.attack_directions = [(1, 0)]
         self.attack_range = 7
+        self.move_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        self.move_range = 2
 
-
-    def update_possible_moves(self, coordinate):
-        self.move_squares = self.get_all_moves(coordinate, 2, self.squares)
 
     def update_attack_moves(self, start):
         self.attack_squares = []
