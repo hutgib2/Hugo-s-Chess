@@ -14,7 +14,6 @@ class Piece(pygame.sprite.Sprite):
         self.attacked_at = 0
 
     def has_adjacent_legionary(self, square, direction):
-
         if direction == (1, -1) or direction == (-1, -1):
             row = square.coord[0]
             col = square.coord[1] + 1
@@ -53,11 +52,45 @@ class Piece(pygame.sprite.Sprite):
                 move_squares.append(squares[row][col])
         return move_squares
 
+    def update_attack_moves(self, start):
+        self.attack_squares = []
+        for direction in self.attack_directions:
+            i = 1
+            while i <= self.attack_range:
+                row = start[0] + direction[0] * i
+                col = start[1] + direction[1] * i
+                i += 1
+
+                if row < 0 or row > 7 or col < 0 or col > 7:
+                    break
+                
+                square = self.squares[row][col]
+                if square.piece == None:
+                    self.attack_squares.append(square)
+                elif square.piece.color != self.color:
+                    if type(square.piece) == Legionary:
+                        if direction == (-1, 0) and self.color == 'white':
+                            break
+                        elif direction == (1, 0) and self.color == 'black':
+                            break
+                        elif self.has_adjacent_legionary(square, direction):
+                            break
+                    self.attack_squares.append(square)
+                    break
+                else:
+                    break
+
 
 class Legionary(Piece):
-    def __init(self, surf, color, squares):
+    def __init__(self, surf, color, squares):
         super().__init__(surf, color, squares)
         self.attack_squares = []
+        self.attack_range = 1
+        if self.color == 'white':
+            self.attack_directions = [(-1, 0)]
+        elif self.color == 'black':
+            self.attack_directions = [(1, 0)]
+
 
     def update_possible_moves(self, coordinate):
         self.move_squares = []
@@ -72,21 +105,6 @@ class Legionary(Piece):
         
         if front_square and front_square.piece == None:
             self.move_squares.append(front_square)
-
-    def update_attack_moves(self, coordinate):
-        self.attack_squares = []
-        row, col = coordinate # extracts row and col from the coordinate
-        if self.color == 'white' and row > 0:
-            front_square = self.squares[row-1][col]
-        elif self.color == 'black' and row < 7:
-            front_square = self.squares[row+1][col]
-        else:
-            return
-
-        if not front_square.piece:
-            self.attack_squares.append(front_square)
-        elif front_square.piece.color != self.color and type(front_square.piece) != Legionary:
-            self.attack_squares.append(front_square)
 
     def attack(self, old_coord, attack_coord, round_num=0):
         old_square = self.squares[old_coord[0]][old_coord[1]]

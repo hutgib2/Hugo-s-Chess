@@ -3,8 +3,13 @@ from pieces.legionary import Piece
 from pieces.legionary import Legionary
 
 class Dragon(Piece):
-    def __init(self, surf, color, squares):
+    def __init__(self, surf, color, squares):
         super().__init__(surf, color, squares)
+        self.attack_range = 1
+        if self.color == 'white':
+            self.attack_directions = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (0, -1)]
+        elif self.color == 'black':
+            self.attack_directions = [(1, -1), (1, 0), (1, 1), (0, 1), (0, -1)]
 
     def update_possible_moves(self, start):
         self.move_squares = []
@@ -18,33 +23,6 @@ class Dragon(Piece):
                 if self.squares[new_row][new_col].piece:
                     continue
                 self.move_squares.append(self.squares[new_row][new_col])
-
-    def update_attack_moves(self, start):
-        self.attack_squares = []
-        if self.color == 'white':
-            directions = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (0, -1)]
-        elif self.color == 'black':
-            directions = [(1, -1), (1, 0), (1, 1), (0, 1), (0, -1)]
-
-        for direction in directions:
-            row = start[0] + direction[0]
-            col = start[1] + direction[1]
-
-            if row < 0 or row > 7 or col < 0 or col > 7:
-                continue
-            square = self.squares[row][col]
-            if not square.piece:
-                self.attack_squares.append(square)
-            elif square.piece.color != self.color:
-                if type(square.piece) == Legionary:
-                    if self.color == 'white' and direction == (-1, 0):
-                        continue
-                    elif self.color == 'black' and direction == (1, 0):
-                        continue
-                    elif self.has_adjacent_legionary(square, direction):
-                        continue
-                        
-                self.attack_squares.append(square)
 
     def attack(self, old_coord, attack_coord, round_num=0):
         if self.color == 'white':

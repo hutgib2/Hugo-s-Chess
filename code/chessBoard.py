@@ -1,7 +1,6 @@
 from settings import *
 from enum import Enum
 from textSprite import TextSprite
-from pieces.piece import *
 from pieces.legionary import Legionary
 from pieces.dragon import Dragon
 from pieces.archer import Archer

@@ -3,23 +3,24 @@ from pieces.legionary import Piece
 from pieces.legionary import Legionary
 
 class Catapult(Piece):
-    def __init(self, surf, color, squares):
+    def __init__(self, surf, color, squares):
         super().__init__(surf, color, squares)
+        if self.color == 'white':
+            self.attack_directions = [(-1, 0)]
+        elif self.color == 'black':
+            self.attack_directions = [(1, 0)]
+        self.attack_range = 7
+
 
     def update_possible_moves(self, coordinate):
         self.move_squares = self.get_all_moves(coordinate, 2, self.squares)
 
     def update_attack_moves(self, start):
         self.attack_squares = []
-        if self.color == 'white':
-            direction = (-1, 0)
-        elif self.color == 'black':
-            direction = (1, 0)
-
         i = 1
-        while i <= 7:
-            row = start[0] + direction[0] * i
-            col = start[1] + direction[1] * i
+        while i <= self.attack_range:
+            row = start[0] + self.attack_directions[0][0] * i
+            col = start[1] + self.attack_directions[0][1] * i
             i += 1
             if row < 0 or row > 7 or col < 0 or col > 7:
                 break
