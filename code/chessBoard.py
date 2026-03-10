@@ -82,10 +82,6 @@ class ChessBoard(pygame.sprite.Sprite):
     def move_piece(self, old_square, new_square):
         new_square.piece = old_square.piece
         old_square.piece = None
-        if new_square.piece.color == 'white' and new_square.coord[0] == 0 and type(new_square.piece) == Legionary:
-            new_square.piece = Archer(WHITE_SURFS['archer'], 'white', self.squares)
-        if new_square.piece.color == 'black' and new_square.coord[0] == 7 and type(new_square.piece) == Legionary:
-            new_square.piece = Archer(BLACK_SURFS['archer'], 'black', self.squares)
 
     def swap_piece(self, old_square, new_square):
         temp = old_square.piece
@@ -147,3 +143,10 @@ class ChessBoard(pygame.sprite.Sprite):
             
             if type(self.selected_square.piece) == Wizard:
                 self.selected_square.piece.swap_moves(self.selected_square.coord)
+                
+        for square in self.squares[0]:
+            if square.piece and square.piece.color == 'white' and type(square.piece) == Legionary:
+                square.piece = Archer(WHITE_SURFS['archer'], 'white', self.squares)
+        for square in self.squares[7]:
+            if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
+                square.piece = Archer(BLACK_SURFS['archer'], 'black', self.squares)

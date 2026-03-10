@@ -3,6 +3,7 @@ from support import *
 from textSprite import TextSprite
 from timer import Timer
 from chessBoard import ChessBoard
+from button import InteractiveButton
 
 class Chess2026():
     def __init__(self):
@@ -10,6 +11,8 @@ class Chess2026():
         self.board = ChessBoard(BOARD_SURFS['chess_board'])
         self.turn = 'white'
         self.round_num = 0
+        self.rule_dict =  folder_importer('assets', 'images', 'rules', 'rulebook')
+        self.rulebook = InteractiveButton(self.rule_dict, (200, 200), (256, 256), (), self.show_rules)
 
     def switch_turn(self):
         if self.turn == 'white':
@@ -19,6 +22,9 @@ class Chess2026():
         self.board.selected_square.is_selected = False
         self.board.selected_square = None
         self.round_num += 1
+
+    def show_rules(self):
+        pass
 
     def run(self):
         while self.running:
@@ -38,8 +44,9 @@ class Chess2026():
                                 if self.board.selected_square:
                                     self.board.selected_square.is_selected = False
                                 self.board.selected_square = click_square
-                                click_square.is_selected = True
-                                click_square.piece.update_possible_moves(click_square.coord)
+                                self.board.selected_square.is_selected = True
+                                self.board.selected_square.piece.update_possible_moves(click_square.coord)
+
                             elif click_square.is_possible_move:
                                 self.board.move_piece(self.board.selected_square, click_square)
                                 self.switch_turn()
@@ -54,6 +61,7 @@ class Chess2026():
             self.board.update(self.round_num)
             screen.fill('bisque')
             self.board.render()
+            self.rulebook.update()
             pygame.display.update()
 
 game = Chess2026()

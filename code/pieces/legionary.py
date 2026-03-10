@@ -43,11 +43,13 @@ class Piece(pygame.sprite.Sprite):
                 i += 1
 
                 if row < 0 or row > 7 or col < 0 or col > 7:
-                    continue
+                    break
 
                 square = self.squares[row][col]
                 if square.piece == None:
                     self.move_squares.append(square)
+                else:
+                    break
 
     def update_attack_moves(self, start):
         self.attack_squares = []
