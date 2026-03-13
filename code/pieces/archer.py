@@ -6,7 +6,7 @@ class Archer(Piece):
     def __init__(self, surf, color, squares):
         super().__init__(surf, color, squares)
         self.attack_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-        self.attack_range = 3
+        self.attack_range = (2, 3)
         self.move_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         self.move_range = 1
 

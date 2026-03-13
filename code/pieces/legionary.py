@@ -50,8 +50,8 @@ class Piece(pygame.sprite.Sprite):
     def update_attack_moves(self, start):
         self.attack_squares = []
         for direction in self.attack_directions:
-            i = 1
-            while i <= self.attack_range:
+            i = self.attack_range[0]
+            while i <= self.attack_range[1]:
                 row = start[0] + direction[0] * i
                 col = start[1] + direction[1] * i
                 i += 1
@@ -85,7 +85,7 @@ class Legionary(Piece):
     def __init__(self, surf, color, squares):
         super().__init__(surf, color, squares)
         self.attack_squares = []
-        self.attack_range = 1
+        self.attack_range = (1,1)
         self.move_range = 1
         if self.color == 'white':
             self.attack_directions = [(-1, 0)]

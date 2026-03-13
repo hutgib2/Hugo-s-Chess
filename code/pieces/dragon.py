@@ -5,7 +5,7 @@ from pieces.legionary import Legionary
 class Dragon(Piece):
     def __init__(self, surf, color, squares):
         super().__init__(surf, color, squares)
-        self.attack_range = 1
+        self.attack_range = (1,1)
         if self.color == 'white':
             self.attack_directions = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (0, -1)]
         elif self.color == 'black':

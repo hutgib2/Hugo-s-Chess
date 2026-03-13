@@ -9,7 +9,7 @@ class Catapult(Piece):
             self.attack_directions = [(-1, 0), (0, 1), (0, -1)]
         elif self.color == 'black':
             self.attack_directions = [(1, 0), (0, 1), (0, -1)]
-        self.attack_range = 7
+        self.attack_range = (1, 7)
         self.move_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         self.move_range = 2
 
@@ -17,8 +17,8 @@ class Catapult(Piece):
     def update_attack_moves(self, start):
         self.attack_squares = []
         for direction in self.attack_directions:
-            i = 1
-            while i <= self.attack_range:
+            i = self.attack_range[0]
+            while i <= self.attack_range[1]:
                 row = start[0] + direction[0] * i
                 col = start[1] + direction[1] * i
                 i += 1
@@ -45,8 +45,8 @@ class Catapult(Piece):
 
         attack_direction = (int(drow), int(dcol))
         killed_first = False
-        i = 1
-        while i <= self.attack_range:
+        i = self.attack_range[0]
+        while i <= self.attack_range[1]:
             row = start[0] + attack_direction[0] * i
             col = start[1] + attack_direction[1] * i
             i += 1

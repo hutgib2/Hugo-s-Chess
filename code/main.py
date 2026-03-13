@@ -25,8 +25,7 @@ class Chess2026():
         self.board.selected_square.is_selected = False
         self.board.selected_square = None
         self.round_num += 1
-        print(f'round number: {self.round_num}')
-
+        
     def show_rules(self):
         self.rules_shown = not self.rules_shown
 

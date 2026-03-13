@@ -5,9 +5,9 @@ from pieces.legionary import Legionary
 class Emperor(Piece):
     def __init__(self, surf, color, squares):
         super().__init__(surf, color, squares)
-        in_check = False
+        self.in_check = False
         self.attack_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-        self.attack_range = 1
+        self.attack_range = (1, 1)
 
     def get_all_moves(self, start, range, squares):
         move_squares = []
