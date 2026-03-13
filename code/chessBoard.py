@@ -17,6 +17,10 @@ class Square():
         self.is_selected = False
         self.is_attack_move = False
         self.is_swappable = False
+        self.is_reloading = False
+        self.is_stunned = False
+        self.stunned_at = None
+        self.attacked_at = 0
 
 class ChessBoard(pygame.sprite.Sprite):
     def __init__(self, surf):
@@ -29,11 +33,12 @@ class ChessBoard(pygame.sprite.Sprite):
         self.selected_square = None
         
         # images
-        self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select'], (TILE_WIDTH, TILE_WIDTH))
+        self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select_indicator'], (TILE_WIDTH, TILE_WIDTH))
         self.move_indicator = pygame.transform.smoothscale(BOARD_SURFS['move_indicator'], (TILE_WIDTH, TILE_WIDTH))
-        self.attack_indicator = pygame.transform.smoothscale(BOARD_SURFS['attack'], (TILE_WIDTH, TILE_WIDTH))
-        self.stun_indicator = pygame.transform.smoothscale(BOARD_SURFS['stun'], (TILE_WIDTH, TILE_WIDTH))
-        self.switch_indicator = pygame.transform.smoothscale(BOARD_SURFS['switch'], (TILE_WIDTH, TILE_WIDTH))
+        self.attack_indicator = pygame.transform.smoothscale(BOARD_SURFS['attack_indicator'], (TILE_WIDTH, TILE_WIDTH))
+        self.stun_indicator = pygame.transform.smoothscale(BOARD_SURFS['stun_indicator'], (TILE_WIDTH, TILE_WIDTH))
+        self.switch_indicator = pygame.transform.smoothscale(BOARD_SURFS['switch_indicator'], (TILE_WIDTH, TILE_WIDTH))
+        self.reload_indicator = pygame.transform.smoothscale(BOARD_SURFS['reload_indicator'], (TILE_WIDTH, TILE_WIDTH))
         self.move_indicator.set_alpha(200)
         self.attack_indicator.set_alpha(200)
         self.stun_indicator.set_alpha(240)
@@ -82,6 +87,11 @@ class ChessBoard(pygame.sprite.Sprite):
     def move_piece(self, old_square, new_square):
         new_square.piece = old_square.piece
         old_square.piece = None
+        if old_square.is_reloading == True:
+            old_square.is_reloading = False
+            new_square.is_reloading = True
+            new_square.attacked_at = old_square.attacked_at
+            old_square.attacked_at = 0
 
     def swap_piece(self, old_square, new_square):
         temp = old_square.piece
@@ -90,6 +100,10 @@ class ChessBoard(pygame.sprite.Sprite):
 
     def attack_piece(self, old_square, attack_square, round_num):
         old_square.piece.attack(old_square.coord, attack_square.coord, round_num)
+        if type(old_square.piece) == Catapult:
+            print('setting is_reloading')
+            old_square.is_reloading = True
+            old_square.attacked_at = round_num
         
     def test_coordinates(self):
         for row in range(8):
@@ -109,12 +123,14 @@ class ChessBoard(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(self.select_indicator, square.rect)
                 if square.piece != None:
                     pygame.display.get_surface().blit(square.piece.image, square.rect)
-                if square.piece and square.piece.is_stunned == True:
+                if square.piece and square.is_stunned == True:
                     pygame.display.get_surface().blit(self.stun_indicator, square.rect)
                 if square.is_attack_move == True:
                     pygame.display.get_surface().blit(self.attack_indicator, square.rect)
                 if square.is_swappable == True:
                     pygame.display.get_surface().blit(self.switch_indicator, square.rect)
+                if square.is_reloading == True:
+                    pygame.display.get_surface().blit(self.reload_indicator, square.rect)
 
     def update(self, round_num):
         # this resets squares
@@ -124,17 +140,19 @@ class ChessBoard(pygame.sprite.Sprite):
                 square.is_possible_move = False
                 square.is_attack_move = False
                 square.is_swappable = False
-                if square.piece and square.piece.is_stunned and round_num - square.piece.stunned_at > 4:
-                    square.piece.is_stunned = False
-                if square.piece and not square.piece.can_attack and round_num - square.piece.attacked_at > 5:
-                    square.piece.can_attack = True
+                if square.is_stunned and round_num - square.stunned_at > 4:
+                    square.is_stunned = False
+                if square.is_reloading and round_num - square.attacked_at > 5:
+                    print(f'square attacked at: {square.attacked_at}')
+                    print('unsetting is_reloading')
+                    square.is_reloading = False
                 if square.piece:
                     square.piece.update_attack_moves(square.coord)
 
         if self.selected_square and self.selected_square.piece:
             for square in self.selected_square.piece.move_squares:
                 square.is_possible_move = True
-            if self.selected_square.piece.can_attack:
+            if not self.selected_square.is_reloading:
                 for square in self.selected_square.piece.attack_squares:
                     if square.piece != None:
                         square.is_attack_move = True

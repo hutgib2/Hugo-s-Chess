@@ -46,3 +46,6 @@ chess board is still the same.
 
 tile disabler hazard:
 every turn a random empty column or row will be disabled.
+
+ideas for nerf:
+have archer reload every turn or canoot kill enemies 1 tile away
