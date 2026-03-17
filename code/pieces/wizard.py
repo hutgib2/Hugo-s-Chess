@@ -8,11 +8,12 @@ class Wizard(Piece):
         self.attack_range = (1,1)
         self.move_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         self.move_range = 1
+        self.swap_squares = []
 
     def update_swap_moves(self, coordinate):
         from pieces.emperor import Emperor
         from pieces.archer import Archer
-
+        
         DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         surroundings = []
         for direction in DIRECTIONS:
@@ -22,8 +23,9 @@ class Wizard(Piece):
                 continue
             surroundings.append((row, col))
 
+        self.swap_squares = []
         for row in range(8):
             for col in range(8):
                 square = self.squares[row][col]
                 if square.piece and type(square.piece) != Emperor and type(square.piece) != Wizard and type(square.piece) != Archer and (row, col) not in surroundings:
-                    square.is_swappable = True
+                    self.swap_squares.append(square)
