@@ -1,10 +1,10 @@
 from settings import *
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, surf_dict, pos, size, groups):
+    def __init__(self, surf, pos, size, groups):
         super().__init__(groups)
-        self.image = pygame.transform.smoothscale(surf_dict['default'], size)
-        self.image_disabled = pygame.transform.smoothscale(surf_dict['disabled'], size)
+        self.image = pygame.transform.smoothscale(surf, size)
+        self.image_disabled = pygame.transform.smoothscale(surf, size)
         self.rect = self.image.get_frect(center=pos)
         self.is_active = True
 
@@ -21,9 +21,10 @@ class Button(pygame.sprite.Sprite):
             pygame.display.get_surface().blit(self.image, self.rect)
 
 class InteractiveButton(Button):
-    def __init__(self, surf_dict, pos, size, groups, callback):
-        super().__init__(surf_dict, pos, size, groups)
-        self.image_hover = pygame.transform.smoothscale(surf_dict['hover'], size)
+    def __init__(self, surf, pos, size, groups, callback):
+        super().__init__(surf, pos, size, groups)
+        self.image_hover = pygame.transform.smoothscale(surf, size)
+        self.image_hover.set_alpha(180)
         self.callback = callback
 
     def is_clicked(self):

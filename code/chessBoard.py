@@ -7,6 +7,7 @@ from pieces.archer import Archer
 from pieces.wizard import Wizard
 from pieces.catapult import Catapult
 from pieces.emperor import Emperor
+import copy
 
 class Square():
     def __init__(self, rect, coordinate):
@@ -108,6 +109,8 @@ class ChessBoard(pygame.sprite.Sprite):
                     square.piece.update_attack_moves(square.coord)
                 
     def remove_check_moves(self, click_square):
+        # TODO: save and revert board state
+
         # remove possible moves that lead to check
         updated_moves = []
         for move_square in click_square.piece.move_squares:
@@ -123,39 +126,39 @@ class ChessBoard(pygame.sprite.Sprite):
         click_square.piece.move_squares = updated_moves
 
         # remove attack moves that lead to check
-        updated_moves = []
-        for attack_square in click_square.piece.attack_squares:
-            color = click_square.piece.color
-            # save board state
-            click_save = click_square.piece
-            attack_save = attack_square.piece
-            self.attack_piece(click_square, attack_square, 1)
-            self.update_enemy_attack_squares(color)
+        # updated_moves = []
+        # for attack_square in click_square.piece.attack_squares:
+        #     color = click_square.piece.color
+        #     # save board state
+        #     click_save = click_square.piece
+        #     attack_save = attack_square.piece
+        #     self.attack_piece(click_square, attack_square, 1)
+        #     self.update_enemy_attack_squares(color)
 
-            # if emperor is in check, don't append to updated moves
-            if self.emperors[color].in_check == False:
-                updated_moves.append(attack_square)
+        #     # if emperor is in check, don't append to updated moves
+        #     if self.emperors[color].in_check == False:
+        #         updated_moves.append(attack_square)
             
-            # revert board state
-            click_square.piece = click_save
-            attack_square.piece = attack_save
-            self.emperors[color].in_check = False
-        click_square.piece.attack_squares = updated_moves
+        #     # revert board state
+        #     click_square.piece = click_save
+        #     attack_square.piece = attack_save
+        #     self.emperors[color].in_check = False
+        # click_square.piece.attack_squares = updated_moves
 
-        # remove swap moves that lead to check
-        if type(click_square.piece) == Wizard:
-            updated_moves = []
-            for swap_square in click_square.piece.swap_squares:
-                color = click_square.piece.color
-                self.swap_piece(click_square, swap_square)
-                self.update_enemy_attack_squares(color)
+        # # remove swap moves that lead to check
+        # if type(click_square.piece) == Wizard:
+        #     updated_moves = []
+        #     for swap_square in click_square.piece.swap_squares:
+        #         color = click_square.piece.color
+        #         self.swap_piece(click_square, swap_square)
+        #         self.update_enemy_attack_squares(color)
 
-                # if emperor is in check, don't append to updated moves
-                if self.emperors[color].in_check == False:
-                    updated_moves.append(swap_square)
-                self.swap_piece(swap_square, click_square)
-                self.emperors[color].in_check = False
-            click_square.piece.swap_squares = updated_moves
+        #         # if emperor is in check, don't append to updated moves
+        #         if self.emperors[color].in_check == False:
+        #             updated_moves.append(swap_square)
+        #         self.swap_piece(swap_square, click_square)
+        #         self.emperors[color].in_check = False
+        #     click_square.piece.swap_squares = updated_moves
     
     def move_piece(self, old_square, new_square):
         new_square.piece = old_square.piece
