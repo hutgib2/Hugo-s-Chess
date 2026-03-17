@@ -1,18 +1,18 @@
 from settings import *
-from pieces.legionary import Piece
-from pieces.legionary import Legionary
-from pieces.emperor import Emperor
-from pieces.archer import Archer
+from pieces.piece import Piece
 
 class Wizard(Piece):
-    def __init__(self, surf, color, squares):
-        super().__init__(surf, color, squares)
+    def __init__(self, surf, color, coord, squares):
+        super().__init__(surf, color, coord, squares)
         self.attack_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         self.attack_range = (1,1)
         self.move_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         self.move_range = 1
 
-    def swap_moves(self, coordinate):
+    def update_swap_moves(self, coordinate):
+        from pieces.emperor import Emperor
+        from pieces.archer import Archer
+
         DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         surroundings = []
         for direction in DIRECTIONS:

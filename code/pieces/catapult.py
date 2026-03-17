@@ -1,10 +1,9 @@
 from settings import *
-from pieces.legionary import Piece
-from pieces.legionary import Legionary
+from pieces.piece import Piece
 
 class Catapult(Piece):
-    def __init__(self, surf, color, squares):
-        super().__init__(surf, color, squares)
+    def __init__(self, surf, color, coord, squares):
+        super().__init__(surf, color, coord, squares)
         if self.color == 'white':
             self.attack_directions = [(-1, 0), (0, 1), (0, -1)]
         elif self.color == 'black':
@@ -13,8 +12,10 @@ class Catapult(Piece):
         self.move_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         self.move_range = 2
 
-
     def update_attack_moves(self, start):
+        from pieces.legionary import Legionary
+        from pieces.emperor import Emperor
+
         self.attack_squares = []
         for direction in self.attack_directions:
             i = self.attack_range[0]
@@ -34,8 +35,12 @@ class Catapult(Piece):
                     break
                 else:
                     self.attack_squares.append(square)
+                    if type(square.piece) == Emperor:
+                        square.piece.in_check = True
             
     def attack(self, start, attack_square, round_num):
+        from pieces.legionary import Legionary
+
         drow = attack_square[0] - start[0]
         dcol = attack_square[1] - start[1]
         if drow != 0:

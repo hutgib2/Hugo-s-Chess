@@ -46,11 +46,7 @@ class Chess2026():
                                 self.board.swap_piece(self.board.selected_square, click_square)
                                 self.switch_turn()
                             elif click_square.piece and click_square.piece.color == self.turn and not click_square.is_stunned:
-                                if self.board.selected_square:
-                                    self.board.selected_square.is_selected = False
-                                self.board.selected_square = click_square
-                                self.board.selected_square.is_selected = True
-                                self.board.selected_square.piece.update_possible_moves(click_square.coord)
+                                self.board.select_piece(click_square)
 
                             elif click_square.is_possible_move:
                                 self.board.move_piece(self.board.selected_square, click_square)
