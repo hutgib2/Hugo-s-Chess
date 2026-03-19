@@ -37,13 +37,12 @@ class ChessBoard(pygame.sprite.Sprite):
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select_indicator'], (TILE_WIDTH, TILE_WIDTH))
         self.move_indicator = pygame.transform.smoothscale(BOARD_SURFS['move_indicator'], (TILE_WIDTH, TILE_WIDTH))
         self.attack_indicator = pygame.transform.smoothscale(BOARD_SURFS['attack_indicator'], (TILE_WIDTH, TILE_WIDTH))
-        self.stun_indicator = pygame.transform.smoothscale(BOARD_SURFS['stun_indicator'], (TILE_WIDTH / 2, TILE_WIDTH / 2))
-        self.switch_indicator = pygame.transform.smoothscale(BOARD_SURFS['switch_indicator'], (TILE_WIDTH / 2, TILE_WIDTH / 2))
+        self.stun_indicator = pygame.transform.smoothscale(BOARD_SURFS['stun_indicator'], (TILE_WIDTH / 1.1, TILE_WIDTH / 1.1))
+        self.switch_indicator = pygame.transform.smoothscale(BOARD_SURFS['switch_indicator'], (TILE_WIDTH, TILE_WIDTH))
         self.reload_indicator = pygame.transform.smoothscale(BOARD_SURFS['reload_indicator'], (TILE_WIDTH / 2, TILE_WIDTH / 2))
         self.move_indicator.set_alpha(200)
         self.attack_indicator.set_alpha(200)
         self.stun_indicator.set_alpha(240)
-        self.switch_indicator.set_alpha(200)
 
     # creates a 2d list of rects representing the individual squares on the board
     def gen_squares(self):

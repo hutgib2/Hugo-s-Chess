@@ -69,7 +69,7 @@ class Chess2026():
     def run(self):
         while self.running:
             self.handle_events()
-            screen.fill('bisque')
+            screen.fill((100, 100, 100))
             self.board.render()
             self.rulebook.update()
             if self.rules_shown == True:
