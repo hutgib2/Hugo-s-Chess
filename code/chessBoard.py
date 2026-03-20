@@ -36,7 +36,7 @@ class ChessBoard(pygame.sprite.Sprite):
         }
         self.gen_squares()
         # pprint.pprint(self.take_snapshot())
-        self.load_game()
+        self.load_game("assets/board_state/new_game.json")
         # images
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select_indicator'], (TILE_WIDTH, TILE_WIDTH))
         self.move_indicator = pygame.transform.smoothscale(BOARD_SURFS['move_indicator'], (TILE_WIDTH, TILE_WIDTH))
@@ -69,10 +69,18 @@ class ChessBoard(pygame.sprite.Sprite):
                 self.squares[row].append(Square(square_rect, (row,col))) # it appends the whole area of a square and gives that square a piece
             pos_y += TILE_WIDTH # shifts to the next row
 
-    def load_game(self):
-        with open('assets/board_state/new_game.json', 'r') as file:
+    def load_game(self, file_path):
+        with open(file_path, 'r') as file:
             data = json.load(file)
             self.apply_snapshot(data)
+
+    def reset_game(self):
+        self.load_game('assets/board_state/new_game.json')
+
+    def save_game(self):
+        with open('assets/board_state/save_game.json', 'w') as file:
+            data = self.take_snapshot()
+            json.dump(data, file)
 
     def place_piece(self, pos, piece):
         self.squares[pos[0]][pos[1]].piece = piece

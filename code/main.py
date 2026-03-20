@@ -22,6 +22,12 @@ class Chess2026():
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 self.running = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+                self.board.reset_game()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+                self.board.save_game()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
+                self.board.load_game('assets/board_state/save_game.json')
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.rulebook.rect.collidepoint(event.pos):
                     self.rulebook.is_clicked()
