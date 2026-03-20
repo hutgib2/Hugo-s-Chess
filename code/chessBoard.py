@@ -8,6 +8,8 @@ from pieces.wizard import Wizard
 from pieces.catapult import Catapult
 from pieces.emperor import Emperor
 import copy
+import json
+import pprint
 
 class Square():
     def __init__(self, rect, coordinate):
@@ -25,12 +27,16 @@ class ChessBoard(pygame.sprite.Sprite):
         self.image = pygame.transform.smoothscale(surf, (BOARD_SIZE, BOARD_SIZE))
         self.rect = self.image.get_frect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
         self.squares = [[], [], [], [], [], [], [], []] # creates a 2d list of Square objects
-        self.gen_squares()
-        self.setup_pieces()
         self.selected_square = None
         self.turn = 'white'
         self.round_num = 0
-        
+        self.emperors = {
+            "white": None,
+            "black": None
+        }
+        self.gen_squares()
+        # pprint.pprint(self.take_snapshot())
+        self.load_game()
         # images
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select_indicator'], (TILE_WIDTH, TILE_WIDTH))
         self.move_indicator = pygame.transform.smoothscale(BOARD_SURFS['move_indicator'], (TILE_WIDTH, TILE_WIDTH))
@@ -54,6 +60,7 @@ class ChessBoard(pygame.sprite.Sprite):
 
     # creates a 2d list of rects representing the individual squares on the board
     def gen_squares(self):
+        self.squares = [[], [], [], [], [], [], [], []]
         pos_x, pos_y = self.rect.topleft # starting the rows and columns from the top left
 
         for row in range(8):
@@ -62,51 +69,104 @@ class ChessBoard(pygame.sprite.Sprite):
                 self.squares[row].append(Square(square_rect, (row,col))) # it appends the whole area of a square and gives that square a piece
             pos_y += TILE_WIDTH # shifts to the next row
 
-    def setup_pieces(self):
-        for col in range(8):
-            self.place_piece((6, col), Legionary(WHITE_SURFS['legionary'], 'white', (6, col), self.squares))
-        for col in range(8):
-            self.place_piece((1, col), Legionary(BLACK_SURFS['legionary'], 'black', (1, col), self.squares))
-
-        self.place_piece((7, 5), Wizard(WHITE_SURFS['wizard'], 'white', (7, 5), self.squares))
-        self.place_piece((7, 2), Wizard(WHITE_SURFS['wizard'], 'white', (7, 2), self.squares))
-        self.place_piece((0, 5), Wizard(BLACK_SURFS['wizard'], 'black', (0, 5), self.squares))
-        self.place_piece((0, 2), Wizard(BLACK_SURFS['wizard'], 'black', (0, 2), self.squares))
-
-        self.place_piece((7, 0), Catapult(WHITE_SURFS['catapult'], 'white', (7, 0), self.squares))
-        self.place_piece((7, 7), Catapult(WHITE_SURFS['catapult'], 'white', (7, 7), self.squares))
-        self.place_piece((0, 0), Catapult(BLACK_SURFS['catapult'], 'black', (0, 0), self.squares))
-        self.place_piece((0, 7), Catapult(BLACK_SURFS['catapult'], 'black', (0, 7), self.squares))
-
-        self.emperors = {
-            "white": Emperor(WHITE_SURFS['emperor'], 'white', (7, 4), self.squares),
-            "black": Emperor(BLACK_SURFS['emperor'], 'black', (0, 4), self.squares)
-        }
-        self.place_piece((7, 4), self.emperors["white"])
-        self.place_piece((0, 4), self.emperors["black"])
-
-        self.place_piece((7, 3), Archer(WHITE_SURFS['archer'], 'white', (7, 3), self.squares))
-        self.place_piece((0, 3), Archer(BLACK_SURFS['archer'], 'black', (0, 3), self.squares))
-
-        self.place_piece((7, 6), Dragon(WHITE_SURFS['dragon'], 'white', (7, 6), self.squares))
-        self.place_piece((7, 1), Dragon(WHITE_SURFS['dragon'], 'white', (7, 1), self.squares))
-        self.place_piece((0, 6), Dragon(BLACK_SURFS['dragon'], 'black', (0, 6), self.squares))
-        self.place_piece((0, 1), Dragon(BLACK_SURFS['dragon'], 'black', (0, 1), self.squares))
+    def load_game(self):
+        with open('assets/board_state/new_game.json', 'r') as file:
+            data = json.load(file)
+            self.apply_snapshot(data)
 
     def place_piece(self, pos, piece):
         self.squares[pos[0]][pos[1]].piece = piece
+        if type(piece) == Emperor:
+            self.emperors[piece.color] = piece
+
+    def take_snapshot(self):
+        snapshot = {
+            "round_num": self.round_num,
+            "turn": self.turn,
+            "pieces": [],
+        }
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                if square.piece:
+                    snapshot["pieces"].append(square.piece.get_state())
+        return snapshot
+
+    def apply_snapshot(self, snapshot):
+        self.round_num = snapshot["round_num"]
+        self.turn = snapshot["turn"]
+        
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                square.piece = None
+
+        for piece in snapshot["pieces"]:
+            self.place_piece(piece["coord"], self.piece_from_type(piece))
+
+    def piece_from_type(self, piece):
+        match piece["type"]:
+            case "Legionary":
+                return Legionary(PIECE_SURFS[piece["color"]]['legionary'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+            case "Emperor":
+                return Emperor(PIECE_SURFS[piece["color"]]['emperor'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+            case "Dragon":
+                return Dragon(PIECE_SURFS[piece["color"]]['dragon'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+            case "Archer":
+                return Archer(PIECE_SURFS[piece["color"]]['archer'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+            case "Catapult":
+                return Catapult(PIECE_SURFS[piece["color"]]['catapult'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+            case "Wizard":
+                return Wizard(PIECE_SURFS[piece["color"]]['wizard'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
 
     def select_piece(self, click_square):
         if self.selected_square:
             self.selected_square.is_selected = False
         click_square.is_selected = True
+        self.update_moves(click_square)
+        self.selected_square = click_square
+                
+    def update_moves(self, click_square):
         click_square.piece.update_possible_moves(click_square.coord)
+        # for move in click_square.piece.move_squares:
+        #     self.filter_check_moves(click_square, click_square.piece.move_squares, 'move')
+
         click_square.piece.update_attack_moves(click_square.coord)
+        # for move in click_square.piece.attack_squares:
+        #     self.filter_check_moves(click_square, click_square.piece.attack_squares, 'attack')
+
         if type(click_square.piece) == Wizard:
             click_square.piece.update_swap_moves(click_square.coord)
+            # for move in click_square.piece.swap_squares:
+            #     self.filter_check_moves(click_square, click_square.piece.swap_squares, 'swap')
+    
+    def filter_check_moves(self, click_square, moves, move_type):
+        print(f'type: {move_type}')
+        print(f'moves: {moves}')
+        updated_moves = []
+        for move in moves:
+            # save board state
+            snapshot = self.take_snapshot()
+            color = click_square.piece.color
 
-        self.remove_check_moves(click_square)
-        self.selected_square = click_square
+            match move_type:
+                case 'move':
+                    self.move_piece(click_square, move)
+                case 'attack':
+                    self.attack_piece(click_square, move)
+                case 'swap':
+                    self.swap_piece(click_square, move)
+            
+            self.update_enemy_attack_squares(color)
+
+            # if emperor is in check, don't append to updated moves
+            if not self.emperors[color].in_check:
+                updated_moves.append(move)
+            
+            # revert board state
+            self.apply_snapshot(snapshot)
+        moves = updated_moves
+        print(f'updated moves: {moves}')
 
     def update_enemy_attack_squares(self, color):
         for row in range(8):
@@ -114,59 +174,7 @@ class ChessBoard(pygame.sprite.Sprite):
                 square = self.squares[row][col]
                 if square.piece and square.piece.color != color:
                     square.piece.update_attack_moves(square.coord)
-                
-    def remove_check_moves(self, click_square):
-        # TODO: save and revert board state
 
-        # remove possible moves that lead to check
-        updated_moves = []
-        for move_square in click_square.piece.move_squares:
-            color = click_square.piece.color
-            self.move_piece(click_square, move_square)
-            self.update_enemy_attack_squares(color)
-
-            # if emperor is in check, don't append to updated moves
-            if self.emperors[color].in_check == False:
-                updated_moves.append(move_square)
-            self.move_piece(move_square, click_square)
-            self.emperors[color].in_check = False
-        click_square.piece.move_squares = updated_moves
-
-        # remove attack moves that lead to check
-        # updated_moves = []
-        # for attack_square in click_square.piece.attack_squares:
-        #     color = click_square.piece.color
-        #     # save board state
-        #     click_save = click_square.piece
-        #     attack_save = attack_square.piece
-        #     self.attack_piece(click_square, attack_square, 1)
-        #     self.update_enemy_attack_squares(color)
-
-        #     # if emperor is in check, don't append to updated moves
-        #     if self.emperors[color].in_check == False:
-        #         updated_moves.append(attack_square)
-            
-        #     # revert board state
-        #     click_square.piece = click_save
-        #     attack_square.piece = attack_save
-        #     self.emperors[color].in_check = False
-        # click_square.piece.attack_squares = updated_moves
-
-        # # remove swap moves that lead to check
-        # if type(click_square.piece) == Wizard:
-        #     updated_moves = []
-        #     for swap_square in click_square.piece.swap_squares:
-        #         color = click_square.piece.color
-        #         self.swap_piece(click_square, swap_square)
-        #         self.update_enemy_attack_squares(color)
-
-        #         # if emperor is in check, don't append to updated moves
-        #         if self.emperors[color].in_check == False:
-        #             updated_moves.append(swap_square)
-        #         self.swap_piece(swap_square, click_square)
-        #         self.emperors[color].in_check = False
-        #     click_square.piece.swap_squares = updated_moves
-    
     def move_piece(self, old_square, new_square):
         new_square.piece = old_square.piece
         old_square.piece = None
@@ -211,6 +219,8 @@ class ChessBoard(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(self.reload_indicator, square.rect)
 
     def update(self):
+        # print(f'begin updated(): {self.selected_square.piece.move_squares}')
+
         # this resets squares
         for row in range(8):
             for col in range(8):
@@ -225,6 +235,7 @@ class ChessBoard(pygame.sprite.Sprite):
                         square.piece.is_reloading = False
                     square.piece.update_attack_moves(square.coord)
                 
+        # print(f'after reset(): {self.selected_square.piece.move_squares}')
 
         if self.selected_square and self.selected_square.piece:
             for square in self.selected_square.piece.move_squares:
@@ -244,3 +255,5 @@ class ChessBoard(pygame.sprite.Sprite):
         for square in self.squares[7]:
             if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
                 square.piece = Archer(BLACK_SURFS['archer'], 'black', square.coord, self.squares)
+
+        # print(f'end updated(): {self.selected_square.piece.move_squares}')

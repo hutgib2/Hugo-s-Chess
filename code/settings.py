@@ -11,6 +11,9 @@ WINDOW_WIDTH, WINDOW_HEIGHT = screen.get_size()
 BOARD_SIZE = WINDOW_HEIGHT - 100
 TILE_WIDTH = BOARD_SIZE / 8
 
-WHITE_SURFS = folder_importer('assets', 'images', 'white_pieces')
-BLACK_SURFS = folder_importer('assets', 'images', 'black_pieces')
+PIECE_SURFS = {
+    'white': folder_importer('assets', 'images', 'white_pieces'),
+    'black': folder_importer('assets', 'images', 'black_pieces'),
+}
+
 BOARD_SURFS = folder_importer('assets', 'images', 'board')
