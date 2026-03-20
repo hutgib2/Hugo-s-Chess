@@ -9,6 +9,10 @@ class Piece(pygame.sprite.Sprite):
         self.attack_squares = self.update_attack_moves
         self.move_squares = []
         self.squares = squares
+        self.is_reloading = False
+        self.is_stunned = False
+        self.stunned_at = None
+        self.attacked_at = 0
 
     def has_adjacent_legionary(self, square, direction):
         from pieces.legionary import Legionary

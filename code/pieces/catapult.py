@@ -68,5 +68,5 @@ class Catapult(Piece):
                 square.piece = None
                 killed_first = True
             else:
-                square.is_stunned = True
-                square.stunned_at = round_num
+                square.piece.is_stunned = True
+                square.piece.stunned_at = round_num
