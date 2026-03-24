@@ -14,6 +14,7 @@ class Wizard(Piece):
         from pieces.emperor import Emperor
         from pieces.archer import Archer
         from pieces.legionary import Legionary
+        from pieces.catapult import Catapult
         
         DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         surroundings = []
@@ -32,7 +33,7 @@ class Wizard(Piece):
                     continue
                 if square.coord in surroundings:
                     continue
-                if type(square.piece) == Emperor or type(square.piece) == Wizard or type(square.piece) == Archer:
+                if type(square.piece) == Emperor or type(square.piece) == Wizard or type(square.piece) == Archer or type(square.piece) == Catapult:
                     continue
                 if type(square.piece) == Legionary:
                     if square.piece.color == "white" and self.coord[0] == 0:

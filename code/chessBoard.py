@@ -201,6 +201,28 @@ class ChessBoard(pygame.sprite.Sprite):
             old_square.piece.is_reloading = True
             old_square.piece.attacked_at = self.round_num
 
+    def is_check_mate(self, color):
+        # if possible moves for one side is 0 and emperor's in check
+        # it's a draw if no can make a move and they're not in check
+        all_moves = []
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                if not square.piece:
+                    continue
+                if square.piece.color != color:
+                    continue
+                all_moves.extend(square.piece.move_squares)
+                all_moves.extend(square.piece.attack_squares)
+                if type(square.piece) == Wizard:
+                    all_moves.extend(square.piece.swap_squares)
+        print(f'color: {color}')
+        print(all_moves)
+        print(f'len: {len(all_moves)}')
+        
+        if len(all_moves) == 0 and self.emperors[color].in_check == True:
+            print('checkmate')
+
     def render(self):
         pygame.display.get_surface().blit(self.image, self.rect) # draws chessboard
         for row in range(8):
@@ -224,7 +246,7 @@ class ChessBoard(pygame.sprite.Sprite):
     def update(self):
         # print(f'begin updated(): {self.selected_square.piece.move_squares}')
 
-        # this resets squares
+        # this resets every squares state
         for row in range(8):
             for col in range(8):
                 square = self.squares[row][col]
@@ -250,7 +272,8 @@ class ChessBoard(pygame.sprite.Sprite):
             if type(self.selected_square.piece) == Wizard:
                 for square in self.selected_square.piece.swap_squares:
                     square.is_swappable = True
-                
+
+        # these for loops promote legionary to archer 
         for square in self.squares[0]:
             if square.piece and square.piece.color == 'white' and type(square.piece) == Legionary:
                 square.piece = Archer(PIECE_SURFS['white']['archer'], 'white', square.coord, self.squares)
@@ -258,4 +281,5 @@ class ChessBoard(pygame.sprite.Sprite):
             if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
                 square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
 
+        self.is_check_mate(self.turn)
         # print(f'end updated(): {self.selected_square.piece.move_squares}')

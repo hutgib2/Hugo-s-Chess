@@ -1,7 +1,6 @@
 from settings import *
 from support import *
 from textSprite import TextSprite
-from timer import Timer
 from chessBoard import ChessBoard
 from button import InteractiveButton
 
@@ -14,6 +13,10 @@ class Chess2026():
         self.rules_screen = pygame.image.load(join('assets', 'images', 'rules', 'rules_screen.png'))
         self.rules_rect = self.rules_screen.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.rules_shown = False
+
+        # audio
+        self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
+        self.move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.wav'))
         
     def show_rules(self):
         self.rules_shown = not self.rules_shown
@@ -32,6 +35,8 @@ class Chess2026():
                 if self.rulebook.rect.collidepoint(event.pos):
                     self.rulebook.is_clicked()
                     continue
+                if self.rules_shown:
+                    continue
                 if not self.board.rect.collidepoint(event.pos) and self.board.selected_square:
                     self.board.selected_square.is_selected = False
                     self.board.selected_square = None
@@ -43,16 +48,17 @@ class Chess2026():
                         click_square = self.board.squares[row][col]
                         if not click_square.rect.collidepoint(event.pos):
                             continue
-
                         if click_square.is_swappable:
                             self.board.swap_piece(self.board.selected_square, click_square)
                             self.board.switch_turn()                    
                         elif click_square.piece and click_square.piece.color == self.board.turn and not click_square.piece.is_stunned:
                             self.board.select_piece(click_square)
                         elif click_square.is_possible_move:
-                            self.board.move_piece(self.board.selected_square, click_square)  
+                            self.move_sound.play() 
+                            self.board.move_piece(self.board.selected_square, click_square) 
                             self.board.switch_turn()                    
                         elif click_square.is_attack_move:
+                            self.kill_sound.play()
                             self.board.attack_piece(self.board.selected_square, click_square)
                             self.board.switch_turn()
                         elif click_square.piece == None and self.board.selected_square:
@@ -64,8 +70,10 @@ class Chess2026():
     def run(self):
         while self.running:
             self.handle_events()
+            
             screen.fill((100, 100, 100))
             self.board.render()
+            
             self.rulebook.update()
             if self.rules_shown == True:
                 pygame.display.get_surface().blit(self.rules_screen, self.rules_rect)
