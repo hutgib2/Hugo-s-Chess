@@ -33,7 +33,7 @@ class Wizard(Piece):
                     continue
                 if square.coord in surroundings:
                     continue
-                if type(square.piece) == Emperor or type(square.piece) == Wizard or type(square.piece) == Archer or type(square.piece) == Catapult:
+                if type(square.piece) == Emperor or type(square.piece) == Wizard or type(square.piece) == Archer:
                     continue
                 if type(square.piece) == Legionary:
                     if square.piece.color == "white" and self.coord[0] == 0:
