@@ -6,7 +6,7 @@ class Piece(pygame.sprite.Sprite):
         self.image = pygame.transform.smoothscale(surf, (TILE_WIDTH, TILE_WIDTH))
         self.color = color
         self.coord = coord
-        self.attack_squares = self.update_attack_moves
+        self.attack_squares = []
         self.move_squares = []
         self.squares = squares
         self.is_reloading = is_reloading

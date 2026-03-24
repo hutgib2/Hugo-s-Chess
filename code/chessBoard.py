@@ -136,21 +136,20 @@ class ChessBoard(pygame.sprite.Sprite):
                 
     def update_moves(self, click_square):
         click_square.piece.update_possible_moves(click_square.coord)
-        # for move in click_square.piece.move_squares:
-        #     self.filter_check_moves(click_square, click_square.piece.move_squares, 'move')
+        allowed_moves = self.filter_check_moves(click_square, click_square.piece.move_squares, 'move')
 
         click_square.piece.update_attack_moves(click_square.coord)
-        # for move in click_square.piece.attack_squares:
-        #     self.filter_check_moves(click_square, click_square.piece.attack_squares, 'attack')
+        allowed_attacks = self.filter_check_moves(click_square, click_square.piece.attack_squares, 'attack')
 
         if type(click_square.piece) == Wizard:
             click_square.piece.update_swap_moves(click_square.coord)
-            # for move in click_square.piece.swap_squares:
-            #     self.filter_check_moves(click_square, click_square.piece.swap_squares, 'swap')
+            allowed_swaps = self.filter_check_moves(click_square, click_square.piece.swap_squares, 'swap')
+            click_square.piece.swap_squares = allowed_swaps
+
+        click_square.piece.move_squares = allowed_moves
+        click_square.piece.attack_squares = allowed_attacks
     
     def filter_check_moves(self, click_square, moves, move_type):
-        print(f'type: {move_type}')
-        print(f'moves: {moves}')
         updated_moves = []
         for move in moves:
             # save board state
@@ -173,8 +172,7 @@ class ChessBoard(pygame.sprite.Sprite):
             
             # revert board state
             self.apply_snapshot(snapshot)
-        moves = updated_moves
-        print(f'updated moves: {moves}')
+        return updated_moves
 
     def update_enemy_attack_squares(self, color):
         for row in range(8):
@@ -187,7 +185,6 @@ class ChessBoard(pygame.sprite.Sprite):
         new_square.piece = old_square.piece
         old_square.piece = None
         new_square.piece.coord = new_square.coord
-        self.switch_turn()
 
     def swap_piece(self, old_square, new_square):
         temp = old_square.piece
@@ -195,7 +192,6 @@ class ChessBoard(pygame.sprite.Sprite):
         new_square.piece = temp
         old_square.piece.coord = old_square.coord
         new_square.piece.coord = new_square.coord
-        self.switch_turn()
 
     def attack_piece(self, old_square, attack_square):
         old_square.piece.attack(old_square.coord, attack_square.coord, self.round_num)
@@ -204,7 +200,6 @@ class ChessBoard(pygame.sprite.Sprite):
         if type(old_square.piece) == Catapult:
             old_square.piece.is_reloading = True
             old_square.piece.attacked_at = self.round_num
-        self.switch_turn()
 
     def render(self):
         pygame.display.get_surface().blit(self.image, self.rect) # draws chessboard
@@ -241,7 +236,6 @@ class ChessBoard(pygame.sprite.Sprite):
                         square.piece.is_stunned = False
                     if square.piece.is_reloading and self.round_num - square.piece.attacked_at > 3:
                         square.piece.is_reloading = False
-                    square.piece.update_attack_moves(square.coord)
                 
         # print(f'after reset(): {self.selected_square.piece.move_squares}')
 
@@ -259,9 +253,9 @@ class ChessBoard(pygame.sprite.Sprite):
                 
         for square in self.squares[0]:
             if square.piece and square.piece.color == 'white' and type(square.piece) == Legionary:
-                square.piece = Archer(WHITE_SURFS['archer'], 'white', square.coord, self.squares)
+                square.piece = Archer(PIECE_SURFS['white']['archer'], 'white', square.coord, self.squares)
         for square in self.squares[7]:
             if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
-                square.piece = Archer(BLACK_SURFS['archer'], 'black', square.coord, self.squares)
+                square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
 
         # print(f'end updated(): {self.selected_square.piece.move_squares}')

@@ -13,6 +13,7 @@ class Wizard(Piece):
     def update_swap_moves(self, coordinate):
         from pieces.emperor import Emperor
         from pieces.archer import Archer
+        from pieces.legionary import Legionary
         
         DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         surroundings = []
@@ -27,5 +28,15 @@ class Wizard(Piece):
         for row in range(8):
             for col in range(8):
                 square = self.squares[row][col]
-                if square.piece and type(square.piece) != Emperor and type(square.piece) != Wizard and type(square.piece) != Archer and (row, col) not in surroundings:
-                    self.swap_squares.append(square)
+                if not square.piece:
+                    continue
+                if square.coord in surroundings:
+                    continue
+                if type(square.piece) == Emperor or type(square.piece) == Wizard or type(square.piece) == Archer:
+                    continue
+                if type(square.piece) == Legionary:
+                    if square.piece.color == "white" and self.coord[0] == 0:
+                        continue
+                    if square.piece.color == 'black' and self.coord[0] == 7:
+                        continue
+                self.swap_squares.append(square)
