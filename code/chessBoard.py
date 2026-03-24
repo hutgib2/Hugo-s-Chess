@@ -35,6 +35,7 @@ class ChessBoard(pygame.sprite.Sprite):
             "black": None
         }
         self.gen_squares()
+        self.checkmate = False
         self.load_game("assets/board_state/new_game.json")
 
         # images
@@ -133,6 +134,11 @@ class ChessBoard(pygame.sprite.Sprite):
         click_square.is_selected = True
         self.update_moves(click_square)
         self.selected_square = click_square
+
+    def deselect_piece(self):
+        self.selected_square.is_selected = False
+        self.selected_square = None
+        self.update()
                 
     def update_moves(self, click_square):
         click_square.piece.update_possible_moves(click_square.coord)
@@ -225,7 +231,7 @@ class ChessBoard(pygame.sprite.Sprite):
                     all_moves.extend(square.piece.swap_squares)
 
         if len(all_moves) == 0 and self.in_check(color):
-            print('checkmate')
+            self.checkmate = True
 
     def render(self):
         pygame.display.get_surface().blit(self.image, self.rect) # draws chessboard

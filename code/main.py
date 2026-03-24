@@ -3,6 +3,7 @@ from support import *
 from textSprite import TextSprite
 from chessBoard import ChessBoard
 from button import InteractiveButton
+import time
 
 class Chess2026():
     def __init__(self):
@@ -13,6 +14,7 @@ class Chess2026():
         self.rules_screen = pygame.image.load(join('assets', 'images', 'rules', 'rules_screen.png'))
         self.rules_rect = self.rules_screen.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.rules_shown = False
+        self.checkmate_text = TextSprite('Checkmate!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'green', 128, ())
 
         # audio
         self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
@@ -31,6 +33,8 @@ class Chess2026():
                 self.board.save_game()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
                 self.board.load_game('assets/board_state/save_game.json')
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_c and self.board.selected_square:
+                self.board.deselect_piece()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.rulebook.rect.collidepoint(event.pos):
                     self.rulebook.is_clicked()
@@ -38,9 +42,7 @@ class Chess2026():
                 if self.rules_shown:
                     continue
                 if not self.board.rect.collidepoint(event.pos) and self.board.selected_square:
-                    self.board.selected_square.is_selected = False
-                    self.board.selected_square = None
-                    self.board.update()
+                    self.board.deselect_piece()
                     continue
 
                 for row in range(8):
@@ -62,8 +64,7 @@ class Chess2026():
                             self.board.attack_piece(self.board.selected_square, click_square)
                             self.board.switch_turn()
                         elif click_square.piece == None and self.board.selected_square:
-                            self.board.selected_square.is_selected = False
-                            self.board.selected_square = None
+                            self.board.deselect_piece()
                         
                         self.board.update()
 
@@ -73,12 +74,16 @@ class Chess2026():
             
             screen.fill((100, 100, 100))
             self.board.render()
-            
+            if self.board.checkmate:
+                self.checkmate_text.update()
+                pygame.display.update()
+                time.sleep(2)
+                self.running = False
             self.rulebook.update()
             if self.rules_shown == True:
                 pygame.display.get_surface().blit(self.rules_screen, self.rules_rect)
             pygame.display.update()
-
+        
 game = Chess2026()
 game.run()
 pygame.quit()
