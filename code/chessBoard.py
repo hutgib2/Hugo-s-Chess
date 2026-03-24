@@ -35,8 +35,8 @@ class ChessBoard(pygame.sprite.Sprite):
             "black": None
         }
         self.gen_squares()
-        # pprint.pprint(self.take_snapshot())
         self.load_game("assets/board_state/new_game.json")
+
         # images
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select_indicator'], (TILE_WIDTH, TILE_WIDTH))
         self.move_indicator = pygame.transform.smoothscale(BOARD_SURFS['move_indicator'], (TILE_WIDTH, TILE_WIDTH))
@@ -201,7 +201,14 @@ class ChessBoard(pygame.sprite.Sprite):
             old_square.piece.is_reloading = True
             old_square.piece.attacked_at = self.round_num
 
-    def is_check_mate(self, color):
+
+    def in_check(self, color):
+        self.update_enemy_attack_squares(color)
+        if self.emperors[color].in_check:
+            return True
+        return False
+
+    def in_check_mate(self, color):
         # if possible moves for one side is 0 and emperor's in check
         # it's a draw if no can make a move and they're not in check
         all_moves = []
@@ -216,11 +223,8 @@ class ChessBoard(pygame.sprite.Sprite):
                 all_moves.extend(square.piece.attack_squares)
                 if type(square.piece) == Wizard:
                     all_moves.extend(square.piece.swap_squares)
-        print(f'color: {color}')
-        print(all_moves)
-        print(f'len: {len(all_moves)}')
-        
-        if len(all_moves) == 0 and self.emperors[color].in_check == True:
+
+        if len(all_moves) == 0 and self.in_check(color):
             print('checkmate')
 
     def render(self):
@@ -281,5 +285,5 @@ class ChessBoard(pygame.sprite.Sprite):
             if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
                 square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
 
-        self.is_check_mate(self.turn)
+        self.in_check_mate(self.turn)
         # print(f'end updated(): {self.selected_square.piece.move_squares}')
