@@ -4,6 +4,7 @@ from textSprite import TextSprite, Notification
 from chessBoard import ChessBoard
 from button import InteractiveButton
 from timer import Timer
+import time
 
 class Chess2026():
     def __init__(self):
