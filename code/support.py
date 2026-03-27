@@ -17,7 +17,6 @@ def folder_importer_list(*path):
             full_path = join(folder_path, file_name)
             surf = pygame.transform.scale(pygame.image.load(full_path), (100, 100)).convert_alpha()
             surf_list.append(surf)
-    print(surf_list)
     return surf_list
 
 

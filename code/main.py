@@ -3,7 +3,7 @@ from support import *
 from textSprite import TextSprite
 from chessBoard import ChessBoard
 from button import InteractiveButton
-import time
+from timer import Timer
 
 class Chess2026():
     def __init__(self):
@@ -15,7 +15,8 @@ class Chess2026():
         self.rules_rect = self.rules_screen.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.rules_shown = False
         self.clock = pygame.time.Clock()
-        self.can_play = True
+        self.game_blocked = False
+        self.unblock_timer = Timer(1000, self.unblock_game)
 
         # text
         self.checkmate_text = TextSprite('Checkmate!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'green', 128, ())
@@ -25,9 +26,24 @@ class Chess2026():
         # audio
         self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
         self.move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.wav'))
+
+    def unblock_game(self):
+        self.game_blocked = False
         
     def show_rules(self):
         self.rules_shown = not self.rules_shown
+
+    def switch_turn(self):
+        if self.board.turn == 'white':
+            self.board.turn = 'black'
+        else:
+            self.board.turn = 'white'
+        if self.board.selected_square:
+            self.board.selected_square.is_selected = False
+            self.board.selected_square = None
+        self.board.round_num += 1
+        self.game_blocked = True
+        self.unblock_timer.activate()
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -45,12 +61,13 @@ class Chess2026():
                 if self.rulebook.rect.collidepoint(event.pos):
                     self.rulebook.is_clicked()
                     continue
-                if self.rules_shown:
+                if self.rules_shown or self.game_blocked:
                     continue
                 if not self.board.rect.collidepoint(event.pos) and self.board.selected_square:
                     self.board.deselect_piece()
                     continue
-
+                    
+                # handling game play clicks
                 for row in range(8):
                     for col in range(8):
                         click_square = self.board.squares[row][col]
@@ -58,18 +75,19 @@ class Chess2026():
                             continue
                         if click_square.is_swappable:
                             self.board.swap_piece(self.board.selected_square, click_square)
-                            self.board.switch_turn()                    
+                            self.switch_turn()
                         elif click_square.piece and click_square.piece.color == self.board.turn and not click_square.piece.is_stunned:
                             self.board.select_piece(click_square)
                         elif click_square.is_possible_move:
                             self.move_sound.play() 
                             self.board.move_piece(self.board.selected_square, click_square) 
-                            self.board.switch_turn()                    
+                            self.switch_turn()                    
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
                             self.board.attack_piece(self.board.selected_square, click_square)
                             self.board.selected_square.piece.animate_attack()
-                            self.board.switch_turn()
+                            self.switch_turn()
+                            
                         elif click_square.piece == None and self.board.selected_square:
                             self.board.deselect_piece()
 
@@ -92,6 +110,7 @@ class Chess2026():
             dt = self.clock.tick() / 1000
             self.handle_events()
             self.board.update()
+            self.unblock_timer.update()
             self.draw_game(dt)
             if self.board.checkmate:
                 time.sleep(2)

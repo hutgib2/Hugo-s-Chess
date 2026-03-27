@@ -50,16 +50,6 @@ class ChessBoard(pygame.sprite.Sprite):
         self.attack_indicator.set_alpha(200)
         self.stun_indicator.set_alpha(240)
 
-    def switch_turn(self):
-        if self.turn == 'white':
-            self.turn = 'black'
-        else:
-            self.turn = 'white'
-        if self.selected_square:
-            self.selected_square.is_selected = False
-            self.selected_square = None
-        self.round_num += 1
-
     # creates a 2d list of rects representing the individual squares on the board
     def gen_squares(self):
         self.squares = [[], [], [], [], [], [], [], []]
