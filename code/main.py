@@ -1,6 +1,6 @@
 from settings import *
 from support import *
-from textSprite import TextSprite
+from textSprite import TextSprite, Notification
 from chessBoard import ChessBoard
 from button import InteractiveButton
 from timer import Timer
@@ -17,11 +17,17 @@ class Chess2026():
         self.clock = pygame.time.Clock()
         self.game_blocked = False
         self.unblock_timer = Timer(1000, self.unblock_game)
+        self.notifications = pygame.sprite.Group()
 
         # text
         self.checkmate_text = TextSprite('Checkmate!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'green', 128, ())
         self.white_turn_text = TextSprite("White's turn", (WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2), 'white', 128, ())
         self.black_turn_text = TextSprite("Black's turn", (WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2), 'black', 128, ())
+        self.save_game_text = Notification('Game saved!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'blue', 128, (self.notifications))
+        self.load_game_text = Notification('Game loaded!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'blue', 128, (self.notifications))
+        self.new_game_text = Notification('New game!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'blue', 128, (self.notifications))
+        # self.white_score_text = TextSprite()
+        # self.black_score_text = TextSprite()
 
         # audio
         self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
@@ -51,10 +57,11 @@ class Chess2026():
                 self.running = False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 self.board.reset_game()
+                self.new_game_text.show()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
                 self.board.save_game()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
-                self.board.load_game('assets/board_state/save_game.json')
+                self.board.load_game('assets/saved_games/save_game.json')
             if event.type == pygame.KEYDOWN and event.key == pygame.K_c and self.board.selected_square:
                 self.board.deselect_piece()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -98,6 +105,7 @@ class Chess2026():
             self.white_turn_text.update()
         if self.board.turn == 'black':
             self.black_turn_text.update()
+        self.notifications.update()
         self.rulebook.update()
         if self.rules_shown == True:
             pygame.display.get_surface().blit(self.rules_screen, self.rules_rect)

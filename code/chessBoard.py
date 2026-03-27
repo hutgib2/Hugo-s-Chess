@@ -37,7 +37,7 @@ class ChessBoard(pygame.sprite.Sprite):
         self.board_sprites = pygame.sprite.Group()
         self.gen_squares()
         self.checkmate = False
-        self.load_game("assets/board_state/new_game.json")
+        self.load_game("assets/saved_games/new_game.json")
 
         # images
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select_indicator'], (TILE_WIDTH, TILE_WIDTH))
@@ -67,10 +67,10 @@ class ChessBoard(pygame.sprite.Sprite):
             self.apply_snapshot(data)
 
     def reset_game(self):
-        self.load_game('assets/board_state/new_game.json')
+        self.load_game('assets/saved_games/new_game.json')
 
     def save_game(self):
-        with open('assets/board_state/save_game.json', 'w') as file:
+        with open('assets/saved_games/save_game.json', 'w') as file:
             data = self.take_snapshot()
             json.dump(data, file)
 
