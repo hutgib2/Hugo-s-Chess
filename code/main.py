@@ -15,6 +15,7 @@ class Chess2026():
         self.rules_rect = self.rules_screen.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.rules_shown = False
         self.clock = pygame.time.Clock()
+        self.can_play = True
 
         # text
         self.checkmate_text = TextSprite('Checkmate!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'green', 128, ())
