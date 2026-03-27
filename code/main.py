@@ -15,6 +15,8 @@ class Chess2026():
         self.rules_rect = self.rules_screen.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.rules_shown = False
         self.checkmate_text = TextSprite('Checkmate!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'green', 128, ())
+        self.white_turn_text = TextSprite("White's turn", (WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2), 'white', 128, ())
+        self.black_turn_text = TextSprite("Black's turn", (WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2), 'black', 128, ())
 
         # audio
         self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
@@ -65,24 +67,30 @@ class Chess2026():
                             self.board.switch_turn()
                         elif click_square.piece == None and self.board.selected_square:
                             self.board.deselect_piece()
-                        
-                        self.board.update()
+
+    def draw_game(self):
+        screen.fill((127, 127, 127))
+        self.board.render()
+        if self.board.turn == 'white':
+            self.white_turn_text.update()
+        if self.board.turn == 'black':
+            self.black_turn_text.update()
+        self.rulebook.update()
+        if self.rules_shown == True:
+            pygame.display.get_surface().blit(self.rules_screen, self.rules_rect)
+        if self.board.checkmate:
+            self.checkmate_text.update()
+        pygame.display.update()
 
     def run(self):
         while self.running:
             self.handle_events()
-            
-            screen.fill((100, 100, 100))
-            self.board.render()
+            self.board.update()
+            self.draw_game()
             if self.board.checkmate:
-                self.checkmate_text.update()
-                pygame.display.update()
                 time.sleep(2)
                 self.running = False
-            self.rulebook.update()
-            if self.rules_shown == True:
-                pygame.display.get_surface().blit(self.rules_screen, self.rules_rect)
-            pygame.display.update()
+            
         
 game = Chess2026()
 game.run()

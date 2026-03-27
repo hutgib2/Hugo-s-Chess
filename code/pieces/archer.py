@@ -6,7 +6,7 @@ class Archer(Piece):
         super().__init__(surf, color, coord, squares, is_stunned, stunned_at, is_reloading, attacked_at)
         self.attack_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         self.attack_range = (2, 3)
-        self.move_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        self.move_directions = [(-1, 0), (0, -1), (0, 1), (1, 0)]
         self.move_range = 1
 
     def attack(self, old_coord, attack_coord, round_num=0):

@@ -138,7 +138,6 @@ class ChessBoard(pygame.sprite.Sprite):
     def deselect_piece(self):
         self.selected_square.is_selected = False
         self.selected_square = None
-        self.update()
                 
     def update_moves(self, click_square):
         click_square.piece.update_possible_moves(click_square.coord)
