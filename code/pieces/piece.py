@@ -1,14 +1,15 @@
 from settings import *
 
 class Piece(pygame.sprite.Sprite):
-    def __init__(self, surf, color, coord, squares, is_stunned=False, stunned_at=0, is_reloading=False, attacked_at=0):
-        super().__init__()
+    def __init__(self, surf, color, coord, squares, groups, is_stunned=False, stunned_at=0, is_reloading=False, attacked_at=0):
+        super().__init__(groups)
         self.image = pygame.transform.smoothscale(surf, (TILE_WIDTH, TILE_WIDTH))
         self.color = color
         self.coord = coord
         self.attack_squares = []
         self.move_squares = []
         self.squares = squares
+        self.groups = groups
         self.is_reloading = is_reloading
         self.is_stunned = is_stunned
         self.stunned_at = stunned_at
@@ -103,3 +104,9 @@ class Piece(pygame.sprite.Sprite):
             "stunned_at": self.stunned_at,
             "attacked_at": self.attacked_at
         }
+
+    def update(self, dt):
+        pass
+    
+    def animate_attack(self):
+        pass

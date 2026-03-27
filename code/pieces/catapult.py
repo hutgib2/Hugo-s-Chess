@@ -2,8 +2,8 @@ from settings import *
 from pieces.piece import Piece
 
 class Catapult(Piece):
-    def __init__(self, surf, color, coord, squares, is_stunned=False, stunned_at=0, is_reloading=False, attacked_at=0):
-        super().__init__(surf, color, coord, squares, is_stunned, stunned_at, is_reloading, attacked_at)
+    def __init__(self, surf, color, coord, squares, groups, is_stunned=False, stunned_at=0, is_reloading=False, attacked_at=0):
+        super().__init__(surf, color, coord, squares, groups, is_stunned, stunned_at, is_reloading, attacked_at)
         if self.color == 'white':
             self.attack_directions = [(-1, 0), (0, 1), (0, -1)]
         elif self.color == 'black':
@@ -17,6 +17,8 @@ class Catapult(Piece):
         from pieces.emperor import Emperor
 
         self.attack_squares = []
+        if self.is_reloading:
+            return
         for direction in self.attack_directions:
             i = self.attack_range[0]
             while i <= self.attack_range[1]:

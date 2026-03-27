@@ -1,7 +1,7 @@
 import pygame
 from os.path import join 
 from os import walk
-from support import folder_importer
+from support import folder_importer, folder_importer_list
 
 DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
@@ -15,5 +15,8 @@ PIECE_SURFS = {
     'white': folder_importer('assets', 'images', 'white_pieces'),
     'black': folder_importer('assets', 'images', 'black_pieces'),
 }
+
+
+FLAME_ANIMATION = folder_importer_list('assets', 'animations', 'flame')
 
 BOARD_SURFS = folder_importer('assets', 'images', 'board')

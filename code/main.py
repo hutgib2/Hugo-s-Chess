@@ -14,6 +14,9 @@ class Chess2026():
         self.rules_screen = pygame.image.load(join('assets', 'images', 'rules', 'rules_screen.png'))
         self.rules_rect = self.rules_screen.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.rules_shown = False
+        self.clock = pygame.time.Clock()
+
+        # text
         self.checkmate_text = TextSprite('Checkmate!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'green', 128, ())
         self.white_turn_text = TextSprite("White's turn", (WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2), 'white', 128, ())
         self.black_turn_text = TextSprite("Black's turn", (WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2), 'black', 128, ())
@@ -64,13 +67,14 @@ class Chess2026():
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
                             self.board.attack_piece(self.board.selected_square, click_square)
+                            self.board.selected_square.piece.animate_attack()
                             self.board.switch_turn()
                         elif click_square.piece == None and self.board.selected_square:
                             self.board.deselect_piece()
 
-    def draw_game(self):
+    def draw_game(self, dt):
         screen.fill((127, 127, 127))
-        self.board.render()
+        self.board.render(dt)
         if self.board.turn == 'white':
             self.white_turn_text.update()
         if self.board.turn == 'black':
@@ -84,9 +88,10 @@ class Chess2026():
 
     def run(self):
         while self.running:
+            dt = self.clock.tick() / 1000
             self.handle_events()
             self.board.update()
-            self.draw_game()
+            self.draw_game(dt)
             if self.board.checkmate:
                 time.sleep(2)
                 self.running = False
