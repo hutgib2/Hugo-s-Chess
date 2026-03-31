@@ -4,6 +4,7 @@ from textSprite import TextSprite, Notification
 from chessBoard import ChessBoard
 from button import InteractiveButton
 from timer import Timer
+from pieces.piece import *
 import time
 
 class Chess2026():
@@ -36,21 +37,19 @@ class Chess2026():
 
     def unblock_game(self):
         self.game_blocked = False
+        if self.board.turn == 'white':
+            self.board.turn = 'black'
+        else:
+            self.board.turn = 'white'
         
     def show_rules(self):
         self.rules_shown = not self.rules_shown
 
     def switch_turn(self):
-        if self.board.turn == 'white':
-            self.board.turn = 'black'
-        else:
-            self.board.turn = 'white'
-        if self.board.selected_square:
-            self.board.selected_square.is_selected = False
-            self.board.selected_square = None
-        self.board.round_num += 1
         self.game_blocked = True
         self.unblock_timer.activate()
+        self.board.deselect_piece()
+        self.board.round_num += 1
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -92,8 +91,8 @@ class Chess2026():
                             self.switch_turn()                    
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
-                            self.board.attack_piece(self.board.selected_square, click_square)
                             self.board.selected_square.piece.animate_attack()
+                            self.board.attack_piece(self.board.selected_square, click_square)
                             self.switch_turn()
                             
                         elif click_square.piece == None and self.board.selected_square:
@@ -102,12 +101,12 @@ class Chess2026():
     def draw_game(self, dt):
         screen.fill((127, 127, 127))
         self.board.render(dt)
+        self.notifications.update()
+        self.rulebook.update()
         if self.board.turn == 'white':
             self.white_turn_text.update()
         if self.board.turn == 'black':
             self.black_turn_text.update()
-        self.notifications.update()
-        self.rulebook.update()
         if self.rules_shown == True:
             pygame.display.get_surface().blit(self.rules_screen, self.rules_rect)
         if self.board.checkmate:
