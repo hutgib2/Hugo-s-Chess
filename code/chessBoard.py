@@ -132,18 +132,20 @@ class ChessBoard(pygame.sprite.Sprite):
             self.selected_square = None
                 
     def update_moves(self, click_square):
-        click_square.piece.update_possible_moves(click_square.coord)
+        click_square.piece.update_possible_moves()
+        # print(f'all moves = {len(click_square.piece.move_squares)}')
         allowed_moves = self.filter_check_moves(click_square, click_square.piece.move_squares, 'move')
 
-        click_square.piece.update_attack_moves(click_square.coord)
+        click_square.piece.update_attack_moves()
         allowed_attacks = self.filter_check_moves(click_square, click_square.piece.attack_squares, 'attack')
 
         if type(click_square.piece) == Wizard:
-            click_square.piece.update_swap_moves(click_square.coord)
+            click_square.piece.update_swap_moves()
             allowed_swaps = self.filter_check_moves(click_square, click_square.piece.swap_squares, 'swap')
             click_square.piece.swap_squares = allowed_swaps
 
         click_square.piece.move_squares = allowed_moves
+        # print(f'allowed moves = {len(click_square.piece.move_squares)}')
         click_square.piece.attack_squares = allowed_attacks
     
     def filter_check_moves(self, click_square, moves, move_type):
@@ -152,6 +154,7 @@ class ChessBoard(pygame.sprite.Sprite):
             # save board state
             snapshot = self.take_snapshot()
             color = click_square.piece.color
+            in_check = self.emperors[color].in_check
 
             match move_type:
                 case 'move':
@@ -161,22 +164,26 @@ class ChessBoard(pygame.sprite.Sprite):
                 case 'swap':
                     self.swap_piece(click_square, move)
             
-            self.update_enemy_attack_squares(color)
-
-            # if emperor is in check, don't append to updated moves
-            if not self.emperors[color].in_check:
+            if not self.in_check(color):
                 updated_moves.append(move)
             
             # revert board state
             self.apply_snapshot(snapshot)
+            self.emperors[color].in_check = in_check
         return updated_moves
 
     def update_enemy_attack_squares(self, color):
+        all_enemy_attack_squares = []
         for row in range(8):
             for col in range(8): # for each square on the board, update their attack moves only if there's an opoonent's piece on that square
                 square = self.squares[row][col]
                 if square.piece and square.piece.color != color:
-                    square.piece.update_attack_moves(square.coord)
+                    square.piece.update_attack_moves()
+                    all_enemy_attack_squares.extend(square.piece.attack_squares)
+        
+        for square in all_enemy_attack_squares:
+            if square.coord == self.emperors[color].coord:
+                self.emperors[color].in_check = True
 
     def move_piece(self, old_square, new_square):
         new_square.piece = old_square.piece
@@ -191,7 +198,7 @@ class ChessBoard(pygame.sprite.Sprite):
         new_square.piece.coord = new_square.coord
 
     def attack_piece(self, old_square, attack_square):
-        old_square.piece.attack(old_square.coord, attack_square.coord, self.round_num)
+        old_square.piece.attack(attack_square.coord, self.round_num)
         if not old_square.piece:
             attack_square.piece.coord = attack_square.coord
         if type(old_square.piece) == Catapult:
@@ -208,6 +215,7 @@ class ChessBoard(pygame.sprite.Sprite):
     def in_check_mate(self, color):
         # if possible moves for one side is 0 and emperor's in check
         # it's a draw if no can make a move and they're not in check
+        count = 0
         all_moves = []
         for row in range(8):
             for col in range(8):
@@ -217,10 +225,15 @@ class ChessBoard(pygame.sprite.Sprite):
                 if square.piece.color != color:
                     continue
                 all_moves.extend(square.piece.move_squares)
+                
                 all_moves.extend(square.piece.attack_squares)
+                
                 if type(square.piece) == Wizard:
                     all_moves.extend(square.piece.swap_squares)
+                count+=1
 
+        # print(f'all moves = {all_moves}')
+        # print(f'piece count = {count}')
         if len(all_moves) == 0 and self.in_check(color):
             self.checkmate = True
 

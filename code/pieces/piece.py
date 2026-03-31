@@ -37,13 +37,13 @@ class Piece(pygame.sprite.Sprite):
             return True
         return False
 
-    def update_possible_moves(self, start):
+    def update_possible_moves(self):
         self.move_squares = []
         for direction in self.move_directions:
             i = 1
             while i <= self.move_range:
-                row = start[0] + direction[0] * i
-                col = start[1] + direction[1] * i
+                row = self.coord[0] + direction[0] * i
+                col = self.coord[1] + direction[1] * i
                 i += 1
 
                 if row < 0 or row > 7 or col < 0 or col > 7:
@@ -55,7 +55,7 @@ class Piece(pygame.sprite.Sprite):
                 else:
                     break
 
-    def update_attack_moves(self, start):
+    def update_attack_moves(self):
         from pieces.emperor import Emperor
         from pieces.legionary import Legionary
 
@@ -63,8 +63,8 @@ class Piece(pygame.sprite.Sprite):
         for direction in self.attack_directions:
             i = self.attack_range[0]
             while i <= self.attack_range[1]:
-                row = start[0] + direction[0] * i
-                col = start[1] + direction[1] * i
+                row = self.coord[0] + direction[0] * i
+                col = self.coord[1] + direction[1] * i
                 i += 1
 
                 if row < 0 or row > 7 or col < 0 or col > 7:
@@ -82,14 +82,12 @@ class Piece(pygame.sprite.Sprite):
                         elif self.has_adjacent_legionary(square, direction):
                             break
                     self.attack_squares.append(square)
-                    if type(square.piece) == Emperor:
-                        square.piece.in_check = True
                     break
                 else:
                     break
 
-    def attack(self, old_coord, attack_coord, round_num=0):
-        old_square = self.squares[old_coord[0]][old_coord[1]]
+    def attack(self, attack_coord, round_num=0):
+        old_square = self.squares[self.coord[0]][self.coord[1]]
         attack_square = self.squares[attack_coord[0]][attack_coord[1]]
         attack_square.piece = old_square.piece
         old_square.piece = None
@@ -108,5 +106,5 @@ class Piece(pygame.sprite.Sprite):
     def update(self, dt):
         pass
     
-    def animate_attack(self):
+    def animate_attack(self, _):
         pass

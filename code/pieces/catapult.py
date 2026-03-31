@@ -12,7 +12,7 @@ class Catapult(Piece):
         self.move_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         self.move_range = 2
 
-    def update_attack_moves(self, start):
+    def update_attack_moves(self):
         from pieces.legionary import Legionary
         from pieces.emperor import Emperor
 
@@ -22,8 +22,8 @@ class Catapult(Piece):
         for direction in self.attack_directions:
             i = self.attack_range[0]
             while i <= self.attack_range[1]:
-                row = start[0] + direction[0] * i
-                col = start[1] + direction[1] * i
+                row = self.coord[0] + direction[0] * i
+                col = self.coord[1] + direction[1] * i
                 i += 1
                 if row < 0 or row > 7 or col < 0 or col > 7:
                     break
@@ -37,25 +37,36 @@ class Catapult(Piece):
                     break
                 else:
                     self.attack_squares.append(square)
-                    if type(square.piece) == Emperor:
-                        square.piece.in_check = True
-            
-    def attack(self, start, attack_square, round_num):
-        from pieces.legionary import Legionary
 
-        drow = attack_square[0] - start[0]
-        dcol = attack_square[1] - start[1]
+
+    def get_attack_direction(self, attack_square):
+        drow = attack_square[0] - self.coord[0]
+        dcol = attack_square[1] - self.coord[1]
         if drow != 0:
             drow = drow / abs(drow)
+            
         if dcol != 0:
             dcol = dcol / abs(dcol)
 
         attack_direction = (int(drow), int(dcol))
+        return attack_direction
+
+    def animate_attack(self, attack_square):
+        attack_direction = self.get_attack_direction(attack_square)
+        direction = pygame.Vector2(attack_direction[0], attack_direction[1])
+
+        Boulder(, direction, self.groups)
+        
+            
+    def attack(self, attack_square, round_num):
+        from pieces.legionary import Legionary
+
+        attack_direction = self.get_attack_direction(attack_square)
         killed_first = False
         i = self.attack_range[0]
         while i <= self.attack_range[1]:
-            row = start[0] + attack_direction[0] * i
-            col = start[1] + attack_direction[1] * i
+            row = self.coord[0] + attack_direction[0] * i
+            col = self.coord[1] + attack_direction[1] * i
             i += 1
             if row < 0 or row > 7 or col < 0 or col > 7:
                 break
@@ -72,3 +83,22 @@ class Catapult(Piece):
             else:
                 square.piece.is_stunned = True
                 square.piece.stunned_at = round_num
+
+class Boulder(pygame.sprite.Sprite):
+    def __init__(self, pos, direction, groups):
+        super().__init__(groups)
+        self.image = pygame.transform.smoothscale(BOARD_SURFS['boulder'], (TILE_WIDTH, TILE_WIDTH))
+        print(self.image)
+        self.rect = self.image.get_frect(center = pos) 
+        self.spawn_time = pygame.time.get_ticks()
+        self.lifetime = 1000
+        self.direction = direction
+        self.speed = 1000
+        print('boulder created!')
+    
+    def update(self, dt):
+        print('boulder alive!')
+        self.rect.center += self.direction * self.speed * dt
+        if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
+            self.kill()
+            print('boulder killed!')

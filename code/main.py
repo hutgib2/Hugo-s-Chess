@@ -18,7 +18,7 @@ class Chess2026():
         self.rules_shown = False
         self.clock = pygame.time.Clock()
         self.game_blocked = False
-        self.unblock_timer = Timer(1000, self.unblock_game)
+        self.switch_turn_timer = Timer(1000, self.switch_turn)
         self.notifications = pygame.sprite.Group()
 
         # text
@@ -34,21 +34,17 @@ class Chess2026():
         # audio
         self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
         self.move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.wav'))
-
-    def unblock_game(self):
-        self.game_blocked = False
-        if self.board.turn == 'white':
-            self.board.turn = 'black'
-        else:
-            self.board.turn = 'white'
         
     def show_rules(self):
         self.rules_shown = not self.rules_shown
 
     def switch_turn(self):
-        self.game_blocked = True
-        self.unblock_timer.activate()
+        self.game_blocked = False
         self.board.deselect_piece()
+        if self.board.turn == 'white':
+            self.board.turn = 'black'
+        else:
+            self.board.turn = 'white'
         self.board.round_num += 1
 
     def handle_events(self):
@@ -91,9 +87,10 @@ class Chess2026():
                             self.switch_turn()                    
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
-                            self.board.selected_square.piece.animate_attack()
+                            self.board.selected_square.piece.animate_attack(click_square.coord)
                             self.board.attack_piece(self.board.selected_square, click_square)
-                            self.switch_turn()
+                            self.game_blocked = True
+                            self.switch_turn_timer.activate()
                             
                         elif click_square.piece == None and self.board.selected_square:
                             self.board.deselect_piece()
@@ -118,7 +115,7 @@ class Chess2026():
             dt = self.clock.tick() / 1000
             self.handle_events()
             self.board.update()
-            self.unblock_timer.update()
+            self.switch_turn_timer.update()
             self.draw_game(dt)
             if self.board.checkmate:
                 time.sleep(2)

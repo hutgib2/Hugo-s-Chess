@@ -14,11 +14,11 @@ class Dragon(Piece):
         self.move_directions = [(1, -2), (1, 2), (-1, 2), (-1, -2,), (2, 1), (2, -1), (-2, 1), (-2, -1)]
         self.move_range = 1
 
-    def attack(self, old_coord, attack_coord, round_num=0):
+    def attack(self, attack_coord, round_num=0):
         for square in self.attack_squares:
             square.piece = None
     
-    def animate_attack(self):
+    def animate_attack(self, _):
         for square in self.attack_squares:
             Flame(square.rect.center, self.groups)
 
