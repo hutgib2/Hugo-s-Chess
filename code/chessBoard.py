@@ -292,10 +292,10 @@ class ChessBoard(pygame.sprite.Sprite):
         # these for loops promote legionary to archer 
         for square in self.squares[0]:
             if square.piece and square.piece.color == 'white' and type(square.piece) == Legionary:
-                square.piece = Archer(PIECE_SURFS['white']['archer'], 'white', square.coord, self.squares)
+                square.piece = Archer(PIECE_SURFS['white']['archer'], 'white', square.coord, self.squares, self.board_sprites)
         for square in self.squares[7]:
             if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
-                square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
+                square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares, self.board_sprites)
 
         self.in_check_mate(self.turn)
         # print(f'end updated(): {self.selected_square.piece.move_squares}')
