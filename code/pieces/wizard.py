@@ -41,11 +41,6 @@ class Wizard(Piece):
                         continue
                 self.swap_squares.append(square)
 
-    def animate_swap(self, old_square, new_square):
-        Smoke(old_square.rect.center, self.groups)
-        Smoke(new_square.rect.center, self.groups)
-
-
 class Smoke(pygame.sprite.Sprite):
     def __init__(self, pos, groups):
         super().__init__(groups)
