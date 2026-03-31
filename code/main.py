@@ -77,7 +77,9 @@ class Chess2026():
                         if not click_square.rect.collidepoint(event.pos):
                             continue
                         if click_square.is_swappable:
-                            self.board.selected_square.piece.animate_swap(self.board.selected_square, click_square)
+                            from pieces.wizard import Smoke
+                            Smoke(self.board.selected_square.rect.center, self.board.board_sprites)
+                            Smoke(click_square.rect.center, self.board.board_sprites)
                             self.board.swap_piece(self.board.selected_square, click_square)
                             self.switch_turn()
                         elif click_square.piece and click_square.piece.color == self.board.turn and not click_square.piece.is_stunned:
