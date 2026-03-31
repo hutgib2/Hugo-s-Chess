@@ -94,12 +94,9 @@ class Boulder(pygame.sprite.Sprite):
         self.lifetime = 1000
         self.direction = direction
         self.speed = 1200
-        print('boulder created!')
     
     def update(self, dt):
-        print('boulder alive!')
-        self.rect.center += self.direction * self.speed * dt
         if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
             self.kill()
+        self.rect.center += self.direction * self.speed * dt
         pygame.display.get_surface().blit(self.image, self.rect)    
-        print('boulder killed!')

@@ -18,5 +18,5 @@ PIECE_SURFS = {
 
 
 FLAME_ANIMATION = folder_importer_list('assets', 'animations', 'flame')
-
+SMOKE_ANIMATION = folder_importer_list('assets', 'animations', 'smoke')
 BOARD_SURFS = folder_importer('assets', 'images', 'board')

@@ -15,7 +15,7 @@ def folder_importer_list(*path):
     for folder_path, _, file_names in walk(join(*path)):
         for file_name in sorted(file_names, key = lambda name: int(name.split('.')[0])):
             full_path = join(folder_path, file_name)
-            surf = pygame.transform.scale(pygame.image.load(full_path), (100, 100)).convert_alpha()
+            surf = pygame.transform.scale(pygame.image.load(full_path), (128, 128)).convert_alpha()
             surf_list.append(surf)
     return surf_list
 
