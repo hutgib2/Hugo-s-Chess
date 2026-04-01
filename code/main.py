@@ -90,7 +90,8 @@ class Chess2026():
                             self.switch_turn()                    
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
-                            self.board.selected_square.piece.animate_attack(click_square.coord)
+                            # self.board.selected_square.piece.animate_attack(click_square.coord)
+                            self.animator.attack(self.board.selected_square, click_square)
                             self.board.attack_piece(self.board.selected_square, click_square)
                             self.game_blocked = True
                             self.switch_turn_timer.activate()

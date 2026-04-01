@@ -19,5 +19,4 @@ class Dragon(Piece):
             square.piece = None
     
     # def animate_attack(self, _):
-    #     for square in self.attack_squares:
-    #         Flame(square.rect.center, self.groups)
+    

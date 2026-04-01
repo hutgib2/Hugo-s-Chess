@@ -9,9 +9,21 @@ class Animator():
         for rect in rects:
             Animation(rect.center, SMOKE_FRAMES, self.animation_sprites)
 
-    def attack(self):
-        pass
+    def attack(self, attacker_square, attacked_square):
+        match type(attacker_square.piece).__name__:
+            case 'Dragon':
+                self.dragon_attack(attacker_square.piece.attack_squares)
+            case 'Catapult':
+                pass
     
+    def dragon_attack(self, attack_squares):
+        for square in attack_squares:
+            Animation(square.rect.center, FLAME_FRAMES, self.animation_sprites)
+
+
+    def catapult_attack(self):
+        pass
+
     def update(self, dt):
         self.animation_sprites.update(dt)
 
