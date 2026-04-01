@@ -7,12 +7,13 @@ from timer import Timer
 from pieces.piece import *
 from animator import Animator
 from notifier import notifier
+import json
 import time
 
 class Chess2026():
     def __init__(self):
+        self.create_new_game()
         self.running = True
-        self.board = ChessBoard(BOARD_SURFS['chess_board'])
         self.clock = pygame.time.Clock()
         self.game_blocked = False
         self.switch_turn_timer = Timer(1000, self.switch_turn)
@@ -23,7 +24,6 @@ class Chess2026():
         self.rules_rect = self.rules_screen.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.rules_shown = False
         
-        # self.notifications = pygame.sprite.Group()
         self.animator = Animator()
 
         # text
@@ -33,6 +33,28 @@ class Chess2026():
         # audio
         self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
         self.move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.wav'))
+
+    def create_new_game(self):
+        self.board = ChessBoard(BOARD_SURFS['chess_board'])
+        with open('assets/saved_games/new_game.json', 'r') as file:
+            data = json.load(file)
+            self.board.apply_snapshot(data)
+    
+    def load_game(self, file_path):
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+            self.board.apply_snapshot(data)
+        notifier.notify('Game Loaded!')
+
+    def reset_game(self):
+        self.load_game('assets/saved_games/new_game.json')
+        notifier.notify('New Game!')
+
+    def save_game(self):
+        with open('assets/saved_games/save_game.json', 'w') as file:
+            data = self.board.take_snapshot()
+            json.dump(data, file)
+        notifier.notify('Game Saved!')
         
     def show_rules(self):
         self.rules_shown = not self.rules_shown
@@ -51,14 +73,11 @@ class Chess2026():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 self.running = False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                self.board.reset_game()
-                notifier.notify('New Game!')
+                self.reset_game()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
-                self.board.save_game()
-                notifier.notify('Game Saved!')
+                self.save_game()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
-                self.board.load_game('assets/saved_games/save_game.json')
-                notifier.notify('Game Loaded!')
+                self.load_game('assets/saved_games/save_game.json')
             if event.type == pygame.KEYDOWN and event.key == pygame.K_c and self.board.selected_square:
                 self.board.deselect_piece()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -109,8 +128,6 @@ class Chess2026():
             self.black_turn_text.update()
         if self.rules_shown == True:
             pygame.display.get_surface().blit(self.rules_screen, self.rules_rect)
-        if self.board.checkmate:
-            self.checkmate_text.update()
         pygame.display.update()
 
     def run(self):
@@ -121,6 +138,7 @@ class Chess2026():
             self.switch_turn_timer.update()
             self.draw_game(dt)
             if self.board.checkmate:
+                notifier.notify('CHECKMATE!')
                 time.sleep(2)
                 self.running = False
             

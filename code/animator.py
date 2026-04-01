@@ -3,7 +3,6 @@ from support import get_direction_between
 
 class Animator():
     def __init__(self):
-        self.duration = 1000
         self.animation_sprites = pygame.sprite.Group()
 
     def swap(self, rects):

@@ -102,5 +102,3 @@ class Piece(pygame.sprite.Sprite):
             "attacked_at": self.attacked_at
         }
 
-    def update(self, dt):
-        pass

@@ -8,7 +8,6 @@ from pieces.wizard import Wizard
 from pieces.catapult import Catapult
 from pieces.emperor import Emperor
 import copy
-import json
 import pprint
 
 class Square():
@@ -36,7 +35,6 @@ class ChessBoard(pygame.sprite.Sprite):
         }
         self.gen_squares()
         self.checkmate = False
-        self.load_game("assets/saved_games/new_game.json")
 
         # images
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select_indicator'], (TILE_WIDTH, TILE_WIDTH))
@@ -59,19 +57,6 @@ class ChessBoard(pygame.sprite.Sprite):
                 square_rect = pygame.Rect(pos_x + (col * TILE_WIDTH), pos_y, TILE_WIDTH, TILE_WIDTH) # creates a rect that specifies the area of a square
                 self.squares[row].append(Square(square_rect, (row,col))) # it appends the whole area of a square and gives that square a piece
             pos_y += TILE_WIDTH # shifts to the next row
-
-    def load_game(self, file_path):
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-            self.apply_snapshot(data)
-
-    def reset_game(self):
-        self.load_game('assets/saved_games/new_game.json')
-
-    def save_game(self):
-        with open('assets/saved_games/save_game.json', 'w') as file:
-            data = self.take_snapshot()
-            json.dump(data, file)
 
     def place_piece(self, pos, piece):
         self.squares[pos[0]][pos[1]].piece = piece
