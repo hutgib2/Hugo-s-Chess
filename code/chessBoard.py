@@ -12,9 +12,9 @@ import json
 import pprint
 
 class Square():
-    def __init__(self, rect, coordinate):
+    def __init__(self, rect, coord):
         self.rect = rect # represents the area of the square
-        self.coord = coordinate
+        self.coord = coord
         self.piece = None # whether and which piece is on that square
         self.is_possible_move = False
         self.is_selected = False

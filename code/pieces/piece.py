@@ -104,6 +104,3 @@ class Piece(pygame.sprite.Sprite):
 
     def update(self, dt):
         pass
-    
-    def animate_attack(self, _):
-        pass

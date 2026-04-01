@@ -1,37 +1,34 @@
 from settings import *
 from support import *
-from textSprite import TextSprite, Notification
+from textSprite import TextSprite
 from chessBoard import ChessBoard
 from button import InteractiveButton
 from timer import Timer
 from pieces.piece import *
 from animator import Animator
+from notifier import notifier
 import time
 
 class Chess2026():
     def __init__(self):
         self.running = True
         self.board = ChessBoard(BOARD_SURFS['chess_board'])
+        self.clock = pygame.time.Clock()
+        self.game_blocked = False
+        self.switch_turn_timer = Timer(1000, self.switch_turn)
+
         self.rulebook_surf = pygame.image.load(join('assets', 'images', 'rules', 'rulebook.png'))
         self.rulebook = InteractiveButton(self.rulebook_surf, (200, 200), (256, 256), (), self.show_rules)
         self.rules_screen = pygame.image.load(join('assets', 'images', 'rules', 'rules_screen.png'))
         self.rules_rect = self.rules_screen.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.rules_shown = False
-        self.clock = pygame.time.Clock()
-        self.game_blocked = False
-        self.switch_turn_timer = Timer(1000, self.switch_turn)
-        self.notifications = pygame.sprite.Group()
+        
+        # self.notifications = pygame.sprite.Group()
         self.animator = Animator()
 
         # text
-        self.checkmate_text = TextSprite('Checkmate!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'green', 128, ())
         self.white_turn_text = TextSprite("White's turn", (WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2), 'white', 128, ())
         self.black_turn_text = TextSprite("Black's turn", (WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2), 'black', 128, ())
-        self.save_game_text = Notification('Game saved!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'blue', 128, (self.notifications))
-        self.load_game_text = Notification('Game loaded!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'blue', 128, (self.notifications))
-        self.new_game_text = Notification('New game!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'blue', 128, (self.notifications))
-        # self.white_score_text = TextSprite()
-        # self.black_score_text = TextSprite()
 
         # audio
         self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
@@ -55,11 +52,13 @@ class Chess2026():
                 self.running = False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 self.board.reset_game()
-                self.new_game_text.show()
+                notifier.notify('New Game!')
             if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
                 self.board.save_game()
+                notifier.notify('Game Saved!')
             if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
                 self.board.load_game('assets/saved_games/save_game.json')
+                notifier.notify('Game Loaded!')
             if event.type == pygame.KEYDOWN and event.key == pygame.K_c and self.board.selected_square:
                 self.board.deselect_piece()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -90,7 +89,6 @@ class Chess2026():
                             self.switch_turn()                    
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
-                            # self.board.selected_square.piece.animate_attack(click_square.coord)
                             self.animator.attack(self.board.selected_square, click_square)
                             self.board.attack_piece(self.board.selected_square, click_square)
                             self.game_blocked = True
@@ -102,8 +100,8 @@ class Chess2026():
     def draw_game(self, dt):
         screen.fill((127, 127, 127))
         self.board.render()
+        notifier.update()
         self.animator.update(dt)
-        self.notifications.update()
         self.rulebook.update()
         if self.board.turn == 'white':
             self.white_turn_text.update()

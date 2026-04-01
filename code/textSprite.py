@@ -10,18 +10,3 @@ class TextSprite(pygame.sprite.Sprite):
     
     def update(self):
         pygame.display.get_surface().blit(self.image, self.rect)
-
-class Notification(TextSprite):
-    def __init__(self, text, pos, color, size, groups):
-        super().__init__(text, pos, color, size, groups)
-        self.is_drawn = False
-    
-    def show(self):
-        self.is_drawn = True
-
-    def hide(self):
-        self.is_drawn = False
-
-    def update(self):
-        if self.is_drawn:
-            pygame.display.get_surface().blit(self.image, self.rect)
