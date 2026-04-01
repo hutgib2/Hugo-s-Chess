@@ -34,7 +34,6 @@ class ChessBoard(pygame.sprite.Sprite):
             "white": None,
             "black": None
         }
-        self.board_sprites = pygame.sprite.Group()
         self.gen_squares()
         self.checkmate = False
         self.load_game("assets/saved_games/new_game.json")
@@ -107,17 +106,17 @@ class ChessBoard(pygame.sprite.Sprite):
     def piece_from_type(self, piece):
         match piece["type"]:
             case "Legionary":
-                return Legionary(PIECE_SURFS[piece["color"]]['legionary'], piece["color"], piece["coord"], self.squares, self.board_sprites, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+                return Legionary(PIECE_SURFS[piece["color"]]['legionary'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
             case "Emperor":
-                return Emperor(PIECE_SURFS[piece["color"]]['emperor'], piece["color"], piece["coord"], self.squares, self.board_sprites, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+                return Emperor(PIECE_SURFS[piece["color"]]['emperor'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
             case "Dragon":
-                return Dragon(PIECE_SURFS[piece["color"]]['dragon'], piece["color"], piece["coord"], self.squares, self.board_sprites, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+                return Dragon(PIECE_SURFS[piece["color"]]['dragon'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
             case "Archer":
-                return Archer(PIECE_SURFS[piece["color"]]['archer'], piece["color"], piece["coord"], self.squares,self.board_sprites,  piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+                return Archer(PIECE_SURFS[piece["color"]]['archer'], piece["color"], piece["coord"], self.squares,  piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
             case "Catapult":
-                return Catapult(PIECE_SURFS[piece["color"]]['catapult'], piece["color"], piece["coord"], self.squares, self.board_sprites, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+                return Catapult(PIECE_SURFS[piece["color"]]['catapult'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
             case "Wizard":
-                return Wizard(PIECE_SURFS[piece["color"]]['wizard'], piece["color"], piece["coord"], self.squares, self.board_sprites, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+                return Wizard(PIECE_SURFS[piece["color"]]['wizard'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
 
     def select_piece(self, click_square):
         if self.selected_square:
@@ -274,7 +273,6 @@ class ChessBoard(pygame.sprite.Sprite):
                         square.piece.is_reloading = False
                 
         # print(f'after reset(): {self.selected_square.piece.move_squares}')
-
         if self.selected_square and self.selected_square.piece:
             for square in self.selected_square.piece.move_squares:
                 square.is_possible_move = True
@@ -290,10 +288,10 @@ class ChessBoard(pygame.sprite.Sprite):
         # these for loops promote legionary to archer 
         for square in self.squares[0]:
             if square.piece and square.piece.color == 'white' and type(square.piece) == Legionary:
-                square.piece = Archer(PIECE_SURFS['white']['archer'], 'white', square.coord, self.squares, self.board_sprites)
+                square.piece = Archer(PIECE_SURFS['white']['archer'], 'white', square.coord, self.squares)
         for square in self.squares[7]:
             if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
-                square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares, self.board_sprites)
+                square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
 
         self.in_check_mate(self.turn)
         # print(f'end updated(): {self.selected_square.piece.move_squares}')
