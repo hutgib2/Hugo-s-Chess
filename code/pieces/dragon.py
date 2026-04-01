@@ -18,27 +18,6 @@ class Dragon(Piece):
         for square in self.attack_squares:
             square.piece = None
     
-    def animate_attack(self, _):
-        for square in self.attack_squares:
-            Flame(square.rect.center, self.groups)
-
-class Flame(pygame.sprite.Sprite):
-    def __init__(self, pos, groups):
-        super().__init__(groups)
-        self.frames = FLAME_ANIMATION
-        self.image = self.frames[0]
-        self.rect = self.image.get_frect(center = pos)
-        self.spawn_time = pygame.time.get_ticks()
-        self.lifetime = 1000
-        self.frame_index = 0
-        self.animation_speed = 15
-
-    def animate(self, dt):
-        self.frame_index += self.animation_speed * dt
-        self.image = self.frames[int(self.frame_index) % len(self.frames)]
-        pygame.display.get_surface().blit(self.image, self.rect)
-    
-    def update(self, dt):
-        if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
-            self.kill()
-        self.animate(dt)
+    # def animate_attack(self, _):
+    #     for square in self.attack_squares:
+    #         Flame(square.rect.center, self.groups)

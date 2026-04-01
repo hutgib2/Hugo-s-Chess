@@ -51,11 +51,11 @@ class Catapult(Piece):
         attack_direction = (int(drow), int(dcol))
         return attack_direction
 
-    def animate_attack(self, attack_square):
-        attack_direction = self.get_attack_direction(attack_square)
-        direction = pygame.Vector2(attack_direction[1], attack_direction[0])
-        square = self.squares[self.coord[0]][self.coord[1]]
-        Boulder(square.rect.center, direction, self.groups)
+    # def animate_attack(self, attack_square):
+    #     attack_direction = self.get_attack_direction(attack_square)
+    #     direction = pygame.Vector2(attack_direction[1], attack_direction[0])
+    #     square = self.squares[self.coord[0]][self.coord[1]]
+    #     Boulder(square.rect.center, direction, self.groups)
         
             
     def attack(self, attack_square, round_num):
@@ -99,4 +99,4 @@ class Boulder(pygame.sprite.Sprite):
         if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
             self.kill()
         self.rect.center += self.direction * self.speed * dt
-        pygame.display.get_surface().blit(self.image, self.rect)    
+        pygame.display.get_surface().blit(self.image, self.rect)

@@ -5,6 +5,7 @@ from chessBoard import ChessBoard
 from button import InteractiveButton
 from timer import Timer
 from pieces.piece import *
+from animation import Animator
 import time
 
 class Chess2026():
@@ -20,6 +21,7 @@ class Chess2026():
         self.game_blocked = False
         self.switch_turn_timer = Timer(1000, self.switch_turn)
         self.notifications = pygame.sprite.Group()
+        self.animator = Animator()
 
         # text
         self.checkmate_text = TextSprite('Checkmate!', (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2), 'green', 128, ())
@@ -77,9 +79,7 @@ class Chess2026():
                         if not click_square.rect.collidepoint(event.pos):
                             continue
                         if click_square.is_swappable:
-                            from pieces.wizard import Smoke
-                            Smoke(self.board.selected_square.rect.center, self.board.board_sprites)
-                            Smoke(click_square.rect.center, self.board.board_sprites)
+                            self.animator.swap([self.board.selected_square.rect, click_square.rect])
                             self.board.swap_piece(self.board.selected_square, click_square)
                             self.switch_turn()
                         elif click_square.piece and click_square.piece.color == self.board.turn and not click_square.piece.is_stunned:
@@ -100,7 +100,8 @@ class Chess2026():
 
     def draw_game(self, dt):
         screen.fill((127, 127, 127))
-        self.board.render(dt)
+        self.board.render()
+        self.animator.update(dt)
         self.notifications.update()
         self.rulebook.update()
         if self.board.turn == 'white':

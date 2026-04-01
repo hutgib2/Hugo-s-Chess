@@ -237,7 +237,7 @@ class ChessBoard(pygame.sprite.Sprite):
         if len(all_moves) == 0 and self.in_check(color):
             self.checkmate = True
 
-    def render(self, dt):
+    def render(self):
         pygame.display.get_surface().blit(self.image, self.rect) # draws chessboard
         for row in range(8):
             for col in range(8):
@@ -256,8 +256,6 @@ class ChessBoard(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(self.switch_indicator, square.rect)
                 if square.piece and square.piece.is_reloading == True:
                     pygame.display.get_surface().blit(self.reload_indicator, square.rect)
-        
-        self.board_sprites.update(dt)
 
     def update(self):
         # print(f'begin updated(): {self.selected_square.piece.move_squares}')
