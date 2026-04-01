@@ -1,5 +1,6 @@
 from settings import *
 from pieces.piece import Piece
+from support import get_direction_between
 
 class Catapult(Piece):
     def __init__(self, surf, color, coord, squares, groups, is_stunned=False, stunned_at=0, is_reloading=False, attacked_at=0):
@@ -36,32 +37,12 @@ class Catapult(Piece):
                 elif type(square.piece) == Legionary and direction == self.attack_directions[0]:
                     break
                 else:
-                    self.attack_squares.append(square)
-
-
-    def get_attack_direction(self, attack_square):
-        drow = attack_square[0] - self.coord[0]
-        dcol = attack_square[1] - self.coord[1]
-        if drow != 0:
-            drow = drow / abs(drow)
+                    self.attack_squares.append(square)    
             
-        if dcol != 0:
-            dcol = dcol / abs(dcol)
-
-        attack_direction = (int(drow), int(dcol))
-        return attack_direction
-
-    # def animate_attack(self, attack_square):
-    #     attack_direction = self.get_attack_direction(attack_square)
-    #     direction = pygame.Vector2(attack_direction[1], attack_direction[0])
-    #     square = self.squares[self.coord[0]][self.coord[1]]
-    #     Boulder(square.rect.center, direction, self.groups)
-        
-            
-    def attack(self, attack_square, round_num):
+    def attack(self, attack_coord, round_num):
         from pieces.legionary import Legionary
 
-        attack_direction = self.get_attack_direction(attack_square)
+        attack_direction = get_direction_between(self.coord, attack_coord)
         killed_first = False
         i = self.attack_range[0]
         while i <= self.attack_range[1]:
@@ -83,20 +64,3 @@ class Catapult(Piece):
             else:
                 square.piece.is_stunned = True
                 square.piece.stunned_at = round_num
-
-class Boulder(pygame.sprite.Sprite):
-    def __init__(self, pos, direction, groups):
-        super().__init__(groups)
-        self.image = pygame.transform.smoothscale(BOARD_SURFS['boulder'], (TILE_WIDTH, TILE_WIDTH))
-        print(self.image)
-        self.rect = self.image.get_frect(center = pos) 
-        self.spawn_time = pygame.time.get_ticks()
-        self.lifetime = 1000
-        self.direction = direction
-        self.speed = 1200
-    
-    def update(self, dt):
-        if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
-            self.kill()
-        self.rect.center += self.direction * self.speed * dt
-        pygame.display.get_surface().blit(self.image, self.rect)

@@ -5,7 +5,7 @@ from chessBoard import ChessBoard
 from button import InteractiveButton
 from timer import Timer
 from pieces.piece import *
-from animation import Animator
+from animator import Animator
 import time
 
 class Chess2026():
