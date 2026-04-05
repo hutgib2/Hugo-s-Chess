@@ -108,6 +108,7 @@ class ChessBoard(pygame.sprite.Sprite):
         # place pieces
         for piece_state in snapshot["pieces"]:
             piece = self.pieces[piece_state['id']]
+            piece.coord = piece_state['coord']
             piece.is_stunned = piece_state['is_stunned']
             piece.stunned_at = piece_state['stunned_at']
             piece.is_reloading = piece_state['is_reloading']
