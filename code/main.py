@@ -137,7 +137,6 @@ class Chess2026():
             self.switch_turn_timer.update()
             self.draw_game(dt)
             if self.board.checkmate:
-                notifier.notify('CHECKMATE!')
                 time.sleep(2)
                 self.running = False
             

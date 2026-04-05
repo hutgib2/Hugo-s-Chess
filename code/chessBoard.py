@@ -5,6 +5,7 @@ from pieces.archer import Archer
 from pieces.wizard import Wizard
 from pieces.catapult import Catapult
 from pieces.emperor import Emperor
+from notifier import notifier
 
 class Square():
     def __init__(self, rect, coord):
@@ -220,6 +221,7 @@ class ChessBoard(pygame.sprite.Sprite):
                     all_moves.extend(square.piece.swap_squares)
 
         if len(all_moves) == 0:
+            notifier.notify('Checkmate!')
             self.checkmate = True
 
     def render(self):
@@ -277,5 +279,5 @@ class ChessBoard(pygame.sprite.Sprite):
                 square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
 
         if self.in_check():
+            print('in check')
             self.evaluate_check_mate()
-        # print(f'end updated(): {self.selected_square.piece.move_squares}')

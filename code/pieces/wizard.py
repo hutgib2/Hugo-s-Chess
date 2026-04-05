@@ -32,11 +32,10 @@ class Wizard(Piece):
                     continue
                 if square.coord in surroundings:
                     continue
-                if type(square.piece) == Emperor or type(square.piece) == Wizard or type(square.piece) == Archer:
+                if type(square.piece) != Legionary:
                     continue
-                if type(square.piece) == Legionary:
-                    if square.piece.color == "white" and self.coord[0] == 0:
-                        continue
-                    if square.piece.color == 'black' and self.coord[0] == 7:
-                        continue
+                if square.piece.color == "white" and self.coord[0] == 0:
+                    continue
+                if square.piece.color == 'black' and self.coord[0] == 7:
+                    continue
                 self.swap_squares.append(square)
