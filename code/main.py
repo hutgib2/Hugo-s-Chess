@@ -111,10 +111,11 @@ class Chess2026():
                             self.board.attack_piece(self.board.selected_square, click_square)
                             self.game_blocked = True
                             self.switch_turn_timer.activate()
-                            
                         elif click_square.piece == None and self.board.selected_square:
                             self.board.deselect_piece()
-
+                
+                self.board.update()
+                    
     def draw_game(self, dt):
         screen.fill((127, 127, 127))
         self.board.render()
@@ -133,7 +134,6 @@ class Chess2026():
         while self.running:
             dt = self.clock.tick() / 1000
             self.handle_events()
-            self.board.update()
             self.switch_turn_timer.update()
             self.draw_game(dt)
             if self.board.checkmate:
