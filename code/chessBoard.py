@@ -161,31 +161,31 @@ class ChessBoard(pygame.sprite.Sprite):
         square.piece.move_squares = allowed_moves
         square.piece.attack_squares = allowed_attacks
 
-    def filter_invalid_moves(self, click_square):
+    def filter_invalid_moves(self, square):
         updated_moves = []
-        for move_square in click_square.piece.move_squares:
-            self.move_piece(click_square, move_square)
+        for move_square in square.piece.move_squares:
+            self.move_piece(square, move_square)
             if not self.in_check():
                 updated_moves.append(move_square)
-            self.move_piece(move_square, click_square)
+            self.move_piece(move_square, square)
         return updated_moves
 
-    def filter_invalid_swaps(self, click_square):
+    def filter_invalid_swaps(self, square):
         updated_moves = []
-        for move_square in click_square.piece.swap_squares:
-            self.swap_piece(click_square, move_square)
+        for swap_square in square.piece.swap_squares:
+            self.swap_piece(square, swap_square)
             if not self.in_check():
-                updated_moves.append(move_square)
-            self.swap_piece(move_square, click_square)
+                updated_moves.append(swap_square)
+            self.swap_piece(swap_square, square)
         return updated_moves
 
-    def filter_invalid_attacks(self, click_square):
+    def filter_invalid_attacks(self, square):
         updated_moves = []
-        for square in click_square.piece.attack_squares:
+        for attack_square in square.piece.attack_squares:
             snapshot = self.take_snapshot()
-            self.attack_piece(click_square, square)
+            self.attack_piece(square, attack_square)
             if not self.in_check():
-                updated_moves.append(square)
+                updated_moves.append(attack_square)
             
             self.apply_snapshot(snapshot)
         return updated_moves
