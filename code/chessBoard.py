@@ -154,7 +154,6 @@ class ChessBoard(pygame.sprite.Sprite):
             old_square.piece.is_reloading = True
             old_square.piece.attacked_at = self.round_num
 
-
     def update_moves(self, square):
         square.piece.update_possible_moves()
         allowed_moves = self.filter_invalid_moves(square)
@@ -198,7 +197,6 @@ class ChessBoard(pygame.sprite.Sprite):
             self.attack_piece(square, attack_square)
             if not self.in_check(color):
                 updated_moves.append(attack_square)
-            
             self.apply_snapshot(snapshot)
         return updated_moves
     
@@ -287,6 +285,4 @@ class ChessBoard(pygame.sprite.Sprite):
             if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
                 square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
         
-        if self.in_check(self.turn):
-            print(f'{self.turn} in check')
-            self.evaluate_check_mate(self.turn)
+        self.evaluate_check_mate(self.turn)
