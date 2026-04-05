@@ -146,42 +146,12 @@ class ChessBoard(pygame.sprite.Sprite):
             old_square.piece.is_reloading = True
             old_square.piece.attacked_at = self.round_num
 
-    # def update_moves(self, square):
-    #     square.piece.update_possible_moves()
-    #     # print(f'all moves = {len(click_square.piece.move_squares)}')
-    #     allowed_moves = self.filter_check_moves(square, square.piece.move_squares, 'move')
-
-    #     square.piece.update_attack_moves()
-    #     allowed_attacks = self.filter_check_moves(square, square.piece.attack_squares, 'attack')
-
-    #     if type(square.piece) == Wizard:
-    #         square.piece.update_swap_moves()
-    #         allowed_swaps = self.filter_check_moves(square, square.piece.swap_squares, 'swap')
-    #         square.piece.swap_squares = allowed_swaps
-
-    #     square.piece.move_squares = allowed_moves
-    #     # print(f'allowed moves = {len(click_square.piece.move_squares)}')
-    #     square.piece.attack_squares = allowed_attacks
-
-    # def update_enemy_attack_squares(self, color):
-    #     all_enemy_attack_squares = []
-    #     for row in range(8):
-    #         for col in range(8): # for each square on the board, update their attack moves only if there's an opoonent's piece on that square
-    #             square = self.squares[row][col]
-    #             if square.piece and square.piece.color != color:
-    #                 square.piece.update_attack_moves()
-    #                 all_enemy_attack_squares.extend(square.piece.attack_squares)
-        
-    #     for square in all_enemy_attack_squares:
-    #         if square.coord == self.emperors[color].coord:
-    #             self.emperors[color].in_check = True
-
     def update_moves(self, square):
-        square.piece.update_attack_moves()
-        allowed_attacks = self.filter_invalid_attacks(square)
-
         square.piece.update_possible_moves()
         allowed_moves = self.filter_invalid_moves(square)
+
+        square.piece.update_attack_moves()
+        allowed_attacks = self.filter_invalid_attacks(square)
 
         if type(square.piece) == Wizard:
             square.piece.update_swap_moves()
@@ -223,22 +193,30 @@ class ChessBoard(pygame.sprite.Sprite):
     def in_check(self):
         emperor = self.emperors[self.turn]
         emperor_coord = emperor.coord
-        for piece in self.players[self.enemy_color].pieces:
-            piece.update_attack_moves()
-            for square in piece.attack_squares:
-                if square.coord == emperor_coord:
-                    return True
+                
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                if not square.piece or square.piece.color == self.turn:
+                    continue
+                square.piece.update_attack_moves()
+                for attack_square in square.piece.attack_squares:
+                    if attack_square.coord == emperor_coord:
+                        return True
         return False
     
     def evaluate_check_mate(self):
         all_moves = []
-        for piece in self.players[self.turn].pieces:
-            square = self.squares[piece.coord[0]][piece.coord[1]]
-            self.update_moves(square)
-            all_moves.extend(piece.move_squares)
-            all_moves.extend(piece.attack_squares)
-            if type(piece) == Wizard:
-                all_moves.extend(piece.swap_squares)
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                if not square.piece or square.piece.color != self.turn:
+                    continue
+                self.update_moves(square)
+                all_moves.extend(square.piece.move_squares)
+                all_moves.extend(square.piece.attack_squares)
+                if type(square.piece) == Wizard:
+                    all_moves.extend(square.piece.swap_squares)
 
         if len(all_moves) == 0:
             self.checkmate = True
