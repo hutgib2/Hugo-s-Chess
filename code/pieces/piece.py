@@ -1,18 +1,19 @@
 from settings import *
 
 class Piece(pygame.sprite.Sprite):
-    def __init__(self, surf, color, coord, squares, is_stunned=False, stunned_at=0, is_reloading=False, attacked_at=0):
+    def __init__(self, id, surf, color, coord, squares):
         super().__init__()
+        self.id = id
         self.image = pygame.transform.smoothscale(surf, (TILE_WIDTH, TILE_WIDTH))
         self.color = color
         self.coord = coord
         self.attack_squares = []
         self.move_squares = []
         self.squares = squares
-        self.is_reloading = is_reloading
-        self.is_stunned = is_stunned
-        self.stunned_at = stunned_at
-        self.attacked_at = attacked_at
+        self.is_reloading = False
+        self.is_stunned = False
+        self.stunned_at = 0
+        self.attacked_at = 0
 
     def has_adjacent_legionary(self, square, direction):
         from pieces.legionary import Legionary
@@ -93,6 +94,7 @@ class Piece(pygame.sprite.Sprite):
 
     def get_state(self):
         return {
+            "id": self.id,
             "coord": self.coord,
             "type": type(self).__name__,
             "color": self.color,

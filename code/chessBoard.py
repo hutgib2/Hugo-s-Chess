@@ -91,17 +91,17 @@ class ChessBoard(pygame.sprite.Sprite):
     def piece_from_type(self, piece):
         match piece["type"]:
             case "Legionary":
-                return Legionary(PIECE_SURFS[piece["color"]]['legionary'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+                return Legionary(PIECE_SURFS[piece["color"]]['legionary'], piece["color"], piece["coord"], self.squares)
             case "Emperor":
-                return Emperor(PIECE_SURFS[piece["color"]]['emperor'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+                return Emperor(PIECE_SURFS[piece["color"]]['emperor'], piece["color"], piece["coord"], self.squares)
             case "Dragon":
-                return Dragon(PIECE_SURFS[piece["color"]]['dragon'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+                return Dragon(PIECE_SURFS[piece["color"]]['dragon'], piece["color"], piece["coord"], self.squares)
             case "Archer":
-                return Archer(PIECE_SURFS[piece["color"]]['archer'], piece["color"], piece["coord"], self.squares,  piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+                return Archer(PIECE_SURFS[piece["color"]]['archer'], piece["color"], piece["coord"], self.squares)
             case "Catapult":
-                return Catapult(PIECE_SURFS[piece["color"]]['catapult'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+                return Catapult(PIECE_SURFS[piece["color"]]['catapult'], piece["color"], piece["coord"], self.squares)
             case "Wizard":
-                return Wizard(PIECE_SURFS[piece["color"]]['wizard'], piece["color"], piece["coord"], self.squares, piece["is_stunned"], piece["stunned_at"], piece["is_reloading"], piece["attacked_at"])
+                return Wizard(PIECE_SURFS[piece["color"]]['wizard'], piece["color"], piece["coord"], self.squares)
 
     def select_piece(self, click_square):
         if self.selected_square:
