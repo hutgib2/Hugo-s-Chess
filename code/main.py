@@ -35,10 +35,9 @@ class Chess2026():
         self.move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.wav'))
 
     def create_new_game(self):
-        self.board = ChessBoard(BOARD_SURFS['chess_board'])
         with open('assets/saved_games/new_game.json', 'r') as file:
             data = json.load(file)
-            self.board.apply_snapshot(data)
+            self.board = ChessBoard(BOARD_SURFS['chess_board'], data)
     
     def load_game(self, file_path):
         with open(file_path, 'r') as file:

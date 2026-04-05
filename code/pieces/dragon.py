@@ -4,7 +4,7 @@ from pieces.piece import Piece
 
 class Dragon(Piece):
     def __init__(self, id, surf, color, coord, squares):
-        super().__init__(surf, id, color, coord, squares)
+        super().__init__(id, surf, color, coord, squares)
         self.attack_range = (1,1)
         if self.color == 'white':
             self.attack_directions = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (0, -1)]

@@ -3,7 +3,7 @@ from pieces.piece import Piece
 
 class Legionary(Piece):
     def __init__(self, id, surf, color, coord, squares):
-        super().__init__(surf, id, color, coord, squares)
+        super().__init__(id, surf, color, coord, squares)
         self.attack_squares = []
         self.attack_range = (1,1)
         self.move_range = 1

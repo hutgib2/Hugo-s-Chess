@@ -3,7 +3,7 @@ from pieces.piece import Piece
 
 class Wizard(Piece):
     def __init__(self, id, surf, color, coord, squares):
-        super().__init__(surf, id, color, coord, squares)
+        super().__init__(id, surf, color, coord, squares)
         self.move_directions = self.attack_directions = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
         self.attack_range = (1,1)
         self.move_range = 1
