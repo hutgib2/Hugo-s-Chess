@@ -133,10 +133,11 @@ class ChessBoard(pygame.sprite.Sprite):
             self.selected_square = None
                 
     def move_piece(self, old_square, new_square):
+        if not old_square.piece:
+            return
         new_square.piece = old_square.piece
         old_square.piece = None
         new_square.piece.coord = new_square.coord
-
 
     def swap_piece(self, old_square, new_square):
         temp = old_square.piece
@@ -144,7 +145,6 @@ class ChessBoard(pygame.sprite.Sprite):
         new_square.piece = temp
         old_square.piece.coord = old_square.coord
         new_square.piece.coord = new_square.coord
-
 
     def attack_piece(self, old_square, attack_square):
         old_square.piece.attack(attack_square.coord, self.round_num)
@@ -210,8 +210,6 @@ class ChessBoard(pygame.sprite.Sprite):
                     continue
                 square.piece.update_attack_moves()
                 for attack_square in square.piece.attack_squares:
-                    # print(f"attack: {attack_square.coord}, emperor: {self.emperors[color].coord}")
-                    # print(type(attack_square.coord), type(self.emperors[color].coord))
                     if attack_square.coord == self.emperors[color].coord:
                         return True
         return False
@@ -228,10 +226,12 @@ class ChessBoard(pygame.sprite.Sprite):
                 all_moves.extend(square.piece.attack_squares)
                 if type(square.piece) == Wizard:
                     all_moves.extend(square.piece.swap_squares)
+                if len(all_moves) != 0:
+                    return
 
-        if len(all_moves) == 0:
-            notifier.notify('Checkmate!')
-            self.checkmate = True
+        # print([move.coord for move in all_moves])
+        notifier.notify('Checkmate!')
+        self.checkmate = True
 
     def render(self):
         pygame.display.get_surface().blit(self.image, self.rect) # draws chessboard
@@ -268,6 +268,7 @@ class ChessBoard(pygame.sprite.Sprite):
                     if square.piece.is_reloading and self.round_num - square.piece.attacked_at > 3:
                         square.piece.is_reloading = False
                 
+        # update selected squares move options
         if self.selected_square and self.selected_square.piece:
             for square in self.selected_square.piece.move_squares:
                 square.is_possible_move = True
@@ -288,11 +289,7 @@ class ChessBoard(pygame.sprite.Sprite):
             if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
                 square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
         
-        if self.in_check(self.turn):
-            print(f'{self.turn} in check')
-            self.evaluate_check_mate(self.turn)
+        if self.in_check(self.enemy_color):
+            print(f'{self.enemy_color} in check')
+            self.evaluate_check_mate(self.enemy_color)
             return
-        # if self.in_check(self.enemy_color):
-        #     print(f'{self.enemy_color} in check')
-        #     # self.evaluate_check_mate(self.turn)
-        #     return
