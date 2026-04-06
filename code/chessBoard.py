@@ -113,12 +113,12 @@ class ChessBoard(pygame.sprite.Sprite):
         # place pieces
         for piece_state in snapshot["pieces"]:
             piece = self.pieces[piece_state['id']]
-            piece.coord = piece_state['coord']
+            piece.coord = tuple(piece_state['coord'])
             piece.is_stunned = piece_state['is_stunned']
             piece.stunned_at = piece_state['stunned_at']
             piece.is_reloading = piece_state['is_reloading']
             piece.attacked_at = piece_state['attacked_at']
-            self.place_piece(piece_state["coord"], piece)
+            self.place_piece(piece.coord, piece)
             
     def select_piece(self, click_square):
         if self.selected_square:
@@ -193,6 +193,8 @@ class ChessBoard(pygame.sprite.Sprite):
         updated_moves = []
         color = square.piece.color
         for attack_square in square.piece.attack_squares:
+            if not attack_square.piece or attack_square.piece.color == color:
+                continue
             snapshot = self.take_snapshot()
             self.attack_piece(square, attack_square)
             if not self.in_check(color):
@@ -208,13 +210,13 @@ class ChessBoard(pygame.sprite.Sprite):
                     continue
                 square.piece.update_attack_moves()
                 for attack_square in square.piece.attack_squares:
+                    # print(f"attack: {attack_square.coord}, emperor: {self.emperors[color].coord}")
+                    # print(type(attack_square.coord), type(self.emperors[color].coord))
                     if attack_square.coord == self.emperors[color].coord:
                         return True
         return False
     
     def evaluate_check_mate(self, color):
-        if not self.in_check(color):
-            return
         all_moves = []
         for row in range(8):
             for col in range(8):
@@ -252,6 +254,7 @@ class ChessBoard(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(self.reload_indicator, square.rect)
 
     def update(self):
+        print('updating board')
         # this resets every squares state
         for row in range(8):
             for col in range(8):
@@ -285,4 +288,11 @@ class ChessBoard(pygame.sprite.Sprite):
             if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
                 square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
         
-        self.evaluate_check_mate(self.turn)
+        if self.in_check(self.turn):
+            print(f'{self.turn} in check')
+            self.evaluate_check_mate(self.turn)
+            return
+        # if self.in_check(self.enemy_color):
+        #     print(f'{self.enemy_color} in check')
+        #     # self.evaluate_check_mate(self.turn)
+        #     return

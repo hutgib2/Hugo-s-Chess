@@ -3,10 +3,10 @@ from support import *
 from textSprite import TextSprite
 from chessBoard import ChessBoard
 from button import InteractiveButton
-from timer import Timer
 from pieces.piece import *
 from animator import Animator
 from notifier import notifier
+from timer import Timer
 import json
 import time
 
@@ -61,10 +61,7 @@ class Chess2026():
     def switch_turn(self):
         self.game_blocked = False
         self.board.deselect_piece()
-        if self.board.turn == 'white':
-            self.board.turn = 'black'
-        else:
-            self.board.turn = 'white'
+        self.board.turn = 'black' if self.board.turn == 'white' else 'white'
         self.board.round_num += 1
 
     def handle_events(self):
@@ -113,7 +110,7 @@ class Chess2026():
                             self.switch_turn_timer.activate()
                         elif click_square.piece == None and self.board.selected_square:
                             self.board.deselect_piece()
-                    self.board.update()
+                self.board.update()
 
                 
                     
@@ -134,8 +131,8 @@ class Chess2026():
     def run(self):
         while self.running:
             dt = self.clock.tick() / 1000
-            self.handle_events()
             self.switch_turn_timer.update()
+            self.handle_events()
             self.draw_game(dt)
             if self.board.checkmate:
                 time.sleep(2)
