@@ -95,22 +95,25 @@ class Chess2026():
                         if click_square.is_swappable:
                             self.animator.swap([self.board.selected_square.rect, click_square.rect])
                             self.board.swap_piece(self.board.selected_square, click_square)
+                            self.board.update()
                             self.switch_turn()
                         elif click_square.piece and click_square.piece.color == self.board.turn and not click_square.piece.is_stunned:
                             self.board.select_piece(click_square)
                         elif click_square.is_possible_move:
                             self.move_sound.play() 
                             self.board.move_piece(self.board.selected_square, click_square)
+                            self.board.update()
                             self.switch_turn()                    
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
                             self.animator.attack(self.board.selected_square, click_square)
                             self.board.attack_piece(self.board.selected_square, click_square)
+                            self.board.update()
                             self.game_blocked = True
                             self.switch_turn_timer.activate()
                         elif click_square.piece == None and self.board.selected_square:
                             self.board.deselect_piece()
-                self.board.update()
+                            self.board.update()
 
                 
                     
