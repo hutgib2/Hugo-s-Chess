@@ -168,27 +168,27 @@ class ChessBoard(pygame.sprite.Sprite):
         square.piece.attack_squares = allowed_attacks
 
     def filter_invalid_moves(self, square):
-        updated_moves = []
+        allowed_moves = []
         color = square.piece.color
         for move_square in square.piece.move_squares:
             self.move_piece(square, move_square)
             if not self.in_check(color):
-                updated_moves.append(move_square)
+                allowed_moves.append(move_square)
             self.move_piece(move_square, square)
-        return updated_moves
+        return allowed_moves
 
     def filter_invalid_swaps(self, square):
-        updated_moves = []
+        allowed_moves = []
         color = square.piece.color
         for swap_square in square.piece.swap_squares:
             self.swap_piece(square, swap_square)
             if not self.in_check(color):
-                updated_moves.append(swap_square)
+                allowed_moves.append(swap_square)
             self.swap_piece(swap_square, square)
-        return updated_moves
+        return allowed_moves
 
     def filter_invalid_attacks(self, square):
-        updated_moves = []
+        allowed_moves = []
         color = square.piece.color
         for attack_square in square.piece.attack_squares:
             if not attack_square.piece or attack_square.piece.color == color:
@@ -196,10 +196,10 @@ class ChessBoard(pygame.sprite.Sprite):
             snapshot = self.take_snapshot()
             self.attack_piece(square, attack_square)
             if not self.in_check(color):
-                updated_moves.append(attack_square)
+                allowed_moves.append(attack_square)
             self.apply_snapshot(snapshot)
-        return updated_moves
-    
+        return allowed_moves
+
     def in_check(self, color):
         for row in range(8):
             for col in range(8):
@@ -227,7 +227,6 @@ class ChessBoard(pygame.sprite.Sprite):
                 if len(all_moves) != 0:
                     return
 
-        # print([move.coord for move in all_moves])
         notifier.notify('Checkmate!')
         self.checkmate = True
 
@@ -252,7 +251,6 @@ class ChessBoard(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(self.reload_indicator, square.rect)
 
     def update(self):
-        # print('updating board')
         # this resets every squares state
         for row in range(8):
             for col in range(8):
@@ -265,9 +263,7 @@ class ChessBoard(pygame.sprite.Sprite):
                         square.piece.is_stunned = False
                     if square.piece.is_reloading and self.round_num - square.piece.attacked_at > 2:
                         square.piece.is_reloading = False
-                
-        print('clearing board')
-        
+
         # update selected squares move options
         if self.selected_square and self.selected_square.piece:
             for square in self.selected_square.piece.move_squares:
