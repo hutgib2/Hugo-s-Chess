@@ -37,7 +37,8 @@ class Catapult(Piece):
                 elif type(square.piece) == Legionary and direction == self.attack_directions[0]:
                     break
                 else:
-                    self.attack_squares.append(square)    
+                    self.attack_squares.append(square)
+                    break  
             
     def attack(self, attack_coord, round_num):
         from pieces.legionary import Legionary
