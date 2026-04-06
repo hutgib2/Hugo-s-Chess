@@ -133,8 +133,6 @@ class ChessBoard(pygame.sprite.Sprite):
             self.selected_square = None
                 
     def move_piece(self, old_square, new_square):
-        if not old_square.piece:
-            return
         new_square.piece = old_square.piece
         old_square.piece = None
         new_square.piece.coord = new_square.coord
@@ -254,7 +252,7 @@ class ChessBoard(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(self.reload_indicator, square.rect)
 
     def update(self):
-        print('updating board')
+        # print('updating board')
         # this resets every squares state
         for row in range(8):
             for col in range(8):
@@ -265,9 +263,11 @@ class ChessBoard(pygame.sprite.Sprite):
                 if square.piece:
                     if square.piece.is_stunned and self.round_num - square.piece.stunned_at > 2:
                         square.piece.is_stunned = False
-                    if square.piece.is_reloading and self.round_num - square.piece.attacked_at > 3:
+                    if square.piece.is_reloading and self.round_num - square.piece.attacked_at > 2:
                         square.piece.is_reloading = False
                 
+        print('clearing board')
+        
         # update selected squares move options
         if self.selected_square and self.selected_square.piece:
             for square in self.selected_square.piece.move_squares:

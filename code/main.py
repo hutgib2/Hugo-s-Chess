@@ -97,6 +97,7 @@ class Chess2026():
                             self.animator.swap([self.board.selected_square.rect, click_square.rect])
                             self.board.swap_piece(self.board.selected_square, click_square)
                             action = 'swap'
+                            print('swapping')
                         elif click_square.piece and click_square.piece.color == self.board.turn and not click_square.piece.is_stunned:
                             self.board.select_piece(click_square)
                             action = 'select'
