@@ -291,3 +291,7 @@ class ChessBoard(pygame.sprite.Sprite):
             # print(f'{self.enemy_color} in check')
             self.evaluate_check_mate(self.enemy_color)
             return
+        if self.in_check(self.turn):
+            # print(f'{self.enemy_color} in check')
+            self.evaluate_check_mate(self.turn)
+            return
