@@ -9,24 +9,24 @@ class Animator():
         for rect in rects:
             Animation(rect.center, SMOKE_FRAMES, self.animation_sprites)
 
-    def attack(self, attacker_square, attacked_square):
+    def attack(self, attacker_square, attacked_square, enemy_pieces):
         match type(attacker_square.piece).__name__:
             case 'Dragon':
                 self.dragon_attack(attacker_square.piece.attack_squares)
             case 'Catapult':
-                self.catapult_attack(attacker_square, attacked_square)
+                self.catapult_attack(attacker_square, attacked_square, enemy_pieces)
     
     def dragon_attack(self, attack_squares):
         for square in attack_squares:
             Animation(square.rect.center, FLAME_FRAMES, self.animation_sprites)
 
-    def catapult_attack(self, attacker_square, attacked_square):
+    def catapult_attack(self, attacker_square, attacked_square, enemy_pieces):
         attack_direction = get_direction_between(attacker_square.coord, attacked_square.coord)
         direction = pygame.Vector2(attack_direction[1], attack_direction[0])
-        Boulder(attacker_square.rect.center, direction, self.animation_sprites)
+        Boulder(attacker_square.rect.center, direction, enemy_pieces, self.animation_sprites)
 
-    def update(self, dt):
-        self.animation_sprites.update(dt)
+    def update(self, dt, round_num):
+        self.animation_sprites.update(dt, round_num)
 
 class Animation(pygame.sprite.Sprite):
     def __init__(self, pos, frames, groups):
@@ -44,13 +44,13 @@ class Animation(pygame.sprite.Sprite):
         self.image = self.frames[int(self.frame_index) % len(self.frames)]
         pygame.display.get_surface().blit(self.image, self.rect)
     
-    def update(self, dt):
+    def update(self, dt, _):
         if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
             self.kill()
         self.animate(dt)
 
 class Boulder(pygame.sprite.Sprite):
-    def __init__(self, pos, direction, groups):
+    def __init__(self, pos, direction, enemy_pieces, groups):
         super().__init__(groups)
         self.image = pygame.transform.smoothscale(BOARD_SURFS['boulder'], (TILE_WIDTH, TILE_WIDTH))
         # print(self.image)
@@ -58,10 +58,22 @@ class Boulder(pygame.sprite.Sprite):
         self.spawn_time = pygame.time.get_ticks()
         self.lifetime = 1000
         self.direction = direction
-        self.speed = 1200
+        self.speed = 1400
+        self.enemy_pieces = enemy_pieces
+        self.killed_first = False
     
-    def update(self, dt):
+    def update(self, dt, round_num):
         if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
             self.kill()
         self.rect.center += self.direction * self.speed * dt
         pygame.display.get_surface().blit(self.image, self.rect)
+
+        collision_sprites = pygame.sprite.spritecollide(self, self.enemy_pieces, False, pygame.sprite.collide_mask)
+
+        for piece in collision_sprites:
+            if self.killed_first == False:
+                piece.kill()
+                self.killed_first = True
+            else:
+                piece.is_stunned = True
+                piece.stunned_at = round_num

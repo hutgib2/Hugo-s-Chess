@@ -107,7 +107,10 @@ class Chess2026():
                             action = 'move'
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
-                            self.animator.attack(self.board.selected_square, click_square)
+                            if click_square.piece.color == 'white':
+                                self.animator.attack(self.board.selected_square, click_square, self.board.white_pieces)
+                            else:
+                                self.animator.attack(self.board.selected_square, click_square, self.board.black_pieces)
                             self.board.attack_piece(self.board.selected_square, click_square)
                             self.board.deselect_piece()
                             action = 'attack'
@@ -130,7 +133,7 @@ class Chess2026():
         screen.fill((127, 127, 127))
         self.board.render()
         notifier.update()
-        self.animator.update(dt)
+        self.animator.update(dt, self.board.round_num)
         self.rulebook.update()
         if self.board.turn == 'white':
             self.white_turn_text.update()

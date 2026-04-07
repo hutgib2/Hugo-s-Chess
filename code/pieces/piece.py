@@ -5,6 +5,7 @@ class Piece(pygame.sprite.Sprite):
         super().__init__()
         self.id = id
         self.image = pygame.transform.smoothscale(surf, (TILE_WIDTH, TILE_WIDTH))
+        self.rect = self.image.get_frect()
         self.color = color
         self.coord = tuple(coord)
         self.attack_squares = []
@@ -91,6 +92,13 @@ class Piece(pygame.sprite.Sprite):
         attack_square = self.squares[attack_coord[0]][attack_coord[1]]
         attack_square.piece = old_square.piece
         old_square.piece = None
+        attack_square.piece.rect = attack_square.rect
+
+    def kill(self):
+        row = self.coord[0]
+        col = self.coord[1]
+        square = self.squares[row][col]
+        square.piece = None
 
     def get_state(self):
         return {
@@ -103,4 +111,5 @@ class Piece(pygame.sprite.Sprite):
             "stunned_at": self.stunned_at,
             "attacked_at": self.attacked_at
         }
+
 

@@ -32,6 +32,8 @@ class ChessBoard(pygame.sprite.Sprite):
             "white": None,
             "black": None
         }
+        self.white_pieces = pygame.sprite.Group()
+        self.black_pieces = pygame.sprite.Group()
         self.gen_squares()
         self.setup_pieces(setup_data)
 
@@ -66,9 +68,15 @@ class ChessBoard(pygame.sprite.Sprite):
             piece = self.piece_from_type(piece_state)
             self.place_piece(piece.coord, piece)
             self.pieces[piece_state["id"]] = piece
+            if piece.color == 'white':
+                self.white_pieces.add(piece)
+            if piece.color == 'black':
+                self.black_pieces.add(piece)
 
     def place_piece(self, pos, piece):
-        self.squares[pos[0]][pos[1]].piece = piece
+        square = self.squares[pos[0]][pos[1]]
+        square.piece = piece
+        piece.rect = square.rect
         if type(piece) == Emperor:
             self.emperors[piece.color] = piece
         
@@ -136,13 +144,16 @@ class ChessBoard(pygame.sprite.Sprite):
         new_square.piece = old_square.piece
         old_square.piece = None
         new_square.piece.coord = new_square.coord
+        new_square.piece.rect = new_square.rect
 
     def swap_piece(self, old_square, new_square):
         temp = old_square.piece
         old_square.piece = new_square.piece
         new_square.piece = temp
         old_square.piece.coord = old_square.coord
+        old_square.piece.rect = old_square.rect
         new_square.piece.coord = new_square.coord
+        new_square.piece.rect = new_square.rect
 
     def attack_piece(self, old_square, attack_square):
         old_square.piece.attack(attack_square.coord, self.round_num)
