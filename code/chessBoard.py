@@ -163,7 +163,7 @@ class ChessBoard(pygame.sprite.Sprite):
             square.piece.update_swap_moves()
             allowed_swaps = self.filter_invalid_swaps(square)
             square.piece.swap_squares = allowed_swaps
-
+    
         square.piece.move_squares = allowed_moves
         square.piece.attack_squares = allowed_attacks
 
