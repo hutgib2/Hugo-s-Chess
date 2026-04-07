@@ -8,6 +8,7 @@ class Wizard(Piece):
         self.attack_range = (1,1)
         self.move_range = 1
         self.swap_squares = []
+        self.type = "Wizard"
 
     def update_swap_moves(self):
         from pieces.emperor import Emperor

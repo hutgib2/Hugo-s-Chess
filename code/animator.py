@@ -10,7 +10,7 @@ class Animator():
             Animation(rect.center, SMOKE_FRAMES, self.animation_sprites)
 
     def attack(self, attacker_square, attacked_square, enemy_pieces):
-        match type(attacker_square.piece).__name__:
+        match attacker_square.piece.type:
             case 'Dragon':
                 self.dragon_attack(attacker_square.piece.attack_squares)
             case 'Catapult':

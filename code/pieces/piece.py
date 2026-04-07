@@ -90,9 +90,11 @@ class Piece(pygame.sprite.Sprite):
     def attack(self, attack_coord, round_num=0):
         old_square = self.squares[self.coord[0]][self.coord[1]]
         attack_square = self.squares[attack_coord[0]][attack_coord[1]]
+        score = PIECE_SCORES[attack_square.piece.type]
         attack_square.piece = old_square.piece
         old_square.piece = None
         attack_square.piece.rect = attack_square.rect
+        return score
 
     def kill(self):
         row = self.coord[0]
@@ -104,7 +106,7 @@ class Piece(pygame.sprite.Sprite):
         return {
             "id": self.id,
             "coord": self.coord,
-            "type": type(self).__name__,
+            "type": self.type,
             "color": self.color,
             "is_stunned": self.is_stunned,
             "is_reloading": self.is_reloading,

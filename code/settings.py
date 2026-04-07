@@ -16,7 +16,14 @@ PIECE_SURFS = {
     'black': folder_importer('assets', 'images', 'black_pieces'),
 }
 
-
 FLAME_FRAMES = folder_importer_list('assets', 'animations', 'flame')
 SMOKE_FRAMES = folder_importer_list('assets', 'animations', 'smoke')
 BOARD_SURFS = folder_importer('assets', 'images', 'board')
+
+PIECE_SCORES = {
+    "Legionary": 1,
+    "Wizard": 3,
+    "Dragon": 3,
+    "Catapult": 5,
+    "Archer": 9,
+}

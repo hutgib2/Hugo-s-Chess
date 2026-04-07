@@ -63,6 +63,8 @@ class Chess2026():
         self.board.deselect_piece()
         self.board.turn = 'black' if self.board.turn == 'white' else 'white'
         self.board.round_num += 1
+        print(f'white score: {self.board.players['white'].score}')
+        print(f'black score: {self.board.players['black'].score}')
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -108,8 +110,8 @@ class Chess2026():
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
                             self.animator.attack(self.board.selected_square, click_square, self.board.players[click_square.piece.color].pieces)
-                            
-                            self.board.attack_piece(self.board.selected_square, click_square)
+                            score = self.board.attack_piece(self.board.selected_square, click_square)
+                            self.board.players[self.board.turn].score += score
                             self.board.deselect_piece()
                             action = 'attack'
                         elif click_square.piece == None and self.board.selected_square:

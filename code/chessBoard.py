@@ -22,6 +22,7 @@ class Player():
         self.emperor = None
         self.pieces = pygame.sprite.Group()
         self.color = color
+        self.score = 0
 
 class ChessBoard(pygame.sprite.Sprite):
     def __init__(self, surf, setup_data):
@@ -157,12 +158,13 @@ class ChessBoard(pygame.sprite.Sprite):
         new_square.piece.rect = new_square.rect
 
     def attack_piece(self, old_square, attack_square):
-        old_square.piece.attack(attack_square.coord, self.round_num)
+        score = old_square.piece.attack(attack_square.coord, self.round_num)
         if not old_square.piece:
             attack_square.piece.coord = attack_square.coord
         if type(old_square.piece) == Catapult:
             old_square.piece.is_reloading = True
             old_square.piece.attacked_at = self.round_num
+        return score
 
     def update_moves(self, square):
         square.piece.update_possible_moves()
@@ -292,10 +294,13 @@ class ChessBoard(pygame.sprite.Sprite):
         # Promote legionary to archer if at back row
         for square in self.squares[0]:
             if square.piece and square.piece.color == 'white' and type(square.piece) == Legionary:
-                square.piece = Archer(PIECE_SURFS['white']['archer'], 'white', square.coord, self.squares)
+                # TODO: finish adding this to pieces {}
+                id = len(self.pieces) + 1
+                square.piece = Archer(id, PIECE_SURFS['white']['archer'], 'white', square.coord, self.squares)
         for square in self.squares[7]:
             if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
-                square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
+                id = len(self.pieces) + 1
+                square.piece = Archer(id, PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
         
         if self.in_check(self.enemy_color):
             # print(f'{self.enemy_color} in check')
