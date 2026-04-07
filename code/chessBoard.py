@@ -244,6 +244,11 @@ class ChessBoard(pygame.sprite.Sprite):
         notifier.notify('Checkmate!')
         self.checkmate = True
 
+    def promote_to_archer(self, square, color):
+        id = len(self.pieces)
+        square.piece = Archer(id, PIECE_SURFS[color]['archer'], color, square.coord, self.squares)
+        self.pieces[id] = square.piece
+
     def render(self):
         pygame.display.get_surface().blit(self.image, self.rect) # draws chessboard
         for row in range(8):
@@ -294,13 +299,10 @@ class ChessBoard(pygame.sprite.Sprite):
         # Promote legionary to archer if at back row
         for square in self.squares[0]:
             if square.piece and square.piece.color == 'white' and type(square.piece) == Legionary:
-                # TODO: finish adding this to pieces {}
-                id = len(self.pieces) + 1
-                square.piece = Archer(id, PIECE_SURFS['white']['archer'], 'white', square.coord, self.squares)
+                self.promote_to_archer(square, 'white')
         for square in self.squares[7]:
             if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
-                id = len(self.pieces) + 1
-                square.piece = Archer(id, PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
+                self.promote_to_archer(square, 'black')
         
         if self.in_check(self.enemy_color):
             # print(f'{self.enemy_color} in check')
