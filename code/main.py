@@ -107,10 +107,8 @@ class Chess2026():
                             action = 'move'
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
-                            if click_square.piece.color == 'white':
-                                self.animator.attack(self.board.selected_square, click_square, self.board.white_pieces)
-                            else:
-                                self.animator.attack(self.board.selected_square, click_square, self.board.black_pieces)
+                            self.animator.attack(self.board.selected_square, click_square, self.board.players[click_square.piece.color].pieces)
+                            
                             self.board.attack_piece(self.board.selected_square, click_square)
                             self.board.deselect_piece()
                             action = 'attack'
@@ -119,7 +117,6 @@ class Chess2026():
                             action = 'deselect'
 
                 if action:
-                    print(action)
                     self.board.update()
                 if action == 'swap' or action == 'move':
                     self.switch_turn()

@@ -17,6 +17,12 @@ class Square():
         self.is_attack_move = False
         self.is_swappable = False
 
+class Player():
+    def __init__(self, color):
+        self.emperor = None
+        self.pieces = pygame.sprite.Group()
+        self.color = color
+
 class ChessBoard(pygame.sprite.Sprite):
     def __init__(self, surf, setup_data):
         super().__init__()
@@ -28,12 +34,10 @@ class ChessBoard(pygame.sprite.Sprite):
         self.turn = 'white'
         self.round_num = 0
         self.checkmate = False
-        self.emperors = {
-            "white": None,
-            "black": None
+        self.players = {
+            "white": Player('white'),
+            "black": Player('black')
         }
-        self.white_pieces = pygame.sprite.Group()
-        self.black_pieces = pygame.sprite.Group()
         self.gen_squares()
         self.setup_pieces(setup_data)
 
@@ -68,17 +72,14 @@ class ChessBoard(pygame.sprite.Sprite):
             piece = self.piece_from_type(piece_state)
             self.place_piece(piece.coord, piece)
             self.pieces[piece_state["id"]] = piece
-            if piece.color == 'white':
-                self.white_pieces.add(piece)
-            if piece.color == 'black':
-                self.black_pieces.add(piece)
+            self.players[piece.color].pieces.add(piece)
 
     def place_piece(self, pos, piece):
         square = self.squares[pos[0]][pos[1]]
         square.piece = piece
         piece.rect = square.rect
         if type(piece) == Emperor:
-            self.emperors[piece.color] = piece
+            self.players[piece.color].emperor = piece
         
     def piece_from_type(self, piece_state):
         match piece_state["type"]:
@@ -219,7 +220,7 @@ class ChessBoard(pygame.sprite.Sprite):
                     continue
                 square.piece.update_attack_moves()
                 for attack_square in square.piece.attack_squares:
-                    if attack_square.coord == self.emperors[color].coord:
+                    if attack_square.coord == self.players[color].emperor.coord:
                         return True
         return False
     
@@ -262,7 +263,6 @@ class ChessBoard(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(self.reload_indicator, square.rect)
 
     def update(self):
-        print('updating')
         # this resets every squares state
         for row in range(8):
             for col in range(8):
@@ -278,7 +278,6 @@ class ChessBoard(pygame.sprite.Sprite):
 
         # update selected squares move options
         if self.selected_square and self.selected_square.piece:
-            print(type(self.selected_square.piece).__name__)
             for square in self.selected_square.piece.move_squares:
                 square.is_possible_move = True
             if not self.selected_square.piece.is_reloading:
