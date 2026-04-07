@@ -96,8 +96,8 @@ class Chess2026():
                         if click_square.is_swappable:
                             self.animator.swap([self.board.selected_square.rect, click_square.rect])
                             self.board.swap_piece(self.board.selected_square, click_square)
+                            self.board.deselect_piece()
                             action = 'swap'
-                            print('swapping')
                         elif click_square.piece and click_square.piece.color == self.board.turn and not click_square.piece.is_stunned:
                             self.board.select_piece(click_square)
                             action = 'select'
@@ -109,12 +109,14 @@ class Chess2026():
                             self.kill_sound.play()
                             self.animator.attack(self.board.selected_square, click_square)
                             self.board.attack_piece(self.board.selected_square, click_square)
+                            self.board.deselect_piece()
                             action = 'attack'
                         elif click_square.piece == None and self.board.selected_square:
                             self.board.deselect_piece()
                             action = 'deselect'
 
                 if action:
+                    print(action)
                     self.board.update()
                 if action == 'swap' or action == 'move':
                     self.switch_turn()

@@ -251,6 +251,7 @@ class ChessBoard(pygame.sprite.Sprite):
                     pygame.display.get_surface().blit(self.reload_indicator, square.rect)
 
     def update(self):
+        print('updating')
         # this resets every squares state
         for row in range(8):
             for col in range(8):
@@ -266,6 +267,7 @@ class ChessBoard(pygame.sprite.Sprite):
 
         # update selected squares move options
         if self.selected_square and self.selected_square.piece:
+            print(type(self.selected_square.piece).__name__)
             for square in self.selected_square.piece.move_squares:
                 square.is_possible_move = True
             if not self.selected_square.piece.is_reloading:
@@ -286,6 +288,6 @@ class ChessBoard(pygame.sprite.Sprite):
                 square.piece = Archer(PIECE_SURFS['black']['archer'], 'black', square.coord, self.squares)
         
         if self.in_check(self.enemy_color):
-            print(f'{self.enemy_color} in check')
+            # print(f'{self.enemy_color} in check')
             self.evaluate_check_mate(self.enemy_color)
             return

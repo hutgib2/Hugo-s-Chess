@@ -53,7 +53,7 @@ class Boulder(pygame.sprite.Sprite):
     def __init__(self, pos, direction, groups):
         super().__init__(groups)
         self.image = pygame.transform.smoothscale(BOARD_SURFS['boulder'], (TILE_WIDTH, TILE_WIDTH))
-        print(self.image)
+        # print(self.image)
         self.rect = self.image.get_frect(center = pos) 
         self.spawn_time = pygame.time.get_ticks()
         self.lifetime = 1000
