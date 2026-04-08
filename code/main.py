@@ -16,12 +16,21 @@ class Player():
         self.pieces = pygame.sprite.Group()
         self.color = color
         self.score = 0
-        self.score_text_pos = (3*WINDOW_WIDTH / 4, WINDOW_HEIGHT / 1.5) if self.color == 'white' else (3*WINDOW_WIDTH / 4, WINDOW_HEIGHT / 2.5)
+        
+        # text
+        self.name_text_pos = (WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2) if self.color == 'white' else (7*WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2)
+        self.name_text = TextSprite(self.color, self.name_text_pos, self.color, 128, ())
+        self.score_text_pos = list(self.name_text.rect.midright)
+        self.score_text_pos[0] += 64
         self.score_text = TextSprite(str(self.score), self.score_text_pos, color, 128, ())
 
     def set_score(self, score):
         self.score = score
         self.score_text = TextSprite(str(self.score), self.score_text_pos, self.color, 128, ())
+
+    def update(self):
+        self.name_text.update()
+        self.score_text.update()
 
 class Chess2026():
     def __init__(self):
@@ -42,10 +51,6 @@ class Chess2026():
         self.rules_shown = False
         
         self.animator = Animator()
-
-        # text
-        self.white_turn_text = TextSprite("White's turn", (WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2), 'white', 128, ())
-        self.black_turn_text = TextSprite("Black's turn", (WINDOW_WIDTH / 8, WINDOW_HEIGHT / 2), 'black', 128, ())
 
         # audio
         self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
@@ -153,12 +158,9 @@ class Chess2026():
         notifier.update()
         self.animator.update(dt, self.board.round_num)
         self.rulebook.update()
-        self.players['white'].score_text.update()
-        self.players['black'].score_text.update()
-        if self.board.turn == 'white':
-            self.white_turn_text.update()
-        if self.board.turn == 'black':
-            self.black_turn_text.update()
+        self.players['white'].update()
+        self.players['black'].update()
+
         if self.rules_shown == True:
             pygame.display.get_surface().blit(self.rules_screen, self.rules_rect)
         pygame.display.update()
