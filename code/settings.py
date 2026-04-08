@@ -21,9 +21,9 @@ SMOKE_FRAMES = folder_importer_list('assets', 'animations', 'smoke')
 BOARD_SURFS = folder_importer('assets', 'images', 'board')
 
 PIECE_SCORES = {
-    "Legionary": 1,
-    "Wizard": 3,
-    "Dragon": 3,
-    "Catapult": 5,
-    "Archer": 9,
+    "legionary": 1,
+    "wizard": 3,
+    "dragon": 3,
+    "catapult": 5,
+    "archer": 9,
 }

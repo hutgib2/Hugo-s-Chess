@@ -10,8 +10,25 @@ from timer import Timer
 import json
 import time
 
+class Player():
+    def __init__(self, color):
+        self.emperor = None
+        self.pieces = pygame.sprite.Group()
+        self.color = color
+        self.score = 0
+        self.score_text_pos = (3*WINDOW_WIDTH / 4, WINDOW_HEIGHT / 1.5) if self.color == 'white' else (3*WINDOW_WIDTH / 4, WINDOW_HEIGHT / 2.5)
+        self.score_text = TextSprite(str(self.score), self.score_text_pos, color, 128, ())
+
+    def set_score(self, score):
+        self.score = score
+        self.score_text = TextSprite(str(self.score), self.score_text_pos, self.color, 128, ())
+
 class Chess2026():
     def __init__(self):
+        self.players = {
+            "white": Player('white'),
+            "black": Player('black')
+        }
         self.create_new_game()
         self.running = True
         self.clock = pygame.time.Clock()
@@ -37,7 +54,7 @@ class Chess2026():
     def create_new_game(self):
         with open('assets/saved_games/new_game.json', 'r') as file:
             data = json.load(file)
-            self.board = ChessBoard(BOARD_SURFS['chess_board'], data)
+            self.board = ChessBoard(BOARD_SURFS['chess_board'], data, self.players)
     
     def load_game(self, file_path):
         with open(file_path, 'r') as file:
@@ -48,6 +65,8 @@ class Chess2026():
     def reset_game(self):
         self.create_new_game()
         notifier.notify('New Game!')
+        self.players['white'].set_score(0)
+        self.players['black'].set_score(0)
 
     def save_game(self):
         with open('assets/saved_games/save_game.json', 'w') as file:
@@ -109,9 +128,9 @@ class Chess2026():
                             action = 'move'
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
-                            self.animator.attack(self.board.selected_square, click_square, self.board.players[click_square.piece.color].pieces)
+                            self.animator.attack(self.board.selected_square, click_square, self.players[click_square.piece.color].pieces)
                             score = self.board.attack_piece(self.board.selected_square, click_square)
-                            self.board.players[self.board.turn].score += score
+                            self.players[self.board.turn].set_score(self.players[self.board.turn].score + score)
                             self.board.deselect_piece()
                             action = 'attack'
                         elif click_square.piece == None and self.board.selected_square:
@@ -134,6 +153,8 @@ class Chess2026():
         notifier.update()
         self.animator.update(dt, self.board.round_num)
         self.rulebook.update()
+        self.players['white'].score_text.update()
+        self.players['black'].score_text.update()
         if self.board.turn == 'white':
             self.white_turn_text.update()
         if self.board.turn == 'black':

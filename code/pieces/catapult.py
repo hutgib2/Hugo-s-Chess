@@ -3,15 +3,15 @@ from pieces.piece import Piece
 from support import get_direction_between
 
 class Catapult(Piece):
-    def __init__(self, id, surf, color, coord, squares):
-        super().__init__(id, surf, color, coord, squares)
-        self.type = "Catapult"
+    def __init__(self, id, color, coord, squares):
+        super().__init__(id, 'catapult',  color, coord, squares)
+        self.type = "catapult"
         if self.color == 'white':
             self.attack_directions = [(-1, 0), (0, 1), (0, -1)]
         elif self.color == 'black':
             self.attack_directions = [(1, 0), (0, 1), (0, -1)]
         self.attack_range = (1, 7)
-        self.move_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        self.move_directions = [(-1, 0), (0, -1), (0, 1), (1, 0)]
         self.move_range = 2
 
     def update_attack_moves(self):

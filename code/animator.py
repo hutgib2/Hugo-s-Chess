@@ -11,9 +11,9 @@ class Animator():
 
     def attack(self, attacker_square, attacked_square, enemy_pieces):
         match attacker_square.piece.type:
-            case 'Dragon':
+            case 'dragon':
                 self.dragon_attack(attacker_square.piece.attack_squares)
-            case 'Catapult':
+            case 'catapult':
                 self.catapult_attack(attacker_square, attacked_square, enemy_pieces)
     
     def dragon_attack(self, attack_squares):

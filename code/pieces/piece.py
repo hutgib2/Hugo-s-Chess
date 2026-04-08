@@ -1,10 +1,11 @@
 from settings import *
 
 class Piece(pygame.sprite.Sprite):
-    def __init__(self, id, surf, color, coord, squares):
+    def __init__(self, id, piece_type, color, coord, squares):
         super().__init__()
         self.id = id
-        self.image = pygame.transform.smoothscale(surf, (TILE_WIDTH, TILE_WIDTH))
+        self.type = piece_type
+        self.image = pygame.transform.smoothscale(PIECE_SURFS[color][self.type], (TILE_WIDTH, TILE_WIDTH))
         self.rect = self.image.get_frect()
         self.color = color
         self.squares = squares

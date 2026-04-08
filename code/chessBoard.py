@@ -17,28 +17,18 @@ class Square():
         self.is_attack_move = False
         self.is_swappable = False
 
-class Player():
-    def __init__(self, color):
-        self.emperor = None
-        self.pieces = pygame.sprite.Group()
-        self.color = color
-        self.score = 0
-
 class ChessBoard(pygame.sprite.Sprite):
-    def __init__(self, surf, setup_data):
+    def __init__(self, surf, setup_data, players):
         super().__init__()
         self.image = pygame.transform.smoothscale(surf, (BOARD_SIZE, BOARD_SIZE))
         self.rect = self.image.get_frect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
         self.squares = [[], [], [], [], [], [], [], []] # creates a 2d list of Square objects
+        self.players = players
         self.pieces = {}
         self.selected_square = None
         self.turn = 'white'
         self.round_num = 0
         self.checkmate = False
-        self.players = {
-            "white": Player('white'),
-            "black": Player('black')
-        }
         self.gen_squares()
         self.setup_pieces(setup_data)
 
@@ -78,30 +68,35 @@ class ChessBoard(pygame.sprite.Sprite):
     def place_piece(self, pos, piece):
         square = self.squares[pos[0]][pos[1]]
         square.piece = piece
-        piece.rect = square.rect
         if type(piece) == Emperor:
             self.players[piece.color].emperor = piece
         
     def piece_from_type(self, piece_state):
         match piece_state["type"]:
-            case "Legionary":
-                return Legionary(piece_state["id"], PIECE_SURFS[piece_state["color"]]['legionary'], piece_state["color"], piece_state["coord"], self.squares)
-            case "Emperor":
-                return Emperor(piece_state["id"], PIECE_SURFS[piece_state["color"]]['emperor'], piece_state["color"], piece_state["coord"], self.squares)
-            case "Dragon":
-                return Dragon(piece_state["id"], PIECE_SURFS[piece_state["color"]]['dragon'], piece_state["color"], piece_state["coord"], self.squares)
-            case "Archer":
-                return Archer(piece_state["id"], PIECE_SURFS[piece_state["color"]]['archer'], piece_state["color"], piece_state["coord"], self.squares)
-            case "Catapult":
-                return Catapult(piece_state["id"], PIECE_SURFS[piece_state["color"]]['catapult'], piece_state["color"], piece_state["coord"], self.squares)
-            case "Wizard":
-                return Wizard(piece_state["id"], PIECE_SURFS[piece_state["color"]]['wizard'], piece_state["color"], piece_state["coord"], self.squares)
+            case "legionary":
+                return Legionary(piece_state["id"], piece_state["color"], piece_state["coord"], self.squares)
+            case "emperor":
+                return Emperor(piece_state["id"], piece_state["color"], piece_state["coord"], self.squares)
+            case "dragon":
+                return Dragon(piece_state["id"], piece_state["color"], piece_state["coord"], self.squares)
+            case "archer":
+                return Archer(piece_state["id"], piece_state["color"], piece_state["coord"], self.squares)
+            case "catapult":
+                return Catapult(piece_state["id"], piece_state["color"], piece_state["coord"], self.squares)
+            case "wizard":
+                return Wizard(piece_state["id"], piece_state["color"], piece_state["coord"], self.squares)
+            case _:
+                print(f'Unknown type {piece_state["type"]}')
 
     def take_snapshot(self):
         snapshot = {
             "round_num": self.round_num,
             "turn": self.turn,
             "pieces": [],
+            "scores": {
+                'white': self.players['white'].score,
+                'black': self.players['black'].score,
+            }
         }
         for row in range(8):
             for col in range(8):
@@ -113,6 +108,8 @@ class ChessBoard(pygame.sprite.Sprite):
     def apply_snapshot(self, snapshot):
         self.round_num = snapshot["round_num"]
         self.turn = snapshot["turn"]
+        self.players['white'].set_score(snapshot["scores"]['white'])
+        self.players['black'].set_score(snapshot["scores"]['black'])
         
         # clear board
         for row in range(8):
@@ -164,19 +161,15 @@ class ChessBoard(pygame.sprite.Sprite):
         return score
 
     def update_moves(self, square):
-        square.piece.update_possible_moves()
-        allowed_moves = self.filter_invalid_moves(square)
-
         square.piece.update_attack_moves()
-        allowed_attacks = self.filter_invalid_attacks(square)
+        self.filter_invalid_attacks(square)
+        
+        square.piece.update_possible_moves()
+        self.filter_invalid_moves(square)
 
         if type(square.piece) == Wizard:
             square.piece.update_swap_moves()
-            allowed_swaps = self.filter_invalid_swaps(square)
-            square.piece.swap_squares = allowed_swaps
-    
-        square.piece.move_squares = allowed_moves
-        square.piece.attack_squares = allowed_attacks
+            self.filter_invalid_swaps(square)
 
     def filter_invalid_moves(self, square):
         allowed_moves = []
@@ -186,7 +179,7 @@ class ChessBoard(pygame.sprite.Sprite):
             if not self.in_check(color):
                 allowed_moves.append(move_square)
             self.move_piece(move_square, square)
-        return allowed_moves
+        square.piece.move_squares = allowed_moves
 
     def filter_invalid_swaps(self, square):
         allowed_moves = []
@@ -196,7 +189,7 @@ class ChessBoard(pygame.sprite.Sprite):
             if not self.in_check(color):
                 allowed_moves.append(swap_square)
             self.swap_piece(swap_square, square)
-        return allowed_moves
+        square.piece.swap_squares = allowed_moves
 
     def filter_invalid_attacks(self, square):
         allowed_moves = []
@@ -209,41 +202,34 @@ class ChessBoard(pygame.sprite.Sprite):
             if not self.in_check(color):
                 allowed_moves.append(attack_square)
             self.apply_snapshot(snapshot)
-        return allowed_moves
+        square.piece.attack_squares = allowed_moves
 
     def in_check(self, color):
-        for row in range(8):
-            for col in range(8):
-                square = self.squares[row][col]
-                if not square.piece or square.piece.color == color:
-                    continue
-                square.piece.update_attack_moves()
-                for attack_square in square.piece.attack_squares:
-                    if attack_square.coord == self.players[color].emperor.coord:
-                        return True
+        enemy_color = 'white' if color == 'black' else 'black'
+        for piece in self.players[enemy_color].pieces:
+            piece.update_attack_moves()
+            for attack_square in piece.attack_squares:
+                if attack_square.coord == self.players[color].emperor.coord:
+                    return True
         return False
     
     def evaluate_check_mate(self, color):
         all_moves = []
-        for row in range(8):
-            for col in range(8):
-                square = self.squares[row][col]
-                if not square.piece or not square.piece.color == color:
-                    continue
-                self.update_moves(square)
-                all_moves.extend(square.piece.move_squares)
-                all_moves.extend(square.piece.attack_squares)
-                if type(square.piece) == Wizard:
-                    all_moves.extend(square.piece.swap_squares)
-                if len(all_moves) != 0:
-                    return
+        for piece in self.players[color].pieces:
+            self.update_moves(piece.square)
+            all_moves.extend(piece.move_squares)
+            all_moves.extend(piece.attack_squares)
+            if type(piece) == Wizard:
+                all_moves.extend(piece.swap_squares)
+            if len(all_moves) != 0:
+                return
 
         notifier.notify('Checkmate!')
         self.checkmate = True
 
     def promote_to_archer(self, square, color):
         id = len(self.pieces)
-        square.piece = Archer(id, PIECE_SURFS[color]['archer'], color, square.coord, self.squares)
+        square.piece = Archer(id, color, square.coord, self.squares)
         self.pieces[id] = square.piece
 
     def render(self):
