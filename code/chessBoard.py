@@ -123,7 +123,7 @@ class ChessBoard(pygame.sprite.Sprite):
         # place pieces
         for piece_state in snapshot["pieces"]:
             piece = self.pieces[piece_state['id']]
-            piece.coord = tuple(piece_state['coord'])
+            piece.set_position(tuple(piece_state['coord']))
             piece.is_stunned = piece_state['is_stunned']
             piece.stunned_at = piece_state['stunned_at']
             piece.is_reloading = piece_state['is_reloading']
@@ -145,22 +145,19 @@ class ChessBoard(pygame.sprite.Sprite):
     def move_piece(self, old_square, new_square):
         new_square.piece = old_square.piece
         old_square.piece = None
-        new_square.piece.coord = new_square.coord
-        new_square.piece.rect = new_square.rect
+        new_square.piece.set_position(new_square.coord)
 
     def swap_piece(self, old_square, new_square):
         temp = old_square.piece
         old_square.piece = new_square.piece
         new_square.piece = temp
-        old_square.piece.coord = old_square.coord
-        old_square.piece.rect = old_square.rect
-        new_square.piece.coord = new_square.coord
-        new_square.piece.rect = new_square.rect
+        old_square.piece.set_position(old_square.coord)
+        new_square.piece.set_position(new_square.coord)
 
     def attack_piece(self, old_square, attack_square):
         score = old_square.piece.attack(attack_square.coord, self.round_num)
-        if not old_square.piece:
-            attack_square.piece.coord = attack_square.coord
+        # if not old_square.piece:
+        #     attack_square.piece.coord = attack_square.coord
         if type(old_square.piece) == Catapult:
             old_square.piece.is_reloading = True
             old_square.piece.attacked_at = self.round_num

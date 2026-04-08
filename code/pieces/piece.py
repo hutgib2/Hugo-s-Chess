@@ -7,14 +7,19 @@ class Piece(pygame.sprite.Sprite):
         self.image = pygame.transform.smoothscale(surf, (TILE_WIDTH, TILE_WIDTH))
         self.rect = self.image.get_frect()
         self.color = color
-        self.coord = tuple(coord)
+        self.squares = squares
+        self.set_position(tuple(coord))
         self.attack_squares = []
         self.move_squares = []
-        self.squares = squares
         self.is_reloading = False
         self.is_stunned = False
         self.stunned_at = 0
         self.attacked_at = 0
+
+    def set_position(self, coord):
+        self.coord = coord
+        self.square = self.squares[coord[0]][coord[1]] if coord else None
+        self.rect = self.square.rect if coord else None
 
     def has_adjacent_legionary(self, square, direction):
         from pieces.legionary import Legionary
@@ -93,14 +98,13 @@ class Piece(pygame.sprite.Sprite):
         score = PIECE_SCORES[attack_square.piece.type]
         attack_square.piece = old_square.piece
         old_square.piece = None
-        attack_square.piece.rect = attack_square.rect
+        attack_square.piece.set_position(attack_square.coord)
         return score
 
-    def kill(self):
-        row = self.coord[0]
-        col = self.coord[1]
-        square = self.squares[row][col]
-        square.piece = None
+    def remove_piece(self):
+        self.square.piece = None
+        self.set_position(None)
+        self.kill()
 
     def get_state(self):
         return {

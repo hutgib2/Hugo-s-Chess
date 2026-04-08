@@ -63,8 +63,8 @@ class Chess2026():
         self.board.deselect_piece()
         self.board.turn = 'black' if self.board.turn == 'white' else 'white'
         self.board.round_num += 1
-        print(f'white score: {self.board.players['white'].score}')
-        print(f'black score: {self.board.players['black'].score}')
+        # print(f'white score: {self.board.players['white'].score}')
+        # print(f'black score: {self.board.players['black'].score}')
 
     def handle_events(self):
         for event in pygame.event.get():

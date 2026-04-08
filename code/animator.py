@@ -72,7 +72,7 @@ class Boulder(pygame.sprite.Sprite):
 
         for piece in collision_sprites:
             if self.killed_first == False:
-                piece.kill()
+                piece.remove_piece()
                 self.killed_first = True
             else:
                 piece.is_stunned = True
