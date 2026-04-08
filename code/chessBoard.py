@@ -161,6 +161,8 @@ class ChessBoard(pygame.sprite.Sprite):
         return score
 
     def update_moves(self, square):
+        if not square:
+            return
         square.piece.update_attack_moves()
         self.filter_invalid_attacks(square)
         
