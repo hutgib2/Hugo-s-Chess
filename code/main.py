@@ -136,7 +136,6 @@ class Chess2026():
                             self.kill_sound.play()
                             self.animator.attack(self.board.selected_square, click_square, self.players[click_square.piece.color].pieces)
                             score = self.board.attack_piece(self.board.selected_square, click_square)
-                            # self.players[click_square.piece.color].pieces.remove(click_square.piece)
                             self.players[self.board.turn].set_score(self.players[self.board.turn].score + score)
                             self.board.deselect_piece()
                             action = 'attack'
