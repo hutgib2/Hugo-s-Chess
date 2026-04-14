@@ -55,6 +55,7 @@ class Chess2026():
         # audio
         self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
         self.move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.wav'))
+        self.swap_sound = pygame.mixer.Sound(join('assets', 'audio', 'swap.wav'))
 
     def create_new_game(self):
         with open('assets/saved_games/new_game.json', 'r') as file:
@@ -87,8 +88,6 @@ class Chess2026():
         self.board.deselect_piece()
         self.board.turn = 'black' if self.board.turn == 'white' else 'white'
         self.board.round_num += 1
-        # print(f'white score: {self.board.players['white'].score}')
-        # print(f'black score: {self.board.players['black'].score}')
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -110,6 +109,7 @@ class Chess2026():
                     continue
                 if not self.board.rect.collidepoint(event.pos) and self.board.selected_square:
                     self.board.deselect_piece()
+                    self.board.update()
                     continue
                     
                 action = None
@@ -120,6 +120,7 @@ class Chess2026():
                         if not click_square.rect.collidepoint(event.pos):
                             continue
                         if click_square.is_swappable:
+                            self.swap_sound.play()
                             self.animator.swap([self.board.selected_square.rect, click_square.rect])
                             self.board.swap_piece(self.board.selected_square, click_square)
                             self.board.deselect_piece()
@@ -135,6 +136,7 @@ class Chess2026():
                             self.kill_sound.play()
                             self.animator.attack(self.board.selected_square, click_square, self.players[click_square.piece.color].pieces)
                             score = self.board.attack_piece(self.board.selected_square, click_square)
+                            # self.players[click_square.piece.color].pieces.remove(click_square.piece)
                             self.players[self.board.turn].set_score(self.players[self.board.turn].score + score)
                             self.board.deselect_piece()
                             action = 'attack'

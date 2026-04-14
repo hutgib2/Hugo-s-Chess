@@ -161,7 +161,7 @@ class ChessBoard(pygame.sprite.Sprite):
         return score
 
     def update_moves(self, square):
-        if not square:
+        if not square or not square.piece:
             return
         square.piece.update_attack_moves()
         self.filter_invalid_attacks(square)
@@ -208,23 +208,31 @@ class ChessBoard(pygame.sprite.Sprite):
 
     def in_check(self, color):
         enemy_color = 'white' if color == 'black' else 'black'
-        for piece in self.players[enemy_color].pieces:
-            piece.update_attack_moves()
-            for attack_square in piece.attack_squares:
-                if attack_square.coord == self.players[color].emperor.coord:
-                    return True
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                if not square.piece or square.piece.color != enemy_color:
+                    continue
+                square.piece.update_attack_moves()
+                for attack_square in square.piece.attack_squares:
+                    if attack_square.coord == self.players[color].emperor.coord:
+                        return True
         return False
     
     def evaluate_check_mate(self, color):
         all_moves = []
-        for piece in self.players[color].pieces:
-            self.update_moves(piece.square)
-            all_moves.extend(piece.move_squares)
-            all_moves.extend(piece.attack_squares)
-            if type(piece) == Wizard:
-                all_moves.extend(piece.swap_squares)
-            if len(all_moves) != 0:
-                return
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                if not square.piece or square.piece.color != color:
+                    continue
+                self.update_moves(square.piece.square)
+                all_moves.extend(square.piece.move_squares)
+                all_moves.extend(square.piece.attack_squares)
+                if type(square.piece) == Wizard:
+                    all_moves.extend(square.piece.swap_squares)
+                if len(all_moves) != 0:
+                    return
 
         notifier.notify('Checkmate!')
         self.checkmate = True
@@ -267,6 +275,7 @@ class ChessBoard(pygame.sprite.Sprite):
                         square.piece.is_stunned = False
                     if square.piece.is_reloading and self.round_num - square.piece.attacked_at > 2:
                         square.piece.is_reloading = False
+                    # self.update_moves(square)
 
         # update selected squares move options
         if self.selected_square and self.selected_square.piece:
@@ -277,7 +286,7 @@ class ChessBoard(pygame.sprite.Sprite):
                     if square.piece != None:
                         square.is_attack_move = True
             
-            if type(self.selected_square.piece) == Wizard:
+            if self.selected_square.piece.type == 'wizard':
                 for square in self.selected_square.piece.swap_squares:
                     square.is_swappable = True
 
@@ -290,10 +299,8 @@ class ChessBoard(pygame.sprite.Sprite):
                 self.promote_to_archer(square, 'black')
         
         if self.in_check(self.enemy_color):
-            # print(f'{self.enemy_color} in check')
             self.evaluate_check_mate(self.enemy_color)
             return
         if self.in_check(self.turn):
-            # print(f'{self.enemy_color} in check')
             self.evaluate_check_mate(self.turn)
             return

@@ -24,6 +24,7 @@ PIECE_SCORES = {
     "legionary": 1,
     "wizard": 3,
     "dragon": 3,
-    "catapult": 5,
-    "archer": 9,
+    "catapult": 3,
+    "archer": 5,
+    "emperor": 10
 }
