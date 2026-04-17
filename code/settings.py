@@ -18,6 +18,7 @@ PIECE_SURFS = {
 
 FLAME_FRAMES = folder_importer_list('assets', 'animations', 'flame')
 SMOKE_FRAMES = folder_importer_list('assets', 'animations', 'smoke')
+SPLAT_FRAMES = folder_importer_list('assets', 'animations', 'splat')
 BOARD_SURFS = folder_importer('assets', 'images', 'board')
 
 PIECE_SCORES = {
