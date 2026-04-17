@@ -108,6 +108,7 @@ class Chess2026():
                 if self.rules_shown or self.game_blocked:
                     continue
                 if not self.board.rect.collidepoint(event.pos) and self.board.selected_square:
+                    print(f'event pos: {event.pos} {type(event.pos)}')
                     self.board.deselect_piece()
                     self.board.update()
                     continue

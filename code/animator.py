@@ -1,5 +1,7 @@
 from settings import *
 from support import get_direction_between
+from pieces.archer import Arrow
+from pieces.catapult import Boulder
 
 class Animator():
     def __init__(self):
@@ -56,81 +58,3 @@ class Animation(pygame.sprite.Sprite):
         if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
             self.kill()
         self.animate(dt)
-
-class Boulder(pygame.sprite.Sprite):
-    def __init__(self, pos, direction, enemy_pieces, groups):
-        super().__init__(groups)
-        self.original_surf = pygame.transform.smoothscale(BOARD_SURFS['boulder'], (TILE_WIDTH-50, TILE_WIDTH-50)) 
-        self.image = self.original_surf
-        self.rect = self.image.get_frect(center = pos) 
-        self.spawn_time = pygame.time.get_ticks()
-        self.lifetime = 1000
-        self.direction = direction
-        self.speed = 1400
-        self.enemy_pieces = enemy_pieces
-        self.killed_first = False
-        self.rotation_speed = 256
-        self.rotation = 0
-    
-    def update(self, dt, round_num):
-        if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
-            self.kill()
-        self.rotation += self.rotation_speed * dt
-        self.image = pygame.transform.rotozoom(self.original_surf, self.rotation, 1)
-        self.rect.center += self.direction * self.speed * dt
-        pygame.display.get_surface().blit(self.image, self.rect)
-
-        collision_sprites = pygame.sprite.spritecollide(self, self.enemy_pieces, False, pygame.sprite.collide_mask)
-        for piece in collision_sprites:
-            if self.killed_first == False:
-                piece.remove_piece()
-                self.killed_first = True
-            else:
-                piece.is_stunned = True
-                piece.stunned_at = round_num
-
-class Arrow(pygame.sprite.Sprite):
-    def __init__(self, attacked_square, direction, groups):
-        super().__init__(groups)
-        self.image = pygame.transform.smoothscale(BOARD_SURFS['arrow'], (TILE_WIDTH-50, TILE_WIDTH-50)) 
-        self.spawn_time = pygame.time.get_ticks()
-        self.lifetime = 1000
-        self.direction = direction
-        self.speed = 1400
-        self.set_position_and_angle(attacked_square, direction)
-    
-    def set_position_and_angle(self, attacked_square, direction):
-        match tuple(direction):
-            case (0, 1):
-                angle = 0
-                pos = attacked_square.rect.midtop
-            case (1, 1):
-                angle = 45
-                pos = attacked_square.rect.topleft
-            case (1, 0):
-                angle = 90
-                pos = attacked_square.rect.midleft
-            case (1, -1):
-                angle = 135
-                pos = attacked_square.rect.bottomleft
-            case (0, -1):
-                angle = 180
-                pos = attacked_square.rect.midbottom
-            case (-1, 0):
-                angle = -90
-                pos = attacked_square.rect.midright
-            case (-1, -1):
-                angle = -135
-                pos = attacked_square.rect.bottomright
-            case (-1, 1):
-                angle = -45
-                pos = attacked_square.rect.topright
-
-        self.image = pygame.transform.rotozoom(self.image, angle, 1)
-        self.rect = self.image.get_frect(center = pos) 
-    
-    def update(self, dt, _):
-        if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
-            self.kill()
-    #     self.rect.center += self.direction * self.speed * dt
-        pygame.display.get_surface().blit(self.image, self.rect)

@@ -60,3 +60,35 @@ class Catapult(Piece):
             elif type(square.piece) == Legionary and attack_direction == self.attack_directions[0]:
                 break
             return PIECE_SCORES[square.piece.type]
+
+class Boulder(pygame.sprite.Sprite):
+    def __init__(self, pos, direction, enemy_pieces, groups):
+        super().__init__(groups)
+        self.original_surf = pygame.transform.smoothscale(BOARD_SURFS['boulder'], (TILE_WIDTH-50, TILE_WIDTH-50)) 
+        self.image = self.original_surf
+        self.rect = self.image.get_frect(center = pos) 
+        self.spawn_time = pygame.time.get_ticks()
+        self.lifetime = 1000
+        self.direction = direction
+        self.speed = 1400
+        self.enemy_pieces = enemy_pieces
+        self.killed_first = False
+        self.rotation_speed = 256
+        self.rotation = 0
+    
+    def update(self, dt, round_num):
+        if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
+            self.kill()
+        self.rotation += self.rotation_speed * dt
+        self.image = pygame.transform.rotozoom(self.original_surf, self.rotation, 1)
+        self.rect.center += self.direction * self.speed * dt
+        pygame.display.get_surface().blit(self.image, self.rect)
+
+        collision_sprites = pygame.sprite.spritecollide(self, self.enemy_pieces, False, pygame.sprite.collide_mask)
+        for piece in collision_sprites:
+            if self.killed_first == False:
+                piece.remove_piece()
+                self.killed_first = True
+            else:
+                piece.is_stunned = True
+                piece.stunned_at = round_num
