@@ -88,6 +88,8 @@ class Chess2026():
         self.board.deselect_piece()
         self.board.turn = 'black' if self.board.turn == 'white' else 'white'
         self.board.round_num += 1
+        if self.board.in_check(self.board.turn):
+            notifier.notify('Check!')
 
     def handle_events(self):
         for event in pygame.event.get():
