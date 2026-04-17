@@ -264,15 +264,30 @@ class ChessBoard(pygame.sprite.Sprite):
                 if square.piece and square.piece.is_reloading == True:
                     pygame.display.get_surface().blit(self.reload_indicator, square.rect)
 
-    def resolve_timers(self):
+    def update_after_round(self):
         for row in range(8):
             for col in range(8):
                 square = self.squares[row][col]
                 if square.piece:
-                    if square.piece.is_stunned and self.round_num - square.piece.stunned_at > 2:
+                    if square.piece.is_stunned and self.round_num - square.piece.stunned_at > 1:
                         square.piece.is_stunned = False
-                    if square.piece.is_reloading and self.round_num - square.piece.attacked_at > 3:
+                    if square.piece.is_reloading and self.round_num - square.piece.attacked_at > 1:
                         square.piece.is_reloading = False
+
+        # Promote legionary to archer if at back row
+        for square in self.squares[0]:
+            if square.piece and square.piece.color == 'white' and type(square.piece) == Legionary:
+                self.promote_to_archer(square, 'white')
+        for square in self.squares[7]:
+            if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
+                self.promote_to_archer(square, 'black')
+        
+        if self.in_check(self.enemy_color):
+            self.evaluate_check_mate(self.enemy_color)
+            return
+        if self.in_check(self.turn):
+            self.evaluate_check_mate(self.turn)
+            return
 
     def update(self):
         # this resets every squares state
@@ -295,18 +310,3 @@ class ChessBoard(pygame.sprite.Sprite):
             if self.selected_square.piece.type == 'wizard':
                 for square in self.selected_square.piece.swap_squares:
                     square.is_swappable = True
-
-        # Promote legionary to archer if at back row
-        for square in self.squares[0]:
-            if square.piece and square.piece.color == 'white' and type(square.piece) == Legionary:
-                self.promote_to_archer(square, 'white')
-        for square in self.squares[7]:
-            if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
-                self.promote_to_archer(square, 'black')
-        
-        if self.in_check(self.enemy_color):
-            self.evaluate_check_mate(self.enemy_color)
-            return
-        if self.in_check(self.turn):
-            self.evaluate_check_mate(self.turn)
-            return

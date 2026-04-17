@@ -87,10 +87,10 @@ class Chess2026():
         self.game_blocked = False
         self.board.deselect_piece()
         self.board.turn = 'black' if self.board.turn == 'white' else 'white'
+        self.board.update_after_round()
         self.board.round_num += 1
         if self.board.in_check(self.board.turn):
             notifier.notify('Check!')
-        self.board.resolve_timers()
 
     def handle_events(self):
         for event in pygame.event.get():
