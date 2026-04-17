@@ -103,29 +103,29 @@ class Arrow(pygame.sprite.Sprite):
     def set_position_and_angle(self, attacked_square, direction):
         match tuple(direction):
             case (0, 1):
-                angle = 90
-                pos = attacked_square.rect.midleft
+                angle = 0
+                pos = attacked_square.rect.midtop
             case (1, 1):
                 angle = 45
                 pos = attacked_square.rect.topleft
             case (1, 0):
-                angle = 0
-                pos = attacked_square.rect.midtop
+                angle = 90
+                pos = attacked_square.rect.midleft
             case (1, -1):
-                angle = -45
-                pos = attacked_square.rect.topright
+                angle = 135
+                pos = attacked_square.rect.bottomleft
             case (0, -1):
-                angle = -90
-                pos = attacked_square.rect.midright
-            case (-1, 0):
                 angle = 180
                 pos = attacked_square.rect.midbottom
+            case (-1, 0):
+                angle = -90
+                pos = attacked_square.rect.midright
             case (-1, -1):
                 angle = -135
                 pos = attacked_square.rect.bottomright
             case (-1, 1):
-                angle = -225
-                pos = attacked_square.rect.bottomleft
+                angle = -45
+                pos = attacked_square.rect.topright
 
         self.image = pygame.transform.rotozoom(self.image, angle, 1)
         self.rect = self.image.get_frect(center = pos) 

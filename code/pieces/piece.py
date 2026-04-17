@@ -96,7 +96,9 @@ class Piece(pygame.sprite.Sprite):
     def attack(self, attack_coord, round_num=0):
         old_square = self.squares[self.coord[0]][self.coord[1]]
         attack_square = self.squares[attack_coord[0]][attack_coord[1]]
+        
         score = PIECE_SCORES[attack_square.piece.type]
+        attack_square.piece.remove_piece()
         attack_square.piece = old_square.piece
         old_square.piece = None
         attack_square.piece.set_position(attack_square.coord)

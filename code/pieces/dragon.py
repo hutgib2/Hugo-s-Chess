@@ -20,5 +20,5 @@ class Dragon(Piece):
         for square in self.attack_squares:
             if square.piece:
                 score += PIECE_SCORES[square.piece.type]
-            square.piece = None
+            square.piece.remove_piece()
         return score 
