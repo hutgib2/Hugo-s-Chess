@@ -264,6 +264,16 @@ class ChessBoard(pygame.sprite.Sprite):
                 if square.piece and square.piece.is_reloading == True:
                     pygame.display.get_surface().blit(self.reload_indicator, square.rect)
 
+    def resolve_timers(self):
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                if square.piece:
+                    if square.piece.is_stunned and self.round_num - square.piece.stunned_at > 2:
+                        square.piece.is_stunned = False
+                    if square.piece.is_reloading and self.round_num - square.piece.attacked_at > 3:
+                        square.piece.is_reloading = False
+
     def update(self):
         # this resets every squares state
         for row in range(8):
@@ -272,12 +282,6 @@ class ChessBoard(pygame.sprite.Sprite):
                 square.is_possible_move = False
                 square.is_attack_move = False
                 square.is_swappable = False
-                if square.piece:
-                    if square.piece.is_stunned and self.round_num - square.piece.stunned_at > 2:
-                        square.piece.is_stunned = False
-                    if square.piece.is_reloading and self.round_num - square.piece.attacked_at > 2:
-                        square.piece.is_reloading = False
-                    # self.update_moves(square)
 
         # update selected squares move options
         if self.selected_square and self.selected_square.piece:

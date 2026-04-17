@@ -90,6 +90,7 @@ class Chess2026():
         self.board.round_num += 1
         if self.board.in_check(self.board.turn):
             notifier.notify('Check!')
+        self.board.resolve_timers()
 
     def handle_events(self):
         for event in pygame.event.get():
