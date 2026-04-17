@@ -115,7 +115,8 @@ class ChessBoard(pygame.sprite.Sprite):
         for row in range(8):
             for col in range(8):
                 square = self.squares[row][col]
-                square.piece = None
+                if square.piece:
+                    square.piece.remove_piece()
 
         # place pieces
         for piece_state in snapshot["pieces"]:
@@ -126,6 +127,7 @@ class ChessBoard(pygame.sprite.Sprite):
             piece.is_reloading = piece_state['is_reloading']
             piece.attacked_at = piece_state['attacked_at']
             self.place_piece(piece.coord, piece)
+            self.players[piece.color].pieces.add(piece)
             
     def select_piece(self, click_square):
         if self.selected_square:

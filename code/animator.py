@@ -81,7 +81,6 @@ class Boulder(pygame.sprite.Sprite):
         pygame.display.get_surface().blit(self.image, self.rect)
 
         collision_sprites = pygame.sprite.spritecollide(self, self.enemy_pieces, False, pygame.sprite.collide_mask)
-
         for piece in collision_sprites:
             if self.killed_first == False:
                 piece.remove_piece()
