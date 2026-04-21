@@ -28,7 +28,7 @@ class ChessBoard(pygame.sprite.Sprite):
         self.selected_square = None
         self.turn = 'white'
         self.round_num = 0
-        self.checkmate = False
+        self.game_over = False
         self.gen_squares()
         self.setup_pieces(setup_data)
 
@@ -221,23 +221,18 @@ class ChessBoard(pygame.sprite.Sprite):
                         return True
         return False
     
-    def evaluate_check_mate(self, color):
-        all_moves = []
+    def has_possible_moves(self, color):
         for row in range(8):
             for col in range(8):
                 square = self.squares[row][col]
                 if not square.piece or square.piece.color != color:
                     continue
-                self.update_moves(square.piece.square)
-                all_moves.extend(square.piece.move_squares)
-                all_moves.extend(square.piece.attack_squares)
-                if type(square.piece) == Wizard:
-                    all_moves.extend(square.piece.swap_squares)
-                if len(all_moves) != 0:
-                    return
-
-        notifier.notify('Checkmate!')
-        self.checkmate = True
+                self.update_moves(square)
+                if len(square.piece.move_squares) > 0 or len(square.piece.attack_squares) > 0:
+                    return True
+                if type(square.piece) == Wizard and len(square.piece.swap_squares) > 0:
+                    return True
+        return False
 
     def promote_to_archer(self, square, color):
         id = len(self.pieces)
@@ -264,6 +259,19 @@ class ChessBoard(pygame.sprite.Sprite):
                 if square.piece and square.piece.is_reloading == True:
                     pygame.display.get_surface().blit(self.reload_indicator, square.rect)
 
+    def evaluate_checkmate(self, color):
+        in_check = self.in_check(color)
+        has_moves = self.has_possible_moves(color)
+
+        if in_check and has_moves:
+            notifier.notify('Check!')
+        elif in_check and not has_moves:
+            notifier.notify('Checkmate!')
+            self.game_over = True
+        elif not in_check and not has_moves:
+            notifier.notify('Draw!')
+            self.game_over = True
+               
     def update_after_round(self):
         for row in range(8):
             for col in range(8):
@@ -281,13 +289,12 @@ class ChessBoard(pygame.sprite.Sprite):
         for square in self.squares[7]:
             if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
                 self.promote_to_archer(square, 'black')
-        
-        if self.in_check(self.enemy_color):
-            self.evaluate_check_mate(self.enemy_color)
-            return
-        if self.in_check(self.turn):
-            self.evaluate_check_mate(self.turn)
-            return
+
+        self.deselect_piece()
+        self.turn = 'black' if self.turn == 'white' else 'white'
+        self.round_num += 1
+        self.evaluate_checkmate('black')
+        self.evaluate_checkmate('white')
 
     def update(self):
         # this resets every squares state
