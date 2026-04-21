@@ -1,3 +1,7 @@
+{
+    "round_num": 0, 
+    "turn": "white", 
+    "pieces": 
 [{
     "id" : 0,
     "color": "black",
@@ -158,4 +162,4 @@
     "color": "white",
     "coord": [7, 7],
     "type": "catapult"
-}]
+}]}

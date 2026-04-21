@@ -35,12 +35,6 @@ class ChessReboot():
         self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
         self.move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.wav'))
         self.swap_sound = pygame.mixer.Sound(join('assets', 'audio', 'swap.wav'))
-    
-    def load_game(self, file_path):
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-            self.board.apply_snapshot(data)
-        notifier.notify('Game Loaded!')
 
     def reset_game(self):
         self.create_new_game()
@@ -69,8 +63,6 @@ class ChessReboot():
                 self.reset_game()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
                 self.save_game()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
-                self.load_game('assets/saved_games/save_game.json')
             if event.type == pygame.KEYDOWN and event.key == pygame.K_c and self.board.selected_square:
                 self.board.deselect_piece()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:

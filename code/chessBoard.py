@@ -26,11 +26,11 @@ class ChessBoard(pygame.sprite.Sprite):
         self.players = players
         self.pieces = {}
         self.selected_square = None
-        self.turn = 'white'
-        self.round_num = 0
+        self.turn = setup_data['turn']
+        self.round_num = setup_data['round_num']
         self.game_over = False
         self.gen_squares()
-        self.setup_pieces(setup_data)
+        self.setup_pieces(setup_data['pieces'])
 
         # images
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select_indicator'], (TILE_WIDTH, TILE_WIDTH))
