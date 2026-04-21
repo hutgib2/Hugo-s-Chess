@@ -198,10 +198,10 @@ class ChessBoard(pygame.sprite.Sprite):
     def filter_invalid_attacks(self, square):
         allowed_moves = []
         color = square.piece.color
+        snapshot = self.take_snapshot()
         for attack_square in square.piece.attack_squares:
             if not attack_square.piece or attack_square.piece.color == color:
                 continue
-            snapshot = self.take_snapshot()
             self.attack_piece(square, attack_square)
             if not self.in_check(color):
                 allowed_moves.append(attack_square)
