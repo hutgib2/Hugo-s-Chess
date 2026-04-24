@@ -12,7 +12,8 @@ import json
 import time
 
 class ChessReboot():
-    def __init__(self, data):
+    def __init__(self, id, data):
+        self.id = id
         self.players = {
             "white": Player('white'),
             "black": Player('black')
@@ -22,7 +23,6 @@ class ChessReboot():
         self.clock = pygame.time.Clock()
         self.game_blocked = False
         self.switch_turn_timer = Timer(1000, self.switch_turn)
-
         self.rulebook_surf = pygame.image.load(join('assets', 'images', 'rules', 'rulebook.png'))
         self.rulebook = InteractiveButton(self.rulebook_surf, (200, 200), (256, 256), (), self.show_rules)
         self.rules_screen = pygame.image.load(join('assets', 'images', 'rules', 'rules_screen.png'))
@@ -43,7 +43,7 @@ class ChessReboot():
         self.players['black'].set_score(0)
 
     def save_game(self):
-        with open('assets/saved_games/save_game.json', 'w') as file:
+        with open(f'assets/saved_games/{self.id}.json', 'w') as file:
             data = self.board.take_snapshot()
             json.dump(data, file)
         notifier.notify('Game Saved!')
@@ -59,12 +59,14 @@ class ChessReboot():
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 self.running = False
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                self.reset_game()
+                continue
             if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
                 self.save_game()
+                continue
             if event.type == pygame.KEYDOWN and event.key == pygame.K_c and self.board.selected_square:
                 self.board.deselect_piece()
+                self.board.update()
+                continue
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.rulebook.rect.collidepoint(event.pos):
                     self.rulebook.is_clicked()
