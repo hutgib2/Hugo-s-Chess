@@ -17,9 +17,17 @@ class InteractiveText(TextSprite):
         self.image_hover = self.font.render(text, True, color)
         self.image_hover.set_alpha(128)
         self.callback = callback
+        self.is_active = True
+
+    def deactivate(self):
+        self.is_active = False
+
+    def reactivate(self):
+        self.is_active = True
 
     def is_clicked(self):
-        self.callback()
+        if self.is_active:
+            self.callback()
 
     def update(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()):

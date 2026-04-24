@@ -5,6 +5,9 @@ from textSprite import InteractiveText
 from chessReboot import ChessReboot
 import json
 import uuid
+import datetime
+
+# TODO: update save game links during session, remove save game when game completed
 
 class Menu():
     def __init__(self):
@@ -20,13 +23,18 @@ class Menu():
         self.showing_games = False
         self.saved_games_surf = pygame.image.load(join('assets', 'images', 'menu', 'saved_games.png'))
         self.saved_games_rect = self.saved_games_surf.get_frect(center=(WINDOW_WIDTH/6, WINDOW_HEIGHT/3))
+        self.saved_game_links = pygame.sprite.Group()
+        self.create_saved_game_links()
+
         # create a load game button that loads the last saved game and runs it
 
     def create_new_game(self):
         with open('assets/new_game.json', 'r') as file:
             data = json.load(file)
-            self.game = ChessReboot(uuid.uuid4(), data)
-        self.game.run()
+            now = datetime.datetime.now()
+            game_id = now.strftime("%d-%m-%Y-%H%M")
+            game = ChessReboot(game_id, data)
+        self.run_game(game)
 
     def get_saved_game_ids(self):
         game_ids = []
@@ -35,19 +43,35 @@ class Menu():
                 game_ids.append(file_name.split('.')[0])
         return game_ids
 
-    def show_saved_games(self):
-        self.showing_games = not self.showing_games
+    def create_saved_game_links(self):
         game_ids = self.get_saved_game_ids()
         i = 200
         for game_id in game_ids:
-            InteractiveText(game_id, self.saved_games_rect.midtop + pygame.Vector2(0, i), 'white', (WINDOW_WIDTH / 64), lambda gid=game_id: self.load_game(gid), self.menu_sprites)
+            InteractiveText(game_id, self.saved_games_rect.midtop + pygame.Vector2(0, i), 'white', (WINDOW_WIDTH / 64), lambda gid=game_id: self.load_game(gid), self.saved_game_links)
             i += 64
+
+    def show_saved_games(self):
+        self.showing_games = not self.showing_games
+        # deactivate all saved game link on not show
+        if self.showing_games:
+            for link in self.saved_game_links:
+                link.reactivate()
+        else:
+            for link in self.saved_game_links:
+                link.deactivate()
+        # activate all saved game link on show
 
     def load_game(self, game_id):
         with open(f'assets/saved_games/{game_id}.json', 'r') as file:
             data = json.load(file)
-            self.game = ChessReboot(id, data)
-        self.game.run()
+            game = ChessReboot(id, data)
+        self.run_game(game)
+
+
+    def run_game(self, game):
+        # close the menu
+        self.showing_games = False
+        game.run()
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -57,6 +81,9 @@ class Menu():
                 for menu_sprite in self.menu_sprites:
                     if menu_sprite.rect.collidepoint(event.pos):
                         menu_sprite.is_clicked()
+                for link in self.saved_game_links:
+                    if link.rect.collidepoint(event.pos):
+                        link.is_clicked()
 
     def run(self):
         while self.running:
@@ -65,6 +92,7 @@ class Menu():
             screen.blit(self.menu_surf, self.menu_rect)
             if self.showing_games:
                 screen.blit(self.saved_games_surf, self.saved_games_rect)
+                self.saved_game_links.update()
             self.menu_sprites.update()
             pygame.display.update()
 
