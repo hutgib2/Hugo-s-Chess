@@ -16,7 +16,6 @@ class Menu():
         self.menu_sprites = pygame.sprite.Group()
         InteractiveButton(self.play_surf, (WINDOW_WIDTH/2, 3*WINDOW_HEIGHT/5), (300, 144), self.menu_sprites, self.create_new_game, 'New Game')
         InteractiveButton(self.play_surf, (WINDOW_WIDTH/2, 3*WINDOW_HEIGHT/4), (300, 144), self.menu_sprites, self.show_saved_games, 'Load Game')
-        InteractiveText('test', (WINDOW_WIDTH / 1.25, WINDOW_HEIGHT / 2), 'white', (WINDOW_WIDTH / 32), self.show_saved_games, self.menu_sprites)
 
         self.showing_games = False
         self.saved_games_surf = pygame.image.load(join('assets', 'images', 'menu', 'saved_games.png'))
@@ -33,14 +32,19 @@ class Menu():
         game_ids = []
         for folder_path, _, file_names in walk('assets/saved_games/'):
             for file_name in file_names:
-                game_ids.append(name.split('.')[0])
+                game_ids.append(file_name.split('.')[0])
         return game_ids
 
     def show_saved_games(self):
         self.showing_games = not self.showing_games
+        game_ids = self.get_saved_game_ids()
+        i = 200
+        for game_id in game_ids:
+            InteractiveText(game_id, self.saved_games_rect.midtop + pygame.Vector2(0, i), 'white', (WINDOW_WIDTH / 64), lambda gid=game_id: self.load_game(gid), self.menu_sprites)
+            i += 64
 
-    def load_game(self, id):
-        with open(f'assets/saved_games/{id}.json', 'r') as file:
+    def load_game(self, game_id):
+        with open(f'assets/saved_games/{game_id}.json', 'r') as file:
             data = json.load(file)
             self.game = ChessReboot(id, data)
         self.game.run()
