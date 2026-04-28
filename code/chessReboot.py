@@ -105,6 +105,8 @@ class ChessReboot():
                             score = self.board.attack_piece(self.board.selected_square, click_square)
                             self.players[self.board.turn].set_score(self.players[self.board.turn].score + score)
                             self.board.deselect_piece()
+                            if click_square.piece.type == 'emperor':
+                                click_square.piece.update_range()
                             action = 'attack'
                         elif click_square.piece == None and self.board.selected_square:
                             self.board.deselect_piece()
