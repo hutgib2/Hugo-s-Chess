@@ -47,7 +47,6 @@ class ChessReboot():
         with open(f'assets/saved_games/{self.id}.json', 'w') as file:
             data = self.board.take_snapshot()
             json.dump(data, file)
-        notifier.notify('Game Saved!')
         
     def show_rules(self):
         self.rules_shown = not self.rules_shown
@@ -55,14 +54,13 @@ class ChessReboot():
     def switch_turn(self):
         self.game_blocked = False
         self.board.update_after_round()
+        if self.board.round_num > 1:
+            self.save_game()
 
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 self.running = False
-                continue
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_s and self.board.round_num > 1:
-                self.save_game()
                 continue
             if event.type == pygame.KEYDOWN and event.key == pygame.K_c and self.board.selected_square:
                 self.board.deselect_piece()
