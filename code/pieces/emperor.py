@@ -10,6 +10,7 @@ class Emperor(Piece):
         self.move_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
         self.move_range = 7
 
+    # resets after first move
     def update_range(self):
         self.attack_range = (1, 1)
         self.move_range = 1
