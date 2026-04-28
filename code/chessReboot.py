@@ -135,8 +135,7 @@ class ChessReboot():
             self.switch_turn_timer.update()
             self.handle_events()
             self.draw_game(dt)
-            if self.board.game_over:
-                os.remove(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games\\{self.id}.json")
-                time.sleep(2)
-                self.running = False
+        
+        if self.board.game_over:
+            os.remove(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games\\{self.id}.json")
             
