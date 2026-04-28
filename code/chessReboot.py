@@ -96,6 +96,8 @@ class ChessReboot():
                         elif click_square.is_possible_move:
                             self.move_sound.play() 
                             self.board.move_piece(self.board.selected_square, click_square)
+                            if click_square.piece.type == 'emperor':
+                                click_square.piece.update_range()
                             action = 'move'
                         elif click_square.is_attack_move:
                             self.kill_sound.play()

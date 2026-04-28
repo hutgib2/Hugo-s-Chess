@@ -6,6 +6,10 @@ class Emperor(Piece):
         super().__init__(id, 'emperor', color, coord, squares)
         self.type = "emperor"
         self.attack_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-        self.attack_range = (1, 1)
+        self.attack_range = (1, 7)
         self.move_directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+        self.move_range = 7
+
+    def update_range(self):
+        self.attack_range = (1, 1)
         self.move_range = 1
