@@ -110,9 +110,9 @@ class ChessReboot():
 
                 if action:
                     self.board.update()
-                if action == 'swap' or action == 'move':
+                if action == 'move':
                     self.switch_turn()
-                elif action == 'attack':
+                elif action == 'attack' or action == 'swap':
                     self.game_blocked = True
                     self.switch_turn_timer.activate()
 
