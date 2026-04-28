@@ -32,7 +32,7 @@ class Menu():
         with open('assets/new_game.json', 'r') as file:
             data = json.load(file)
             now = datetime.datetime.now()
-            game_id = now.strftime("%d-%m-%Y-%H%M")
+            game_id = now.strftime("%d-%m-%Y-%H%M%S")
             game = ChessReboot(game_id, data)
         self.run_game(game)
 
@@ -46,6 +46,7 @@ class Menu():
     def create_saved_game_links(self): 
         self.saved_game_links.empty()
         game_ids = self.get_saved_game_ids()
+        game_ids = sorted(game_ids, key=lambda x: datetime.datetime.strptime(x, "%d-%m-%Y-%H%M%S"), reverse=True)
         i = 200
         for game_id in game_ids:
             InteractiveText(game_id, self.saved_games_rect.midtop + pygame.Vector2(0, i), 'white', (WINDOW_WIDTH / 64), lambda gid=game_id: self.load_game(gid), self.saved_game_links)

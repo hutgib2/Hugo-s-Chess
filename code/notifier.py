@@ -21,6 +21,3 @@ class Notifier():
             if pygame.time.get_ticks() - self.start_time >= self.duration:
                 self.notification = None
                 self.start_time = 0
-
-
-notifier = Notifier()

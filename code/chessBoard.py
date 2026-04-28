@@ -5,7 +5,6 @@ from pieces.archer import Archer
 from pieces.wizard import Wizard
 from pieces.catapult import Catapult
 from pieces.emperor import Emperor
-from notifier import notifier
 
 class Square():
     def __init__(self, rect, coord):
@@ -18,7 +17,7 @@ class Square():
         self.is_swappable = False
 
 class ChessBoard(pygame.sprite.Sprite):
-    def __init__(self, surf, setup_data, players):
+    def __init__(self, surf, setup_data, players, notifier):
         super().__init__()
         self.image = pygame.transform.smoothscale(surf, (BOARD_SIZE, BOARD_SIZE))
         self.rect = self.image.get_frect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
@@ -30,6 +29,7 @@ class ChessBoard(pygame.sprite.Sprite):
         self.gen_squares()
         self.create_pieces(setup_data['pieces'])
         self.apply_snapshot(setup_data)
+        self.notifier = notifier
 
         # images
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select_indicator'], (TILE_WIDTH, TILE_WIDTH))
@@ -264,12 +264,12 @@ class ChessBoard(pygame.sprite.Sprite):
         has_moves = self.has_possible_moves(color)
 
         if in_check and has_moves:
-            notifier.notify('Check!')
+            self.notifier.notify('Check!')
         elif in_check and not has_moves:
-            notifier.notify('Checkmate!')
+            self.notifier.notify('Checkmate!')
             self.game_over = True
         elif not in_check and not has_moves:
-            notifier.notify('Draw!')
+            self.notifier.notify('Draw!')
             self.game_over = True
                
     def update_after_round(self):

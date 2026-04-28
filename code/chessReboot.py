@@ -5,7 +5,7 @@ from chessBoard import ChessBoard
 from button import InteractiveButton
 from pieces.piece import *
 from animator import Animator
-from notifier import notifier
+from notifier import Notifier
 from timer import Timer
 from player import Player
 import json
@@ -18,8 +18,10 @@ class ChessReboot():
         self.players = {
             "white": Player('white'),
             "black": Player('black')
-        }
-        self.board = ChessBoard(BOARD_SURFS['chess_board'], data, self.players)
+        }        
+        self.animator = Animator()
+        self.notifier = Notifier()
+        self.board = ChessBoard(BOARD_SURFS['chess_board'], data, self.players, self.notifier)
         self.running = True
         self.clock = pygame.time.Clock()
         self.game_blocked = False
@@ -29,8 +31,6 @@ class ChessReboot():
         self.rules_screen = pygame.image.load(join('assets', 'images', 'rules', 'rules_screen.png'))
         self.rules_rect = self.rules_screen.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.rules_shown = False
-        
-        self.animator = Animator()
 
         # audio
         self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
@@ -119,7 +119,7 @@ class ChessReboot():
     def draw_game(self, dt):
         screen.fill((127, 127, 127))
         self.board.render()
-        notifier.update()
+        self.notifier.update()
         self.animator.update(dt, self.board.round_num)
         self.rulebook.update()
         self.players['white'].update()
