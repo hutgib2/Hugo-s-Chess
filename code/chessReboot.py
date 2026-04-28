@@ -10,6 +10,7 @@ from timer import Timer
 from player import Player
 import json
 import time
+import os
 
 class ChessReboot():
     def __init__(self, game_id, data):
@@ -60,7 +61,7 @@ class ChessReboot():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 self.running = False
                 continue
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_s and self.board.round_num > 1:
                 self.save_game()
                 continue
             if event.type == pygame.KEYDOWN and event.key == pygame.K_c and self.board.selected_square:
@@ -137,6 +138,7 @@ class ChessReboot():
             self.handle_events()
             self.draw_game(dt)
             if self.board.game_over:
+                os.remove(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games\\{self.id}.json")
                 time.sleep(2)
                 self.running = False
             
