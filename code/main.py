@@ -43,28 +43,25 @@ class Menu():
                 game_ids.append(file_name.split('.')[0])
         return game_ids
 
-    def create_saved_game_links(self):
+    def create_saved_game_links(self): 
+        self.saved_game_links.empty()
         game_ids = self.get_saved_game_ids()
         i = 200
         for game_id in game_ids:
             InteractiveText(game_id, self.saved_games_rect.midtop + pygame.Vector2(0, i), 'white', (WINDOW_WIDTH / 64), lambda gid=game_id: self.load_game(gid), self.saved_game_links)
             i += 64
-
+        
     def show_saved_games(self):
+        self.create_saved_game_links()
         self.showing_games = not self.showing_games
         # deactivate all saved game link on not show
-        if self.showing_games:
-            for link in self.saved_game_links:
-                link.reactivate()
-        else:
-            for link in self.saved_game_links:
-                link.deactivate()
-        # activate all saved game link on show
+        for link in self.saved_game_links:
+            link.reactivate() if self.showing_games else link.deactivate()
 
     def load_game(self, game_id):
         with open(f'assets/saved_games/{game_id}.json', 'r') as file:
             data = json.load(file)
-            game = ChessReboot(id, data)
+            game = ChessReboot(game_id, data)
         self.run_game(game)
 
 

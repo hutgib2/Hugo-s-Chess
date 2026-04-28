@@ -12,8 +12,8 @@ import json
 import time
 
 class ChessReboot():
-    def __init__(self, id, data):
-        self.id = id
+    def __init__(self, game_id, data):
+        self.id = game_id
         self.players = {
             "white": Player('white'),
             "black": Player('black')
