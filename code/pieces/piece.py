@@ -94,15 +94,17 @@ class Piece(pygame.sprite.Sprite):
                     break
 
     def attack(self, attack_coord, round_num=0):
-        old_square = self.squares[self.coord[0]][self.coord[1]]
-        attack_square = self.squares[attack_coord[0]][attack_coord[1]]
+        old_square = self.squares[self.coord[0]][self.coord[1]] # the attackers tile
+        attack_square = self.squares[attack_coord[0]][attack_coord[1]] # the attacked tile
+        killed_pieces = [attack_square.piece]
         
-        score = PIECE_SCORES[attack_square.piece.type]
-        attack_square.piece.remove_piece()
-        attack_square.piece = old_square.piece
-        old_square.piece = None
-        attack_square.piece.set_position(attack_square.coord)
-        return score
+        attack_square.piece.remove_piece()  # eliminates the attacked piece
+        attack_square.piece = old_square.piece  # replaced attacked piece with attacker piece
+        old_square.piece = None  # has the attacker's tile empty
+        attack_square.piece.set_position(attack_square.coord)  # sets position of the attacked tile piece
+        return killed_pieces
+
+
 
     def remove_piece(self):
         self.square.piece = None

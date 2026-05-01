@@ -16,9 +16,9 @@ class Dragon(Piece):
         self.move_range = 1
 
     def attack(self, attack_coord, round_num=0):
-        score = 0
+        killed_pieces = []
         for square in self.attack_squares:
             if square.piece:
-                score += PIECE_SCORES[square.piece.type]
+                killed_pieces.append(square.piece)
                 square.piece.remove_piece()
-        return score 
+        return killed_pieces

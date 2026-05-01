@@ -22,7 +22,8 @@ class ChessReboot():
         self.animator = Animator()
         self.notifier = Notifier()
         self.board = ChessBoard(BOARD_SURFS['chess_board'], data, self.players, self.notifier)
-        
+
+        # Define white and black graveyard positions relative to board edges
 
         self.running = True
         self.clock = pygame.time.Clock()
@@ -105,8 +106,13 @@ class ChessReboot():
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
                             self.animator.attack(self.board.selected_square, click_square, self.players[click_square.piece.color].pieces)
-                            score = self.board.attack_piece(self.board.selected_square, click_square)
-                            self.players[self.board.turn].set_score(self.players[self.board.turn].score + score)
+                            
+                            # Get list of killed pieces and assign to graveyard positions + update score here instead
+                            killed_pieces = self.board.attack_piece(self.board.selected_square, click_square)
+                            for piece in killed_pieces:
+                                score = PIECE_SCORES[piece.type] # the score
+                                self.players[self.board.turn].set_score(self.players[self.board.turn].score + score)
+
                             self.board.deselect_piece()
                             if click_square.piece and click_square.piece.type == 'emperor':
                                 click_square.piece.update_range()

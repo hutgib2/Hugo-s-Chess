@@ -12,9 +12,9 @@ class Archer(Piece):
 
     def attack(self, attack_coord, round_num=0):
         attack_square = self.squares[attack_coord[0]][attack_coord[1]]
-        score = PIECE_SCORES[attack_square.piece.type]
+        killed_pieces = [attack_square.piece]
         attack_square.piece.remove_piece()
-        return score
+        return killed_pieces
 
 class Arrow(pygame.sprite.Sprite):
     def __init__(self, attacked_square, direction, groups):

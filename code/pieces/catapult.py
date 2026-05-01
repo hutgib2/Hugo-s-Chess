@@ -6,12 +6,8 @@ class Catapult(Piece):
     def __init__(self, id, color, coord, squares):
         super().__init__(id, 'catapult',  color, coord, squares)
         self.type = "catapult"
-        if self.color == 'white':
-            self.attack_directions = [(-1, 0), (0, 1), (0, -1)]
-        elif self.color == 'black':
-            self.attack_directions = [(1, 0), (0, 1), (0, -1)]
+        self.attack_directions = self.move_directions = [(-1, 0), (0, 1), (0, -1), (1, 0)]
         self.attack_range = (1, 7)
-        self.move_directions = [(-1, 0), (0, -1), (0, 1), (1, 0)]
         self.move_range = 2
 
     def update_attack_moves(self):
@@ -43,7 +39,6 @@ class Catapult(Piece):
             
     def attack(self, attack_coord, round_num):
         from pieces.legionary import Legionary
-
         attack_direction = get_direction_between(self.coord, attack_coord)
         i = self.attack_range[0]
         while i <= self.attack_range[1]:
@@ -59,7 +54,7 @@ class Catapult(Piece):
                 break
             elif type(square.piece) == Legionary and attack_direction == self.attack_directions[0]:
                 break
-            return PIECE_SCORES[square.piece.type]
+            return [square.piece]
 
 class Boulder(pygame.sprite.Sprite):
     def __init__(self, pos, direction, enemy_pieces, groups):

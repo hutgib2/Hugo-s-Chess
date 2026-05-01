@@ -154,13 +154,13 @@ class ChessBoard(pygame.sprite.Sprite):
         new_square.piece.set_position(new_square.coord)
 
     def attack_piece(self, old_square, attack_square):
-        score = old_square.piece.attack(attack_square.coord, self.round_num)
+        killed_pieces = old_square.piece.attack(attack_square.coord, self.round_num)
         # if not old_square.piece:
         #     attack_square.piece.coord = attack_square.coord
         if type(old_square.piece) == Catapult:
             old_square.piece.is_reloading = True
             old_square.piece.attacked_at = self.round_num
-        return score
+        return killed_pieces
 
     def update_moves(self, square):
         if not square or not square.piece:
