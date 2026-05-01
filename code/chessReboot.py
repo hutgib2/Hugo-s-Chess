@@ -22,13 +22,16 @@ class ChessReboot():
         self.animator = Animator()
         self.notifier = Notifier()
         self.board = ChessBoard(BOARD_SURFS['chess_board'], data, self.players, self.notifier)
+        
+
         self.running = True
         self.clock = pygame.time.Clock()
         self.game_blocked = False
         self.switch_turn_timer = Timer(1000, self.switch_turn)
         self.rulebook_surf = pygame.image.load(join('assets', 'images', 'rules', 'rulebook.png'))
-        self.rulebook = InteractiveButton(self.rulebook_surf, (200, 200), (256, 256), (), self.show_rules)
-        self.rules_screen = pygame.image.load(join('assets', 'images', 'rules', 'rules_screen.png'))
+        self.rulebook = InteractiveButton(self.rulebook_surf, (TILE_WIDTH, TILE_WIDTH), (TILE_WIDTH, TILE_WIDTH), (), self.show_rules)
+        # rules screen aspect ratio = 2000 / 1125
+        self.rules_screen = pygame.transform.smoothscale(pygame.image.load(join('assets', 'images', 'rules', 'rules_screen.png')), ((2000 / 1125)*(2*WINDOW_HEIGHT / 3), 2*WINDOW_HEIGHT / 3))
         self.rules_rect = self.rules_screen.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.rules_shown = False
 

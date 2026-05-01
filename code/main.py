@@ -21,8 +21,8 @@ class Menu():
         InteractiveButton(self.play_surf, (WINDOW_WIDTH/2, 3*WINDOW_HEIGHT/4), (300, 144), self.menu_sprites, self.show_saved_games, 'Load Game')
 
         self.showing_games = False
-        self.saved_games_surf = pygame.image.load(join('assets', 'images', 'menu', 'saved_games.png'))
-        self.saved_games_rect = self.saved_games_surf.get_frect(center=(WINDOW_WIDTH/6, WINDOW_HEIGHT/3))
+        self.saved_games_surf = pygame.transform.smoothscale(pygame.image.load(join('assets', 'images', 'menu', 'saved_games.png')), (WINDOW_WIDTH / 3, WINDOW_WIDTH / 3))
+        self.saved_games_rect = self.saved_games_surf.get_frect(topleft=(64, 64))
         self.saved_game_links = pygame.sprite.Group()
         self.create_saved_game_links()
 
@@ -47,10 +47,11 @@ class Menu():
         self.saved_game_links.empty()
         game_ids = self.get_saved_game_ids()
         game_ids = sorted(game_ids, key=lambda x: datetime.datetime.strptime(x, "%d-%m-%Y-%H%M%S"), reverse=True)
-        i = 200
+        start_pos = self.saved_games_rect.topleft + pygame.Vector2((self.saved_games_rect.width / 4), 0)
+        i = (self.saved_games_rect.width / 6)
         for game_id in game_ids:
-            InteractiveText(game_id, self.saved_games_rect.midtop + pygame.Vector2(0, i), 'white', (WINDOW_WIDTH / 64), lambda gid=game_id: self.load_game(gid), self.saved_game_links)
-            i += 64
+            InteractiveText(game_id, start_pos + pygame.Vector2(0, i), 'white', (WINDOW_WIDTH / 64), lambda gid=game_id: self.load_game(gid), self.saved_game_links)
+            i += (self.saved_games_rect.width / 20) 
         
     def show_saved_games(self):
         self.create_saved_game_links()

@@ -10,6 +10,12 @@ screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 WINDOW_WIDTH, WINDOW_HEIGHT = screen.get_size()
 BOARD_SIZE = WINDOW_HEIGHT - 100
 TILE_WIDTH = BOARD_SIZE / 8
+BOARD_POS = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
+# BOARD_LEFT = BOARD_POS - BOARD_SIZE / 2
+# BOARD_RIGHT = BOARD_POS + BOARD_SIZE / 2
+
+WHITE_GRAVEYARD = [[], [], [], []]
+BLACK_GRAVEYARD = [[], [], [], []]
 
 PIECE_SURFS = {
     'white': folder_importer('assets', 'images', 'white_pieces'),
