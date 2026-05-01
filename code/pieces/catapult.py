@@ -31,12 +31,15 @@ class Catapult(Piece):
                     self.attack_squares.append(square)
                 elif square.piece.color == self.color:
                     break
-                elif type(square.piece) == Legionary and direction == self.attack_directions[0]:
-                    break
+                elif type(square.piece) == Legionary:
+                    if self.color == 'white' and direction == (-1, 0):
+                        break
+                    elif self.color == 'black' and direction == (1, 0):
+                        break
                 else:
                     self.attack_squares.append(square)
                     break  
-            
+
     def attack(self, attack_coord, round_num):
         from pieces.legionary import Legionary
         attack_direction = get_direction_between(self.coord, attack_coord)
