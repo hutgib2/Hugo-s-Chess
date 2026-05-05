@@ -23,8 +23,6 @@ class ChessReboot():
         self.notifier = Notifier()
         self.board = ChessBoard(BOARD_SURFS['chess_board'], data, self.players, self.notifier)
 
-        # Define white and black graveyard positions relative to board edges
-
         self.running = True
         self.clock = pygame.time.Clock()
         self.game_blocked = False
@@ -60,6 +58,8 @@ class ChessReboot():
         self.board.update_after_round()
         if self.board.round_num > 1:
             self.save_game()
+        if self.board.game_over:
+            self.game_blocked = True
 
     def handle_events(self):
         for event in pygame.event.get():
