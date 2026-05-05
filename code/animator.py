@@ -27,7 +27,7 @@ class Animator():
     def catapult_attack(self, attacker_square, attacked_square, all_pieces):
         attack_direction = get_direction_between(attacker_square.coord, attacked_square.coord)
         direction = pygame.Vector2(attack_direction[1], attack_direction[0])
-        Boulder(attacker_square.rect.center, direction, all_pieces, attacker_square.piece.color, self.animation_sprites)
+        Boulder(attacker_square.rect.center, direction, all_pieces, attacker_square.piece, self.animation_sprites)
 
     def archer_attack(self, attacker_square, attacked_square):
         attack_direction = get_direction_between(attacker_square.coord, attacked_square.coord)

@@ -60,7 +60,7 @@ class Catapult(Piece):
             return [square.piece]
 
 class Boulder(pygame.sprite.Sprite):
-    def __init__(self, pos, direction, all_pieces, color, groups):
+    def __init__(self, pos, direction, all_pieces, attacker, groups):
         super().__init__(groups)
         self.original_surf = pygame.transform.smoothscale(BOARD_SURFS['boulder'], (TILE_WIDTH-50, TILE_WIDTH-50)) 
         self.image = self.original_surf
@@ -73,7 +73,12 @@ class Boulder(pygame.sprite.Sprite):
         self.killed_first = False
         self.rotation_speed = 256
         self.rotation = 0
-        self.color = color
+        self.color = attacker.color
+        self.attacker = attacker
+
+    def block(self):
+        self.speed = 0
+        self.rotation_speed *= 0.97
     
     def update(self, dt, round_num):
         from pieces.legionary import Legionary
@@ -88,23 +93,23 @@ class Boulder(pygame.sprite.Sprite):
         collision_sprites = pygame.sprite.spritecollide(self, self.all_pieces, False, pygame.sprite.collide_mask)
         for piece in collision_sprites:
             # if the boulder collides with its own piece - stop moving
+            if piece.color == self.color and piece != self.attacker:
+                self.block()
+                break
             if self.killed_first == False:
                 if piece.color != self.color:
                     piece.remove_piece()
                     self.killed_first = True
                     continue
-            elif piece.color == self.color:
-                self.speed = 0
-                break
             elif type(piece) == Legionary:
                 if piece.color == 'white' and self.direction == pygame.Vector2(0, 1):
-                    self.speed = 0
+                    self.block()
                     break
                 elif piece.color == 'black' and self.direction == pygame.Vector2(0, -1):
-                    self.speed = 0
+                    self.block()
                     break
             elif type(piece) == Emperor:
-                self.speed = 0
+                self.block()
                 break
             if piece.color != self.color:
                 piece.is_stunned = True
