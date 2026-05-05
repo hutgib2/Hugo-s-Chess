@@ -4,7 +4,6 @@ from textSprite import TextSprite
 class Player():
     def __init__(self, color):
         self.emperor = None
-        self.pieces = pygame.sprite.Group()
         self.color = color
         self.score = 0
         
