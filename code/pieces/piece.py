@@ -107,7 +107,8 @@ class Piece(pygame.sprite.Sprite):
 
 
     def remove_piece(self):
-        self.square.piece = None
+        if self.square.piece:
+            self.square.piece = None
         self.set_position(None)
         self.kill()
 
