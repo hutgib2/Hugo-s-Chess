@@ -29,6 +29,7 @@ class Catapult(Piece):
                 square = self.squares[row][col]
                 if not square.piece:
                     self.attack_squares.append(square)
+                    continue
                 elif square.piece.color == self.color:
                     break
                 elif type(square.piece) == Legionary:
@@ -36,9 +37,8 @@ class Catapult(Piece):
                         break
                     elif self.color == 'black' and direction == (1, 0):
                         break
-                else:
-                    self.attack_squares.append(square)
-                    break  
+                self.attack_squares.append(square)
+                break
 
     def attack(self, attack_coord, round_num):
         from pieces.legionary import Legionary
@@ -75,6 +75,7 @@ class Boulder(pygame.sprite.Sprite):
         self.rotation = 0
     
     def update(self, dt, round_num):
+        from pieces.legionary import Legionary
         if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
             self.kill()
         self.rotation += self.rotation_speed * dt
@@ -84,9 +85,17 @@ class Boulder(pygame.sprite.Sprite):
 
         collision_sprites = pygame.sprite.spritecollide(self, self.enemy_pieces, False, pygame.sprite.collide_mask)
         for piece in collision_sprites:
+            # if the boulder collides with legionary front, kill boulder
             if self.killed_first == False:
                 piece.remove_piece()
                 self.killed_first = True
-            else:
-                piece.is_stunned = True
-                piece.stunned_at = round_num
+                continue
+            elif type(piece) == Legionary:
+                if piece.color == 'white' and self.direction == pygame.Vector2(0, 1):
+                    self.speed = 0
+                    break
+                elif piece.color == 'black' and self.direction == pygame.Vector2(0, -1):
+                    self.speed = 0
+                    break
+            piece.is_stunned = True
+            piece.stunned_at = round_num
