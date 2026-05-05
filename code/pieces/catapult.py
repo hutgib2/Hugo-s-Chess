@@ -76,6 +76,7 @@ class Boulder(pygame.sprite.Sprite):
     
     def update(self, dt, round_num):
         from pieces.legionary import Legionary
+        from pieces.emperor import Emperor
         if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
             self.kill()
         self.rotation += self.rotation_speed * dt
@@ -97,5 +98,8 @@ class Boulder(pygame.sprite.Sprite):
                 elif piece.color == 'black' and self.direction == pygame.Vector2(0, -1):
                     self.speed = 0
                     break
+            elif type(piece) == Emperor:
+                self.speed = 0
+                break
             piece.is_stunned = True
             piece.stunned_at = round_num
