@@ -60,7 +60,7 @@ class Catapult(Piece):
             return [square.piece]
 
 class Boulder(pygame.sprite.Sprite):
-    def __init__(self, pos, direction, enemy_pieces, groups):
+    def __init__(self, pos, direction, all_pieces, color, groups):
         super().__init__(groups)
         self.original_surf = pygame.transform.smoothscale(BOARD_SURFS['boulder'], (TILE_WIDTH-50, TILE_WIDTH-50)) 
         self.image = self.original_surf
@@ -69,10 +69,11 @@ class Boulder(pygame.sprite.Sprite):
         self.lifetime = 1000
         self.direction = direction
         self.speed = 1400
-        self.enemy_pieces = enemy_pieces
+        self.all_pieces = all_pieces
         self.killed_first = False
         self.rotation_speed = 256
         self.rotation = 0
+        self.color = color
     
     def update(self, dt, round_num):
         from pieces.legionary import Legionary
@@ -84,13 +85,17 @@ class Boulder(pygame.sprite.Sprite):
         self.rect.center += self.direction * self.speed * dt
         pygame.display.get_surface().blit(self.image, self.rect)
 
-        collision_sprites = pygame.sprite.spritecollide(self, self.enemy_pieces, False, pygame.sprite.collide_mask)
+        collision_sprites = pygame.sprite.spritecollide(self, self.all_pieces, False, pygame.sprite.collide_mask)
         for piece in collision_sprites:
-            # if the boulder collides with legionary front, kill boulder
+            # if the boulder collides with its own piece - stop moving
             if self.killed_first == False:
-                piece.remove_piece()
-                self.killed_first = True
-                continue
+                if piece.color != self.color:
+                    piece.remove_piece()
+                    self.killed_first = True
+                    continue
+            elif piece.color == self.color:
+                self.speed = 0
+                break
             elif type(piece) == Legionary:
                 if piece.color == 'white' and self.direction == pygame.Vector2(0, 1):
                     self.speed = 0
@@ -101,5 +106,6 @@ class Boulder(pygame.sprite.Sprite):
             elif type(piece) == Emperor:
                 self.speed = 0
                 break
-            piece.is_stunned = True
-            piece.stunned_at = round_num
+            if piece.color != self.color:
+                piece.is_stunned = True
+                piece.stunned_at = round_num

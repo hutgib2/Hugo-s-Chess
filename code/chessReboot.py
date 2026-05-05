@@ -105,7 +105,7 @@ class ChessReboot():
                             action = 'move'
                         elif click_square.is_attack_move:
                             self.kill_sound.play()
-                            self.animator.attack(self.board.selected_square, click_square, self.players[click_square.piece.color].pieces)
+                            self.animator.attack(self.board.selected_square, click_square, self.board.all_pieces)
                             
                             # Get list of killed pieces and assign to graveyard positions + update score here instead
                             killed_pieces = self.board.attack_piece(self.board.selected_square, click_square)

@@ -24,6 +24,7 @@ class ChessBoard(pygame.sprite.Sprite):
         self.squares = [[], [], [], [], [], [], [], []] # creates a 2d list of Square objects
         self.players = players
         self.pieces = {}
+        self.all_pieces = pygame.sprite.Group()
         self.selected_square = None
         self.game_over = False
         self.gen_squares()
@@ -63,7 +64,8 @@ class ChessBoard(pygame.sprite.Sprite):
             piece = self.piece_from_type(piece_state)
             # self.place_piece(piece.coord, piece)
             self.pieces[piece_state["id"]] = piece
-            self.players[piece.color].pieces.add(piece)
+            self.all_pieces.add(piece)
+            # self.players[piece.color].pieces.add(piece)
 
     def place_piece(self, pos, piece):
         square = self.squares[pos[0]][pos[1]]
@@ -127,8 +129,9 @@ class ChessBoard(pygame.sprite.Sprite):
             piece.is_reloading = piece_state['is_reloading']
             piece.attacked_at = piece_state['attacked_at']
             self.place_piece(piece.coord, piece)
-            self.players[piece.color].pieces.add(piece)
-            
+            # self.players[piece.color].pieces.add(piece)
+            self.all_pieces.add(piece)
+
     def select_piece(self, click_square):
         if self.selected_square:
             self.selected_square.is_selected = False

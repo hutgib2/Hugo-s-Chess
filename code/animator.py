@@ -11,12 +11,12 @@ class Animator():
         for rect in rects:
             Animation(rect.center, SMOKE_FRAMES, self.animation_sprites)
 
-    def attack(self, attacker_square, attacked_square, enemy_pieces):
+    def attack(self, attacker_square, attacked_square, all_pieces):
         match attacker_square.piece.type:
             case 'dragon':
                 self.dragon_attack(attacker_square.piece.attack_squares)
             case 'catapult':
-                self.catapult_attack(attacker_square, attacked_square, enemy_pieces)
+                self.catapult_attack(attacker_square, attacked_square, all_pieces)
             case 'archer':
                 self.archer_attack(attacker_square, attacked_square)
     
@@ -24,10 +24,10 @@ class Animator():
         for square in attack_squares:
             Animation(square.rect.center, FLAME_FRAMES, self.animation_sprites)
 
-    def catapult_attack(self, attacker_square, attacked_square, enemy_pieces):
+    def catapult_attack(self, attacker_square, attacked_square, all_pieces):
         attack_direction = get_direction_between(attacker_square.coord, attacked_square.coord)
         direction = pygame.Vector2(attack_direction[1], attack_direction[0])
-        Boulder(attacker_square.rect.center, direction, enemy_pieces, self.animation_sprites)
+        Boulder(attacker_square.rect.center, direction, all_pieces, attacker_square.piece.color, self.animation_sprites)
 
     def archer_attack(self, attacker_square, attacked_square):
         attack_direction = get_direction_between(attacker_square.coord, attacked_square.coord)
