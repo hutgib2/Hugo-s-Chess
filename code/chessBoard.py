@@ -245,7 +245,14 @@ class ChessBoard(pygame.sprite.Sprite):
         self.promotion_options = ['archer', 'catapult', 'dragon', 'wizard']
         self.selected = 0
         self.selected_promotion = self.promotion_options[self.selected]
-        InteractiveButton(PIECE_SURFS[square.piece.color][self.selected_promotion], square.rect.midleft, (TILE_WIDTH, TILE_WIDTH), self.promotion_sprites, lambda: self.promote_piece(square, square.piece.color, self.selected_promotion), '')
+        promotion_button = InteractiveButton(PIECE_SURFS[square.piece.color][self.selected_promotion], square.rect.midleft, (TILE_WIDTH, TILE_WIDTH), self.promotion_sprites, lambda: self.promote_piece(square, square.piece.color, self.selected_promotion), '')
+
+        # 1. create two chevron buttons, load into game on either side of the promotion_button
+        left_chevron = 
+        # 2. pass methods to the chevrons to change the selected index, one increases one decreases
+        
+        # 3. update the image on the promotion_button to match the new index 
+
 
     def promote_piece(self, square, color, piece_type):
         id = len(self.pieces)
