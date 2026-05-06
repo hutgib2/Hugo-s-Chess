@@ -25,7 +25,6 @@ class ChessReboot():
 
         self.running = True
         self.clock = pygame.time.Clock()
-        self.game_blocked = False
         self.switch_turn_timer = Timer(1000, self.switch_turn)
         self.rulebook_surf = pygame.image.load(join('assets', 'images', 'rules', 'rulebook.png'))
         self.rulebook = InteractiveButton(self.rulebook_surf, (TILE_WIDTH, TILE_WIDTH), (TILE_WIDTH, TILE_WIDTH), (), self.show_rules)
@@ -54,12 +53,12 @@ class ChessReboot():
         self.rules_shown = not self.rules_shown
 
     def switch_turn(self):
-        self.game_blocked = False
+        self.board.game_blocked = False
         self.board.update_after_round()
         if self.board.round_num > 1:
             self.save_game()
         if self.board.game_over:
-            self.game_blocked = True
+            self.board.game_blocked = True
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -130,7 +129,7 @@ class ChessReboot():
                 if action == 'move':
                     self.switch_turn()
                 elif action == 'attack' or action == 'swap':
-                    self.game_blocked = True
+                    self.board.game_blocked = True
                     self.switch_turn_timer.activate()
 
     def draw_game(self, dt):
