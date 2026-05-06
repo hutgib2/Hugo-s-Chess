@@ -5,6 +5,7 @@ from pieces.archer import Archer
 from pieces.wizard import Wizard
 from pieces.catapult import Catapult
 from pieces.emperor import Emperor
+from button import InteractiveButton
 
 class Square():
     def __init__(self, rect, coord):
@@ -31,6 +32,9 @@ class ChessBoard(pygame.sprite.Sprite):
         self.create_pieces(setup_data['pieces'])
         self.apply_snapshot(setup_data)
         self.notifier = notifier
+        
+        self.has_promotion = False
+        self.promotion_sprites = pygame.sprite.Group()
 
         # images
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select_indicator'], (TILE_WIDTH, TILE_WIDTH))
@@ -234,14 +238,40 @@ class ChessBoard(pygame.sprite.Sprite):
                 if type(square.piece) == Wizard and len(square.piece.swap_squares) > 0:
                     return True
         return False
+    
+    def offer_promotion(self, square):
+        print('OFFER PROMOTION')
+        self.game_blocked = True
+        self.promotion_options = ['archer', 'catapult', 'dragon', 'wizard']
+        self.selected = 0
+        self.selected_promotion = self.promotion_options[self.selected]
+        InteractiveButton(PIECE_SURFS[square.piece.color][self.selected_promotion], square.rect.midleft, (TILE_WIDTH, TILE_WIDTH), self.promotion_sprites, lambda: self.promote_piece(square, square.piece.color, self.selected_promotion), '')
 
-    def promote_to_archer(self, square, color):
+    def promote_piece(self, square, color, piece_type):
         id = len(self.pieces)
-        square.piece = Archer(id, color, square.coord, self.squares)
+        square.piece = self.piece_from_type({
+            'id': id,
+            'type': piece_type,
+            'color': color,
+            'coord': square.coord,
+        })
         self.pieces[id] = square.piece
+        self.promotion_sprites.empty()
+        self.game_blocked = False
+
+    def check_promotion(self):
+        for square in self.squares[0]:
+            if square.piece and square.piece.color == 'white' and type(square.piece) == Legionary:
+                return square
+        for square in self.squares[7]:
+            if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
+                return square
+        return None
+
 
     def render(self):
         pygame.display.get_surface().blit(self.image, self.rect) # draws chessboard
+        self.promotion_sprites.update()
         for row in range(8):
             for col in range(8):
                 square = self.squares[row][col]
@@ -283,19 +313,17 @@ class ChessBoard(pygame.sprite.Sprite):
                     if square.piece.is_reloading and self.round_num - square.piece.attacked_at > 1:
                         square.piece.is_reloading = False
 
-        # Promote legionary to archer if at back row
-        for square in self.squares[0]:
-            if square.piece and square.piece.color == 'white' and type(square.piece) == Legionary:
-                self.promote_to_archer(square, 'white')
-        for square in self.squares[7]:
-            if square.piece and square.piece.color == 'black' and type(square.piece) == Legionary:
-                self.promote_to_archer(square, 'black')
-
         self.deselect_piece()
         self.turn = 'black' if self.turn == 'white' else 'white'
         self.round_num += 1
         self.evaluate_checkmate('black')
         self.evaluate_checkmate('white')
+
+        # Promote legionary to archer if at back row
+        promotion_square = self.check_promotion()
+        if promotion_square:
+            self.has_promotion = True
+            self.offer_promotion(promotion_square)
 
     def update(self):
         # this resets every squares state

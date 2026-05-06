@@ -74,6 +74,10 @@ class ChessReboot():
                 if self.rulebook.rect.collidepoint(event.pos):
                     self.rulebook.is_clicked()
                     continue
+                # loop over boards promotion sprites and check if clicked, call is_clicked()
+                for sprite in self.board.promotion_sprites:
+                    if sprite.rect.collidepoint(event.pos):
+                        sprite.is_clicked()
                 if self.rules_shown or self.game_blocked:
                     continue
                 if not self.board.rect.collidepoint(event.pos) and self.board.selected_square:
