@@ -9,6 +9,7 @@ class Button(pygame.sprite.Sprite):
         self.rect = self.image.get_frect(center=pos)
         self.is_active = True
         self.text_sprite = TextSprite(text, self.rect.center, "darkcyan", self.rect.width / 6, ())
+        self.size = size
 
     def deactivate(self):
         self.is_active = False
@@ -23,6 +24,8 @@ class Button(pygame.sprite.Sprite):
             pygame.display.get_surface().blit(self.image, self.rect)
         pygame.display.get_surface().blit(self.text_sprite.image, self.text_sprite.rect)
 
+        
+
 class InteractiveButton(Button):
     def __init__(self, surf, pos, size, groups, callback, text=''):
         super().__init__(surf, pos, size, groups, text)
@@ -34,6 +37,11 @@ class InteractiveButton(Button):
         if self.is_active:
             self.callback()
     
+    def set_image(self, image):
+        self.image = pygame.transform.smoothscale(image, self.size)
+        self.image_hover = pygame.transform.smoothscale(image, self.size)
+        self.image_hover.set_alpha(180)
+
     def update(self):
         if not self.is_active:
             pygame.display.get_surface().blit(self.image_disabled, self.rect)

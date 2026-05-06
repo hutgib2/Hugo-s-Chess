@@ -77,7 +77,7 @@ class ChessReboot():
                 for sprite in self.board.promotion_sprites:
                     if sprite.rect.collidepoint(event.pos):
                         sprite.is_clicked()
-                if self.rules_shown or self.game_blocked:
+                if self.rules_shown or self.board.game_blocked:
                     continue
                 if not self.board.rect.collidepoint(event.pos) and self.board.selected_square:
                     self.board.deselect_piece()
