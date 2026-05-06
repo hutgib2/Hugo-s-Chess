@@ -93,6 +93,9 @@ class Boulder(pygame.sprite.Sprite):
         collision_sprites = pygame.sprite.spritecollide(self, self.all_pieces, False, pygame.sprite.collide_mask)
         for piece in collision_sprites:
             # if the boulder collides with its own piece - stop moving
+            print(piece)
+            print(self.attacker)
+            print(piece == self.attacker)
             if piece.color == self.color and piece != self.attacker:
                 self.block()
                 break

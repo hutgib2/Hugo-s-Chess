@@ -240,10 +240,8 @@ class ChessBoard(pygame.sprite.Sprite):
                     return True
         return False
     
-
     def increment_promotion_select(self, color):
         self.selected = self.selected + 1 if self.selected < len(self.promotion_options) - 1 else 0
-        print(self.selected)
         self.selected_promotion = self.promotion_options[self.selected]
         self.promotion_button.set_image(PIECE_SURFS[color][self.selected_promotion])
 
@@ -257,22 +255,25 @@ class ChessBoard(pygame.sprite.Sprite):
         self.promotion_options = ['archer', 'catapult', 'dragon', 'wizard']
         self.selected = 0
         self.selected_promotion = self.promotion_options[self.selected]
-        self.promotion_button = InteractiveButton(PIECE_SURFS[square.piece.color][self.selected_promotion], square.rect.midleft + pygame.Vector2(-128, 0), (TILE_WIDTH, TILE_WIDTH), self.promotion_sprites, lambda: self.promote_piece(square, square.piece.color, self.selected_promotion), '')
-
-        # 1. create two chevron buttons, load into game on either side of the promotion_button
-        InteractiveButton(BOARD_SURFS['chevron'], self.promotion_button.rect.midright + pygame.Vector2(16, 0), (TILE_WIDTH/4, TILE_WIDTH/3), self.promotion_sprites, lambda: self.increment_promotion_select(square.piece.color), '')
-        InteractiveButton(pygame.transform.flip(BOARD_SURFS['chevron'], True, False), self.promotion_button.rect.midleft + pygame.Vector2(-16, 0), (TILE_WIDTH/4, TILE_WIDTH/3), self.promotion_sprites, lambda: self.decrement_promotion_select(square.piece.color), '')
+        color = square.piece.color
+        self.promotion_pos = self.rect.topleft + pygame.Vector2(-TILE_WIDTH, TILE_WIDTH / 2) if color == 'white' else self.rect.bottomright + pygame.Vector2(TILE_WIDTH, -TILE_WIDTH / 2)
+        self.promotion_button = InteractiveButton(PIECE_SURFS[color][self.selected_promotion], self.promotion_pos, (TILE_WIDTH, TILE_WIDTH), self.promotion_sprites, lambda: self.promote_piece(square, color, self.selected_promotion), '')
+        InteractiveButton(BOARD_SURFS['chevron'], self.promotion_button.rect.midright + pygame.Vector2(32, 0), (TILE_WIDTH/4, TILE_WIDTH/3), self.promotion_sprites, lambda: self.increment_promotion_select(color), '')
+        InteractiveButton(pygame.transform.flip(BOARD_SURFS['chevron'], True, False), self.promotion_button.rect.midleft + pygame.Vector2(-32, 0), (TILE_WIDTH/4, TILE_WIDTH/3), self.promotion_sprites, lambda: self.decrement_promotion_select(square.piece.color), '')
 
 
     def promote_piece(self, square, color, piece_type):
-        id = len(self.pieces)
+        # piece_id = len(self.pieces)
+        piece_id = square.piece.id
+        square.piece.kill()
         square.piece = self.piece_from_type({
-            'id': id,
+            'id': piece_id,
             'type': piece_type,
             'color': color,
             'coord': square.coord,
         })
-        self.pieces[id] = square.piece
+        self.all_pieces.add(square.piece)
+        self.pieces[piece_id] = square.piece
         self.promotion_sprites.empty()
         self.game_blocked = False
 
