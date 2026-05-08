@@ -66,7 +66,7 @@ class ChessReboot():
 
     def handle_events(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE) and not self.board.game_blocked:
                 self.running = False
                 continue
             if event.type == pygame.KEYDOWN and event.key == pygame.K_c and self.board.selected_square:
@@ -81,6 +81,7 @@ class ChessReboot():
                 for sprite in self.board.promotion_sprites:
                     if sprite.rect.collidepoint(event.pos):
                         sprite.is_clicked()
+                        self.save_game()
                 if self.rules_shown or self.board.game_blocked:
                     continue
                 if not self.board.rect.collidepoint(event.pos) and self.board.selected_square:

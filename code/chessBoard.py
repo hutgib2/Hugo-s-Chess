@@ -33,8 +33,7 @@ class ChessBoard(pygame.sprite.Sprite):
         self.create_pieces(setup_data['pieces'])
         self.apply_snapshot(setup_data)
         self.notifier = notifier
-        
-        self.has_promotion = False
+
         self.promotion_sprites = pygame.sprite.Group()
 
         # images
@@ -331,17 +330,16 @@ class ChessBoard(pygame.sprite.Sprite):
                     if square.piece.is_reloading and self.round_num - square.piece.attacked_at > 1:
                         square.piece.is_reloading = False
 
+        # Promote legionary to archer if at back row
+        promotion_square = self.check_promotion()
+        if promotion_square:
+            self.offer_promotion(promotion_square)
+
         self.deselect_piece()
         self.turn = 'black' if self.turn == 'white' else 'white'
         self.round_num += 1
         self.evaluate_checkmate('black')
         self.evaluate_checkmate('white')
-
-        # Promote legionary to archer if at back row
-        promotion_square = self.check_promotion()
-        if promotion_square:
-            self.has_promotion = True
-            self.offer_promotion(promotion_square)
 
     def update(self):
         # this resets every squares state
