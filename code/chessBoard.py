@@ -313,6 +313,15 @@ class ChessBoard(pygame.sprite.Sprite):
                 if square.piece and square.piece.is_reloading == True:
                     pygame.display.get_surface().blit(self.reload_indicator, square.rect)
 
+    def get_piece_count(self):
+        count = 0
+        for row in range(8):
+            for col in range(8):
+                square = self.squares[row][col]
+                if square.piece:
+                    count += 1
+        return count
+
     def evaluate_checkmate(self, color):
         in_check = self.in_check(color)
         has_moves = self.has_possible_moves(color)
@@ -325,6 +334,10 @@ class ChessBoard(pygame.sprite.Sprite):
         elif not in_check and not has_moves:
             self.notifier.notify('Draw!')
             self.game_over = True
+        if self.get_piece_count() == 2:
+            self.notifier.notify('Draw!')
+            self.game_over = True
+
                
     def update_after_round(self):
         for row in range(8):
