@@ -48,6 +48,10 @@ class ChessReboot():
         with open(f'assets/saved_games/{self.id}.json', 'w') as file:
             data = self.board.take_snapshot()
             json.dump(data, file)
+        for folder_path, _, file_names in walk(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games"):
+            if len(file_names) > 16:
+                os.remove(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games\\{file_names[0]}")
+                return
         
     def show_rules(self):
         self.rules_shown = not self.rules_shown
