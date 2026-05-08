@@ -69,7 +69,6 @@ class ChessBoard(pygame.sprite.Sprite):
             self.pieces[piece_state["id"]] = piece
             # self.place_piece(piece.coord, piece)
             # self.all_pieces.add(piece)
-        self.apply_piece_state(piece_data)
 
     def place_piece(self, pos, piece):
         square = self.squares[pos[0]][pos[1]]
@@ -135,6 +134,9 @@ class ChessBoard(pygame.sprite.Sprite):
             piece.stunned_at = piece_state['stunned_at']
             piece.is_reloading = piece_state['is_reloading']
             piece.attacked_at = piece_state['attacked_at']
+            piece.has_moved = piece_state['has_moved']
+            if piece.type == 'emperor' and piece.has_moved:
+                piece.update_range()
             self.place_piece(piece.coord, piece)
             self.all_pieces.add(piece)
 

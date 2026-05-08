@@ -12,5 +12,6 @@ class Emperor(Piece):
 
     # resets after first move
     def update_range(self):
+        self.has_moved = True
         self.attack_range = (1, 1)
         self.move_range = 1

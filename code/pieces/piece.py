@@ -14,6 +14,7 @@ class Piece(pygame.sprite.Sprite):
         self.move_squares = []
         self.is_reloading = False
         self.is_stunned = False
+        self.has_moved = False
         self.stunned_at = 0
         self.attacked_at = 0
 
@@ -104,8 +105,6 @@ class Piece(pygame.sprite.Sprite):
         attack_square.piece.set_position(attack_square.coord)  # sets position of the attacked tile piece
         return killed_pieces
 
-
-
     def remove_piece(self):
         if self.square.piece:
             self.square.piece = None
@@ -121,7 +120,8 @@ class Piece(pygame.sprite.Sprite):
             "is_stunned": self.is_stunned,
             "is_reloading": self.is_reloading,
             "stunned_at": self.stunned_at,
-            "attacked_at": self.attacked_at
+            "attacked_at": self.attacked_at,
+            "has_moved": self.has_moved,
         }
 
 
