@@ -59,10 +59,8 @@ class ChessReboot():
     def switch_turn(self):
         self.board.game_blocked = False
         self.board.update_after_round()
-        if self.board.round_num > 1:
+        if self.board.round_num > 1: # both players have moved
             self.save_game()
-        if self.board.game_over:
-            self.board.game_blocked = True
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -77,13 +75,13 @@ class ChessReboot():
                 if self.rulebook.rect.collidepoint(event.pos):
                     self.rulebook.is_clicked()
                     continue
+                if self.rules_shown or self.board.game_blocked or self.board.game_over:
+                    continue
                 # loop over boards promotion sprites and check if clicked, call is_clicked()
                 for sprite in self.board.promotion_sprites:
                     if sprite.rect.collidepoint(event.pos):
                         sprite.is_clicked()
                         self.save_game()
-                if self.rules_shown or self.board.game_blocked:
-                    continue
                 if not self.board.rect.collidepoint(event.pos) and self.board.selected_square:
                     self.board.deselect_piece()
                     self.board.update()

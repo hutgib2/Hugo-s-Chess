@@ -55,9 +55,14 @@ class Catapult(Piece):
                 continue
             if square.piece.color == self.color:
                 break
-            elif type(square.piece) == Legionary and attack_direction == self.attack_directions[0]:
+            elif type(square.piece) == Legionary:
+                if self.color == 'white' and attack_direction == (-1, 0):
+                    break
+                elif self.color == 'black' and attack_direction == (1, 0):
+                    break
                 break
             return [square.piece]
+        return []
 
 class Boulder(pygame.sprite.Sprite):
     def __init__(self, pos, direction, all_pieces, attacker, groups):
