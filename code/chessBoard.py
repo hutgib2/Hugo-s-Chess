@@ -63,12 +63,13 @@ class ChessBoard(pygame.sprite.Sprite):
                 self.squares[row].append(Square(square_rect, (row,col))) # it appends the whole area of a square and gives that square a piece
             pos_y += TILE_WIDTH # shifts to the next row
 
-    def create_pieces(self, setup_data):
-        for piece_state in setup_data:
+    def create_pieces(self, piece_data):
+        for piece_state in piece_data:
             piece = self.piece_from_type(piece_state)
-            # self.place_piece(piece.coord, piece)
             self.pieces[piece_state["id"]] = piece
-            self.all_pieces.add(piece)
+            # self.place_piece(piece.coord, piece)
+            # self.all_pieces.add(piece)
+        self.apply_piece_state(piece_data)
 
     def place_piece(self, pos, piece):
         square = self.squares[pos[0]][pos[1]]
@@ -123,8 +124,11 @@ class ChessBoard(pygame.sprite.Sprite):
                 if square.piece:
                     square.piece.remove_piece()
 
+        self.apply_piece_state(snapshot['pieces'])
+
+    def apply_piece_state(self,  piece_state):
         # place pieces
-        for piece_state in snapshot["pieces"]:
+        for piece_state in piece_state:
             piece = self.pieces[piece_state['id']]
             piece.set_position(tuple(piece_state['coord']))
             piece.is_stunned = piece_state['is_stunned']
