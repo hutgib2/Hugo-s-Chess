@@ -1,1 +1,0 @@
-{"round_num": 153, "turn": "black", "pieces": [{"id": 4, "coord": [0, 1], "type": "emperor", "color": "black", "is_stunned": false, "is_reloading": false, "stunned_at": 0, "attacked_at": 0}, {"id": 28, "coord": [2, 6], "type": "emperor", "color": "white", "is_stunned": false, "is_reloading": false, "stunned_at": 0, "attacked_at": 0}], "scores": {"white": 31, "black": 33}}

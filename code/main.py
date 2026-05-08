@@ -11,14 +11,14 @@ import datetime
 
 class Menu():
     def __init__(self):
-        self.menu_surf = pygame.image.load(join('assets', 'images', 'menu', 'menu.png'))
+        self.menu_surf = pygame.transform.smoothscale(pygame.image.load(join('assets', 'images', 'menu', 'menu.png')), (BOARD_SIZE, BOARD_SIZE))
         self.menu_rect = self.menu_surf.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.running = True
         self.play_surf = pygame.image.load(join('assets', 'images', 'menu', 'play_button.png'))
 
         self.menu_sprites = pygame.sprite.Group()
-        InteractiveButton(self.play_surf, (WINDOW_WIDTH/2, 3*WINDOW_HEIGHT/5), (300, 144), self.menu_sprites, self.create_new_game, 'New Game')
-        InteractiveButton(self.play_surf, (WINDOW_WIDTH/2, 3*WINDOW_HEIGHT/4), (300, 144), self.menu_sprites, self.show_saved_games, 'Load Game')
+        InteractiveButton(self.play_surf, (WINDOW_WIDTH/2, 3*WINDOW_HEIGHT/5), (WINDOW_HEIGHT / 5, WINDOW_HEIGHT / 11), self.menu_sprites, self.create_new_game, 'New Game')
+        InteractiveButton(self.play_surf, (WINDOW_WIDTH/2, 3*WINDOW_HEIGHT/4), (WINDOW_HEIGHT / 5, WINDOW_HEIGHT / 11), self.menu_sprites, self.show_saved_games, 'Load Game')
 
         self.showing_games = False
         self.saved_games_surf = pygame.transform.smoothscale(pygame.image.load(join('assets', 'images', 'menu', 'saved_games.png')), (WINDOW_WIDTH / 3, WINDOW_WIDTH / 3))
