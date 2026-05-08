@@ -35,6 +35,9 @@ class ChessBoard(pygame.sprite.Sprite):
         self.notifier = notifier
 
         self.promotion_sprites = pygame.sprite.Group()
+        promotion_square = self.check_promotion()
+        if promotion_square:
+            self.offer_promotion(promotion_square)
 
         # images
         self.select_indicator = pygame.transform.smoothscale(BOARD_SURFS['select_indicator'], (TILE_WIDTH, TILE_WIDTH))
@@ -246,16 +249,19 @@ class ChessBoard(pygame.sprite.Sprite):
         return False
     
     def increment_promotion_select(self, color):
+        print("INCREMENT")
         self.selected = self.selected + 1 if self.selected < len(self.promotion_options) - 1 else 0
         self.selected_promotion = self.promotion_options[self.selected]
         self.promotion_button.set_image(PIECE_SURFS[color][self.selected_promotion])
 
     def decrement_promotion_select(self, color):
+        print("DECCREMENT")
         self.selected = self.selected - 1 if self.selected > 0 else len(self.promotion_options) - 1
         self.selected_promotion = self.promotion_options[self.selected]
         self.promotion_button.set_image(PIECE_SURFS[color][self.selected_promotion])
 
     def offer_promotion(self, square):
+        print("OFFER PROMOTION")
         self.game_blocked = True
         self.promotion_options = ['archer', 'catapult', 'dragon', 'wizard']
         self.selected = 0
