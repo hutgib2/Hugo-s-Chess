@@ -6,6 +6,6 @@ async def main():
     # game.run()
     menu = Menu()
     await menu.run()
-    pygame.quit()
+    # pygame.quit()
     
 asyncio.run(main())
