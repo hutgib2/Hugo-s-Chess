@@ -1,11 +1,12 @@
-from settings import *
-from support import *
-from button import InteractiveButton
-from textSprite import InteractiveText
-from chessReboot import ChessReboot
+from code.settings import *
+from code.support import *
+from code.button import InteractiveButton
+from code.textSprite import InteractiveText
+from code.chessReboot import ChessReboot
 import json
 import uuid
 import datetime
+import asyncio
 
 # TODO: update save game links during session, remove save game when game completed
 
@@ -84,7 +85,7 @@ class Menu():
                     if link.rect.collidepoint(event.pos):
                         link.is_clicked()
 
-    def run(self):
+    async def run(self):
         while self.running:
             self.handle_events()
             screen.fill((127, 127, 127))
@@ -94,9 +95,4 @@ class Menu():
                 self.saved_game_links.update()
             self.menu_sprites.update()
             pygame.display.update()
-
-# game = ChessReboot()
-# game.run()
-menu = Menu()
-menu.run()
-pygame.quit()
+            await asyncio.sleep(0)

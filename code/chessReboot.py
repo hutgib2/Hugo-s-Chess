@@ -1,13 +1,13 @@
-from settings import *
-from support import *
-from textSprite import TextSprite
-from chessBoard import ChessBoard
-from button import InteractiveButton
-from pieces.piece import *
-from animator import Animator
-from notifier import Notifier
-from timer import Timer
-from player import Player
+from code.settings import *
+from code.support import *
+from code.textSprite import TextSprite
+from code.chessBoard import ChessBoard
+from code.button import InteractiveButton
+from code.pieces.piece import *
+from code.animator import Animator
+from code.notifier import Notifier
+from code.timer import Timer
+from code.player import Player
 import json
 import time
 import os
@@ -34,9 +34,9 @@ class ChessReboot():
         self.rules_shown = False
 
         # audio
-        self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
-        self.move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.wav'))
-        self.swap_sound = pygame.mixer.Sound(join('assets', 'audio', 'swap.wav'))
+        # self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.wav'))
+        # self.move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.wav'))
+        # self.swap_sound = pygame.mixer.Sound(join('assets', 'audio', 'swap.wav'))
 
     def reset_game(self):
         self.create_new_game()
@@ -45,13 +45,14 @@ class ChessReboot():
         self.players['black'].set_score(0)
 
     def save_game(self):
-        with open(f'assets/saved_games/{self.id}.json', 'w') as file:
-            data = self.board.take_snapshot()
-            json.dump(data, file)
-        for folder_path, _, file_names in walk(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games"):
-            if len(file_names) > 16:
-                os.remove(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games\\{file_names[0]}")
-                return
+        pass
+        # with open(f'assets/saved_games/{self.id}.json', 'w') as file:
+        #     data = self.board.take_snapshot()
+        #     json.dump(data, file)
+        # for folder_path, _, file_names in walk(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games"):
+        #     if len(file_names) > 16:
+        #         os.remove(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games\\{file_names[0]}")
+        #         return
         
     def show_rules(self):
         self.rules_shown = not self.rules_shown
@@ -95,7 +96,7 @@ class ChessReboot():
                         if not click_square.rect.collidepoint(event.pos):
                             continue
                         if click_square.is_swappable:
-                            self.swap_sound.play()
+                            # self.swap_sound.play()
                             self.animator.swap([self.board.selected_square.rect, click_square.rect])
                             self.board.swap_piece(self.board.selected_square, click_square)
                             self.board.deselect_piece()
@@ -104,13 +105,13 @@ class ChessReboot():
                             self.board.select_piece(click_square)
                             action = 'select'
                         elif click_square.is_possible_move:
-                            self.move_sound.play() 
+                            # self.move_sound.play() 
                             self.board.move_piece(self.board.selected_square, click_square)
                             if click_square.piece and click_square.piece.type == 'emperor':
                                 click_square.piece.update_range()
                             action = 'move'
                         elif click_square.is_attack_move:
-                            self.kill_sound.play()
+                            # self.kill_sound.play()
                             self.animator.attack(self.board.selected_square, click_square, self.board.all_pieces)
                             
                             # Get list of killed pieces and assign to graveyard positions + update score here instead
@@ -156,5 +157,6 @@ class ChessReboot():
             self.draw_game(dt)
         
         if self.board.game_over:
-            os.remove(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games\\{self.id}.json")
+            pass
+            # os.remove(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games\\{self.id}.json")
             

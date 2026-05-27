@@ -1,6 +1,6 @@
 from os.path import join
 from os import walk
-from settings import pygame
+from code.settings import pygame
 
 def folder_importer(*path):
     surfs = {}

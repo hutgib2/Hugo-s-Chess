@@ -1,6 +1,6 @@
-from settings import *
-from textSprite import TextSprite
-from timer import Timer
+from code.settings import *
+from code.textSprite import TextSprite
+from code.timer import Timer
 
 class Notifier():
     def __init__(self):

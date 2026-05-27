@@ -1,6 +1,6 @@
-from settings import *
-from pieces.piece import Piece
-from support import get_direction_between
+from code.settings import *
+from code.pieces.piece import Piece
+from code.support import get_direction_between
 
 class Catapult(Piece):
     def __init__(self, id, color, coord, squares):
@@ -11,8 +11,8 @@ class Catapult(Piece):
         self.move_range = 2
 
     def update_attack_moves(self):
-        from pieces.legionary import Legionary
-        from pieces.emperor import Emperor
+        from code.pieces.legionary import Legionary
+        from code.pieces.emperor import Emperor
 
         self.attack_squares = []
         if self.is_reloading:
@@ -41,7 +41,7 @@ class Catapult(Piece):
                 break
 
     def attack(self, attack_coord, round_num):
-        from pieces.legionary import Legionary
+        from code.pieces.legionary import Legionary
         attack_direction = get_direction_between(self.coord, attack_coord)
         i = self.attack_range[0]
         while i <= self.attack_range[1]:
@@ -86,8 +86,8 @@ class Boulder(pygame.sprite.Sprite):
         self.rotation_speed *= 0.97
     
     def update(self, dt, round_num):
-        from pieces.legionary import Legionary
-        from pieces.emperor import Emperor
+        from code.pieces.legionary import Legionary
+        from code.pieces.emperor import Emperor
         if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:
             self.kill()
         self.rotation += self.rotation_speed * dt

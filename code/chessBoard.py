@@ -1,11 +1,11 @@
-from settings import *
-from pieces.legionary import Legionary
-from pieces.dragon import Dragon
-from pieces.archer import Archer
-from pieces.wizard import Wizard
-from pieces.catapult import Catapult
-from pieces.emperor import Emperor
-from button import InteractiveButton
+from code.settings import *
+from code.pieces.legionary import Legionary
+from code.pieces.dragon import Dragon
+from code.pieces.archer import Archer
+from code.pieces.wizard import Wizard
+from code.pieces.catapult import Catapult
+from code.pieces.emperor import Emperor
+from code.button import InteractiveButton
 
 class Square():
     def __init__(self, rect, coord):
@@ -249,19 +249,16 @@ class ChessBoard(pygame.sprite.Sprite):
         return False
     
     def increment_promotion_select(self, color):
-        print("INCREMENT")
         self.selected = self.selected + 1 if self.selected < len(self.promotion_options) - 1 else 0
         self.selected_promotion = self.promotion_options[self.selected]
         self.promotion_button.set_image(PIECE_SURFS[color][self.selected_promotion])
 
     def decrement_promotion_select(self, color):
-        print("DECCREMENT")
         self.selected = self.selected - 1 if self.selected > 0 else len(self.promotion_options) - 1
         self.selected_promotion = self.promotion_options[self.selected]
         self.promotion_button.set_image(PIECE_SURFS[color][self.selected_promotion])
 
     def offer_promotion(self, square):
-        print("OFFER PROMOTION")
         self.game_blocked = True
         self.promotion_options = ['archer', 'catapult', 'dragon', 'wizard']
         self.selected = 0

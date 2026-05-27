@@ -1,4 +1,4 @@
-from settings import *
+from code.settings import *
 
 class TextSprite(pygame.sprite.Sprite):
     def __init__(self, text, pos, color, size, groups):

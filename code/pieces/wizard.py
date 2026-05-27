@@ -1,5 +1,5 @@
-from settings import *
-from pieces.piece import Piece
+from code.settings import *
+from code.pieces.piece import Piece
 
 class Wizard(Piece):
     def __init__(self, id, color, coord, squares):
@@ -11,7 +11,7 @@ class Wizard(Piece):
         self.swap_squares = []
 
     def update_swap_moves(self):
-        from pieces.legionary import Legionary
+        from code.pieces.legionary import Legionary
 
         self.swap_squares = []
         for row in range(8):

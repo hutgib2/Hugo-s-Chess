@@ -1,5 +1,5 @@
-from settings import *
-from textSprite import TextSprite
+from code.settings import *
+from code.textSprite import TextSprite
 
 class Player():
     def __init__(self, color):

@@ -1,5 +1,5 @@
-from settings import *
-from pieces.piece import Piece
+from code.settings import *
+from code.pieces.piece import Piece
 
 
 class Dragon(Piece):

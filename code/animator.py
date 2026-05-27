@@ -1,7 +1,7 @@
-from settings import *
-from support import get_direction_between
-from pieces.archer import Arrow
-from pieces.catapult import Boulder
+from code.settings import *
+from code.support import get_direction_between
+from code.pieces.archer import Arrow
+from code.pieces.catapult import Boulder
 
 class Animator():
     def __init__(self):

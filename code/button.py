@@ -1,5 +1,5 @@
-from settings import *
-from textSprite import TextSprite
+from code.settings import *
+from code.textSprite import TextSprite
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, surf, pos, size, groups, text=''):

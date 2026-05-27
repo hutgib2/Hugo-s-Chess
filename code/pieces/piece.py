@@ -1,4 +1,4 @@
-from settings import *
+from code.settings import *
 
 class Piece(pygame.sprite.Sprite):
     def __init__(self, id, piece_type, color, coord, squares):
@@ -24,7 +24,7 @@ class Piece(pygame.sprite.Sprite):
         self.rect = self.square.rect if coord else None
 
     def has_adjacent_legionary(self, square, direction):
-        from pieces.legionary import Legionary
+        from code.pieces.legionary import Legionary
 
         if direction == (1, -1) or direction == (-1, -1):
             row = square.coord[0]
@@ -64,8 +64,8 @@ class Piece(pygame.sprite.Sprite):
                     break
 
     def update_attack_moves(self):
-        from pieces.emperor import Emperor
-        from pieces.legionary import Legionary
+        from code.pieces.emperor import Emperor
+        from code.pieces.legionary import Legionary
 
         self.attack_squares = []
         for direction in self.attack_directions:

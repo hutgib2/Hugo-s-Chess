@@ -1,5 +1,5 @@
-from settings import *
-from pieces.piece import Piece
+from code.settings import *
+from code.pieces.piece import Piece
 
 class Emperor(Piece):
     def __init__(self, id, color, coord, squares):

@@ -1,7 +1,7 @@
 import pygame
 from os.path import join 
 from os import walk
-from support import folder_importer, folder_importer_list
+from code.support import folder_importer, folder_importer_list
 
 DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
