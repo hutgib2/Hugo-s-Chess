@@ -20,12 +20,12 @@ def folder_importer_list(*path):
     return surf_list
 
 
-# def audio_importer(*path):
-#     audio_dict = {}
-#     for folder_path, _, file_names in walk(join(*path)):
-#         for file_name in file_names:
-#             audio_dict[file_name.split('.')[0]] = pygame.mixer.Sound(join(folder_path, file_name))
-#     return audio_dict
+def audio_importer(*path):
+    audio_dict = {}
+    for folder_path, _, file_names in walk(join(*path)):
+        for file_name in file_names:
+            audio_dict[file_name.split('.')[0]] = pygame.mixer.Sound(join(folder_path, file_name))
+    return audio_dict
 
 def get_direction_between(start, end):
     drow = end[0] - start[0]
