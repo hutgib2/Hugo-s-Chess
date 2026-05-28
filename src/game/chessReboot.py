@@ -97,7 +97,7 @@ class ChessReboot():
                         if not click_square.rect.collidepoint(event.pos):
                             continue
                         if click_square.is_swappable:
-                            self.swap_sound.play()
+                            # self.swap_sound.play()
                             self.animator.swap([self.board.selected_square.rect, click_square.rect])
                             self.board.swap_piece(self.board.selected_square, click_square)
                             self.board.deselect_piece()
@@ -106,13 +106,13 @@ class ChessReboot():
                             self.board.select_piece(click_square)
                             action = 'select'
                         elif click_square.is_possible_move:
-                            self.move_sound.play() 
+                            # self.move_sound.play() 
                             self.board.move_piece(self.board.selected_square, click_square)
                             if click_square.piece and click_square.piece.type == 'emperor':
                                 click_square.piece.update_range()
                             action = 'move'
                         elif click_square.is_attack_move:
-                            self.kill_sound.play()
+                            # self.kill_sound.play()
                             self.animator.attack(self.board.selected_square, click_square, self.board.all_pieces)
                             
                             # Get list of killed pieces and assign to graveyard positions + update score here instead

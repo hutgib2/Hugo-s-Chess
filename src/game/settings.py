@@ -6,7 +6,7 @@ from game.support import folder_importer, folder_importer_list
 DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
 pygame.init()
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((1280, 720))
 WINDOW_WIDTH, WINDOW_HEIGHT = screen.get_size()
 BOARD_SIZE = WINDOW_HEIGHT - 100
 TILE_WIDTH = BOARD_SIZE / 8
