@@ -1,4 +1,3 @@
-print("=== main.py starting ===")
 import pygame
 from game.menu import Menu
 import asyncio

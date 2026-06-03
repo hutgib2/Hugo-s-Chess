@@ -36,8 +36,11 @@ class ChessReboot():
 
         # audio
         self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.ogg'))
+        self.kill_sound.set_volume(0.5)
         self.move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.ogg'))
+        self.move_sound.set_volume(1)
         self.swap_sound = pygame.mixer.Sound(join('assets', 'audio', 'swap.ogg'))
+        self.swap_sound.set_volume(0.75)
 
     def reset_game(self):
         self.create_new_game()
@@ -161,4 +164,5 @@ class ChessReboot():
         if self.board.game_over:
             pass
             # os.remove(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games\\{self.id}.json")
+        print("GAME ENDED, going to menu")
             

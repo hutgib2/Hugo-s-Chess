@@ -75,7 +75,7 @@ class Menu():
 
     def handle_events(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+            if event.type == pygame.QUIT:
                 self.running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 for menu_sprite in self.menu_sprites:
@@ -101,3 +101,4 @@ class Menu():
                 self.showing_games = False
                 await self.pending_game.run()
                 self.pending_game = None
+                print("GAME ENDED, back in menu")
