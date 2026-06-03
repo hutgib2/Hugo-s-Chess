@@ -13,6 +13,14 @@ import time
 import os
 import asyncio
 
+# audio
+kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.ogg'))
+kill_sound.set_volume(0.5)
+move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.ogg'))
+move_sound.set_volume(1)
+swap_sound = pygame.mixer.Sound(join('assets', 'audio', 'swap.ogg'))
+swap_sound.set_volume(0.75)
+
 class ChessReboot():
     def __init__(self, game_id, data):
         self.id = game_id
@@ -33,14 +41,6 @@ class ChessReboot():
         self.rules_screen = pygame.transform.smoothscale(pygame.image.load(join('assets', 'images', 'rules', 'rules_screen.png')), ((2000 / 1125)*(2*WINDOW_HEIGHT / 3), 2*WINDOW_HEIGHT / 3))
         self.rules_rect = self.rules_screen.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.rules_shown = False
-
-        # audio
-        self.kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.ogg'))
-        self.kill_sound.set_volume(0.5)
-        self.move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.ogg'))
-        self.move_sound.set_volume(1)
-        self.swap_sound = pygame.mixer.Sound(join('assets', 'audio', 'swap.ogg'))
-        self.swap_sound.set_volume(0.75)
 
     def reset_game(self):
         self.create_new_game()
@@ -100,7 +100,7 @@ class ChessReboot():
                         if not click_square.rect.collidepoint(event.pos):
                             continue
                         if click_square.is_swappable:
-                            # self.swap_sound.play()
+                            swap_sound.play()
                             self.animator.swap([self.board.selected_square.rect, click_square.rect])
                             self.board.swap_piece(self.board.selected_square, click_square)
                             self.board.deselect_piece()
@@ -109,13 +109,13 @@ class ChessReboot():
                             self.board.select_piece(click_square)
                             action = 'select'
                         elif click_square.is_possible_move:
-                            # self.move_sound.play() 
+                            move_sound.play() 
                             self.board.move_piece(self.board.selected_square, click_square)
                             if click_square.piece and click_square.piece.type == 'emperor':
                                 click_square.piece.update_range()
                             action = 'move'
                         elif click_square.is_attack_move:
-                            # self.kill_sound.play()
+                            kill_sound.play()
                             self.animator.attack(self.board.selected_square, click_square, self.board.all_pieces)
                             
                             # Get list of killed pieces and assign to graveyard positions + update score here instead
