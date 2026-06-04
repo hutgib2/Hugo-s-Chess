@@ -14,11 +14,11 @@ import os
 import asyncio
 
 # audio
-kill_sound = pygame.mixer.Sound(join('assets', 'audio', 'kill.ogg'))
+kill_sound = pygame.mixer.Sound(join('src', 'assets', 'audio', 'kill.ogg'))
 kill_sound.set_volume(0.5)
-move_sound = pygame.mixer.Sound(join('assets', 'audio', 'move.ogg'))
+move_sound = pygame.mixer.Sound(join('src', 'assets', 'audio', 'move.ogg'))
 move_sound.set_volume(1)
-swap_sound = pygame.mixer.Sound(join('assets', 'audio', 'swap.ogg'))
+swap_sound = pygame.mixer.Sound(join('src', 'assets', 'audio', 'swap.ogg'))
 swap_sound.set_volume(0.75)
 
 class ChessReboot():
@@ -35,10 +35,10 @@ class ChessReboot():
         self.running = True
         self.clock = pygame.time.Clock()
         self.switch_turn_timer = Timer(1000, self.switch_turn)
-        self.rulebook_surf = pygame.image.load(join('assets', 'images', 'rules', 'rulebook.png'))
+        self.rulebook_surf = pygame.image.load(join('src', 'assets', 'images', 'rules', 'rulebook.png'))
         self.rulebook = InteractiveButton(self.rulebook_surf, (WINDOW_WIDTH-TILE_WIDTH, TILE_WIDTH), (TILE_WIDTH, TILE_WIDTH), (), self.show_rules)
         # rules screen aspect ratio = 2000 / 1125
-        self.rules_screen = pygame.transform.smoothscale(pygame.image.load(join('assets', 'images', 'rules', 'rules_screen.png')), ((2000 / 1125)*(2*WINDOW_HEIGHT / 3), 2*WINDOW_HEIGHT / 3))
+        self.rules_screen = pygame.transform.smoothscale(pygame.image.load(join('src', 'assets', 'images', 'rules', 'rules_screen.png')), ((2000 / 1125)*(2*WINDOW_HEIGHT / 3), 2*WINDOW_HEIGHT / 3))
         self.rules_rect = self.rules_screen.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.rules_shown = False
 
