@@ -16,14 +16,14 @@ WHITE_GRAVEYARD = [[], [], [], []]
 BLACK_GRAVEYARD = [[], [], [], []]
 
 PIECE_SURFS = {
-    'white': folder_importer('src', 'assets', 'images', 'white_pieces'),
-    'black': folder_importer('src', 'assets', 'images', 'black_pieces'),
+    'white': folder_importer('assets', 'images', 'white_pieces'),
+    'black': folder_importer('assets', 'images', 'black_pieces'),
 }
 
-FLAME_FRAMES = folder_importer_list('src', 'assets', 'animations', 'flame')
-SMOKE_FRAMES = folder_importer_list('src', 'assets', 'animations', 'smoke')
-SPLAT_FRAMES = folder_importer_list('src', 'assets', 'animations', 'splat')
-BOARD_SURFS = folder_importer('src', 'assets', 'images', 'board')
+FLAME_FRAMES = folder_importer_list('assets', 'animations', 'flame')
+SMOKE_FRAMES = folder_importer_list('assets', 'animations', 'smoke')
+SPLAT_FRAMES = folder_importer_list('assets', 'animations', 'splat')
+BOARD_SURFS = folder_importer('assets', 'images', 'board')
 
 PIECE_SCORES = {
     "legionary": 1,

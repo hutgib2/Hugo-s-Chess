@@ -12,17 +12,17 @@ import asyncio
 
 class Menu():
     def __init__(self):
-        self.menu_surf = pygame.transform.smoothscale(pygame.image.load(join('src', 'assets', 'images', 'menu', 'menu.png')), (BOARD_SIZE, BOARD_SIZE))
+        self.menu_surf = pygame.transform.smoothscale(pygame.image.load(join('assets', 'images', 'menu', 'menu.png')), (BOARD_SIZE, BOARD_SIZE))
         self.menu_rect = self.menu_surf.get_frect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2))
         self.running = True
-        self.play_surf = pygame.image.load(join('src', 'assets', 'images', 'menu', 'play_button.png'))
+        self.play_surf = pygame.image.load(join('assets', 'images', 'menu', 'play_button.png'))
 
         self.menu_sprites = pygame.sprite.Group()
         InteractiveButton(self.play_surf, (WINDOW_WIDTH/2, 3*WINDOW_HEIGHT/5), (WINDOW_HEIGHT / 5, WINDOW_HEIGHT / 11), self.menu_sprites, self.create_new_game, 'New Game')
         InteractiveButton(self.play_surf, (WINDOW_WIDTH/2, 3*WINDOW_HEIGHT/4), (WINDOW_HEIGHT / 5, WINDOW_HEIGHT / 11), self.menu_sprites, self.show_saved_games, 'Load Game')
 
         self.showing_games = False
-        self.saved_games_surf = pygame.transform.smoothscale(pygame.image.load(join('src', 'assets', 'images', 'menu', 'saved_games.png')), (WINDOW_WIDTH / 3, WINDOW_WIDTH / 3))
+        self.saved_games_surf = pygame.transform.smoothscale(pygame.image.load(join('assets', 'images', 'menu', 'saved_games.png')), (WINDOW_WIDTH / 3, WINDOW_WIDTH / 3))
         self.saved_games_rect = self.saved_games_surf.get_frect(topleft=(64, 64))
         self.saved_game_links = pygame.sprite.Group()
         self.create_saved_game_links()
@@ -31,7 +31,7 @@ class Menu():
         # create a load game button that loads the last saved game and runs it
 
     def create_new_game(self):
-        with open('src/assets/new_game.json', 'r') as file:
+        with open('assets/new_game.json', 'r') as file:
             data = json.load(file)
             now = datetime.datetime.now()
             game_id = now.strftime("%d-%m-%Y-%H%M%S")
@@ -39,7 +39,7 @@ class Menu():
 
     def get_saved_game_ids(self):
         game_ids = []
-        for folder_path, _, file_names in walk('src/assets/saved_games/'):
+        for folder_path, _, file_names in walk('assets/saved_games/'):
             for file_name in file_names:
                 game_ids.append(file_name.split('.')[0])
         return game_ids
