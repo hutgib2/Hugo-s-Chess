@@ -87,6 +87,8 @@ class Menu():
 
     async def run(self):
         while self.running:
+            await asyncio.sleep(0)
+            
             self.handle_events()
             screen.fill((127, 127, 127))
             screen.blit(self.menu_surf, self.menu_rect)
@@ -95,7 +97,6 @@ class Menu():
                 self.saved_game_links.update()
             self.menu_sprites.update()
             pygame.display.update()
-            await asyncio.sleep(0)
 
             if self.pending_game:
                 self.showing_games = False
