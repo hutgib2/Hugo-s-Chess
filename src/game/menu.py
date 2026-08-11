@@ -66,13 +66,6 @@ class Menu():
             data = json.load(file)
             self.pending_game = ChessReboot(game_id, data)
 
-
-
-    # def run_game(self, game):
-    #     # close the menu
-    #     self.showing_games = False
-    #     game.run()
-
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -102,4 +95,4 @@ class Menu():
                 self.showing_games = False
                 await self.pending_game.run()
                 self.pending_game = None
-                print("GAME ENDED, back in menu")
+                # print("GAME ENDED, back in menu")

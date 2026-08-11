@@ -164,5 +164,5 @@ class ChessReboot():
         if self.board.game_over:
             pass
             # os.remove(f"C:\\Users\\Hugo\\pygame\\Hugo's Chess\\assets\\saved_games\\{self.id}.json")
-        print("GAME ENDED, going to menu")
+        # print("GAME ENDED, going to menu")
             
