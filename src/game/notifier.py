@@ -1,6 +1,6 @@
 from game.settings import *
 from game.textSprite import TextSprite
-from game.timer import Timer
+from utils.timer import Timer
 
 class Notifier():
     def __init__(self):

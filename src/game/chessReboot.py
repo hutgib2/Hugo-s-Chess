@@ -1,12 +1,11 @@
 from game.settings import *
-from game.support import *
 from game.textSprite import TextSprite
 from game.chessBoard import ChessBoard
 from game.button import InteractiveButton
 from game.pieces.piece import *
 from game.animator import Animator
 from game.notifier import Notifier
-from game.timer import Timer
+from utils.timer import Timer
 from game.player import Player
 import json
 import time

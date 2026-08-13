@@ -1,7 +1,7 @@
 import pygame
-from os.path import join 
+from os.path import join
 from os import walk
-from game.support import folder_importer, folder_importer_list
+from utils.file_importer import load_images_named, load_images
 
 DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
@@ -16,14 +16,14 @@ WHITE_GRAVEYARD = [[], [], [], []]
 BLACK_GRAVEYARD = [[], [], [], []]
 
 PIECE_SURFS = {
-    'white': folder_importer('assets', 'images', 'white_pieces'),
-    'black': folder_importer('assets', 'images', 'black_pieces'),
+    "white": load_images_named("assets", "images", "white_pieces"),
+    "black": load_images_named("assets", "images", "black_pieces"),
 }
 
-FLAME_FRAMES = folder_importer_list('assets', 'animations', 'flame')
-SMOKE_FRAMES = folder_importer_list('assets', 'animations', 'smoke')
-SPLAT_FRAMES = folder_importer_list('assets', 'animations', 'splat')
-BOARD_SURFS = folder_importer('assets', 'images', 'board')
+FLAME_FRAMES = load_images("assets", "animations", "flame")
+SMOKE_FRAMES = load_images("assets", "animations", "smoke")
+SPLAT_FRAMES = load_images("assets", "animations", "splat")
+BOARD_SURFS = load_images_named("assets", "images", "board")
 
 PIECE_SCORES = {
     "legionary": 1,
@@ -31,5 +31,5 @@ PIECE_SCORES = {
     "dragon": 3,
     "catapult": 3,
     "archer": 5,
-    "emperor": 10
+    "emperor": 10,
 }
